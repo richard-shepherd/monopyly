@@ -10,7 +10,7 @@ class Property(object):
     Derived classes are: Street, Station, Utility.
     '''
 
-    class Set(object):
+    class StreetSet(object):
         '''
         An 'enum' for the different property sets.
         '''
@@ -27,12 +27,12 @@ class Property(object):
         UTILITY = 10
 
 
-    def __init__(self, name, set, price, mortgage_value):
+    def __init__(self, name, street_set, price, mortgage_value):
         '''
         The 'constructor'.
         '''
         self.name = name
-        self.set = set
+        self.street_set = street_set
         self.price = price
         self.mortgage_value = mortgage_value
         self.mortgaged = False
