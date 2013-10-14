@@ -1,4 +1,6 @@
-from . import Go
-from . import Property
-from . import Street
+from .go import Go
+from .property import Property
+from .street import Street
+from .community_chest import CommunityChest
+from .income_tax import IncomeTax
 
