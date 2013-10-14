@@ -27,14 +27,13 @@ class Property(object):
         UTILITY = 10
 
 
-    def __init__(self, name, street_set, price, mortgage_value):
+    def __init__(self, name, street_set, price):
         '''
         The 'constructor'.
         '''
         self.name = name
         self.street_set = street_set
         self.price = price
-        self.mortgage_value = mortgage_value
         self.mortgaged = False
         self.owner = None
 
