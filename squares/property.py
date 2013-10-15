@@ -26,7 +26,7 @@ class Property(object):
         STATION = 9
         UTILITY = 10
 
-    class Names(object):
+    class Name(object):
         '''
         Enums and string names for the various properties.
         '''

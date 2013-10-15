@@ -22,7 +22,7 @@ class Board(object):
 
         # Old Kent Road...
         self.squares.append(
-            Street(name="Old Kent Road",
+            Street(name=Property.Name.OLD_KENT_ROAD,
                    street_set=Property.Set.BROWN,
                    price=60,
                    house_price=50,
@@ -31,3 +31,24 @@ class Board(object):
         # Community Chest...
         self.squares.append(CommunityChest())
 
+        # Whitechapel Road...
+        self.squares.append(
+            Street(name=Property.Name.WHITECHAPEL_ROAD,
+                   street_set=Property.Set.BROWN,
+                   price=60,
+                   house_price=50,
+                   rents=Street.Rents(4, 20, 60, 180, 320, 450)))
+
+        # Income tax...
+        self.squares.append(IncomeTax())
+
+        # Kings Cross...
+        self.squares.append(Station(name=Property.Name.KINGS_CROSS_STATION))
+
+        # The Angel Islington...
+        self.squares.append(
+            Street(name=Property.Name.THE_ANGEL_ISLINGTON,
+                   street_set=Property.Set.LIGHT_BLUE,
+                   price=100,
+                   house_price=50,
+                   rents=Street.Rents(6, 30, 90, 270, 400, 550)))
