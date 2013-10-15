@@ -23,7 +23,7 @@ class Board(object):
         # Old Kent Road...
         self.squares.append(
             Street(name="Old Kent Road",
-                   street_set=Property.StreetSet.BROWN,
+                   street_set=Property.Set.BROWN,
                    price=60,
                    house_price=50,
                    rents=Street.Rents(2, 10, 30, 90, 160, 250)))
