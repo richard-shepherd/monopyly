@@ -48,8 +48,10 @@ class PlayerAIBase(object):
         '''
         Called when the AI lands on an unowned property.
 
-        Must return either the BUY or DO_NOT_BUY action. The default
-        behaviour is DO_NOT_BUY.
+        Must return either the BUY or DO_NOT_BUY action from the
+        PlayerAIBase.Action enum.
+
+        The default behaviour is DO_NOT_BUY.
         '''
         return PlayerAIBase.Action.DO_NOT_BUY
 

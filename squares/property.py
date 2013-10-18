@@ -59,7 +59,7 @@ class Property(object):
         LEICESTER_SQUARE = "Leicester Square"
         COVENTRY_STREET = "Coventry Street"
         WATER_WORKS = "Water Works"
-        PICADILLY = "Picadilly"
+        PICCADILLY = "Piccadilly"
         GO_TO_JAIL = "Go To Jail"
         REGENT_STREET = "Regent Street"
         OXFORD_STREET = "Oxford Street"

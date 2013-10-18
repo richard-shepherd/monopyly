@@ -184,9 +184,9 @@ class Board(object):
         # Water Works...
         self.squares.append(Utility(Property.Name.WATER_WORKS))
 
-        # Picadilly...
+        # Piccadilly...
         self.squares.append(
-            Street(name=Property.Name.PICADILLY,
+            Street(name=Property.Name.PICCADILLY,
                    street_set=Property.Set.YELLOW,
                    price=280,
                    house_price=150,
