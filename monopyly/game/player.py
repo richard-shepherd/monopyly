@@ -7,5 +7,9 @@ class Player(object):
     derived from PlayerAIBase).
     '''
 
-    def __init__(self):
+    def __init__(self, player_ai):
+        '''
+        The 'constructor'.
+        '''
         self.player_state = PlayerState()
+        self.player_ai = player_ai
