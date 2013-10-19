@@ -1,4 +1,4 @@
-from squares import *
+from ..squares import *
 
 
 class Board(object):
