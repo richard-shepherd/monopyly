@@ -1,0 +1,9 @@
+The Square 'interface'
+----------------------
+The classes representing the various type of square all implement
+the Square interface, though this being Python there is no explicit
+interface.
+
+The (implicit) interface supported by the Squares classes is:
+
+
