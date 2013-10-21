@@ -30,17 +30,20 @@ class PlayerAIBase(object):
         BUY = 0
         DO_NOT_BUY = 1
 
-    def start_of_turn(self, game_state, player_state):
+    def start_of_game(self, player_number):
         '''
-        Called when the AI's turn starts.
+        Called at the start of the game to tell each AI
+        which player-number it is.
 
         No response is required.
         '''
         pass
 
-    def start_of_other_players_turn(self, game_state, player_number):
+    def start_of_turn(self, game_state, player_number):
         '''
-        Called when another player's turn starts.
+        Called when an AI's turn starts.
+
+        No response is required.
         '''
         pass
 
