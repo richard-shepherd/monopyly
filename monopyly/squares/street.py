@@ -11,7 +11,7 @@ class Street(Property):
 
     class Rents(namedtuple("Rents", "base one_house two_houses three_houses four_houses hotel")):
         '''
-        Holds the various rents for a Street property.
+        Holds the rents for a Street property.
         '''
         pass
 
