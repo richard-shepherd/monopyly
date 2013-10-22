@@ -41,15 +41,22 @@ class PlayerAIBase(object):
 
     def start_of_turn(self, game_state, player_number):
         '''
-        Called when an AI's turn starts.
+        Called when an AI's turn starts. All AIs receive this notification.
 
         No response is required.
         '''
         pass
 
+    def player_moved_to_square(self, game_state, square, player_number):
+        '''
+        Called when a player lands on a square. All AIs receive this notification.
+        '''
+        pass
+
     def landed_on_unowned_property(self, game_state, player_state, property_name):
         '''
-        Called when the AI lands on an unowned property.
+        Called when the AI lands on an unowned property. Only the active
+        player receives this notification.
 
         Must return either the BUY or DO_NOT_BUY action from the
         PlayerAIBase.Action enum.

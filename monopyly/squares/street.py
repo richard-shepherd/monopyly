@@ -22,7 +22,7 @@ class Street(Property):
         rents: passed in as a Rents object (a namedtuple).
         '''
         # The base class holds the values applicable to all properties...
-        super(Street, self).__init__(name, street_set, price)
+        super().__init__(name, street_set, price)
 
         # We hold the ones specific to streets...
         self.house_price = house_price

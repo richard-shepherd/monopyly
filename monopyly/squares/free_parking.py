@@ -1,7 +1,13 @@
+from .square import Square
 
-class FreeParking(object):
+
+class FreeParking(Square):
     '''
     Represents the Free Parking square.
     '''
-    pass
+    def __init__(self):
+        '''
+        The 'constructor'.
+        '''
+        super().__init__(Square.Name.FREE_PARKING)
 

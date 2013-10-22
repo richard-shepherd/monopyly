@@ -1,7 +1,13 @@
+from .square import Square
 
-class Chance(object):
+
+class Chance(Square):
     '''
     Represents one of the Chance squares.
     '''
-    pass
+    def __init__(self):
+        '''
+        The 'constructor'.
+        '''
+        super().__init__(Square.Name.CHANCE)
 

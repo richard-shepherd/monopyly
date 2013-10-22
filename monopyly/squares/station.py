@@ -11,6 +11,6 @@ class Station(Property):
         '''
         The 'constructor'.
         '''
-        super(Station, self).__init__(name=name, street_set=Street.Set.STATION, price=200)
+        super().__init__(name=name, street_set=Street.Set.STATION, price=200)
 
 

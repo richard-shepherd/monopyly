@@ -1,4 +1,5 @@
 from .dice import Dice
+from monopyly.game.board import Board
 from .player import Player
 from .game_state import GameState
 
@@ -109,10 +110,16 @@ class Game(object):
             else:
                 roll_again = Game.Action.ROLL_AGAIN
 
-        # We move the player to the new square, and notify all players
-        # that they are there...
+        # We move the player to the new square...
         total_roll = roll1 + roll2
+        current_player.state.square += total_roll
+        if(current_player.state.square >= Board.NUMBER_OF_SQUARES):
+            current_player.state.square -= Board.NUMBER_OF_SQUARES
 
+        # We notify all players that they are there...
+        for player in self.game_state.players:
+            game_state = self.game_state.copy()
+            square = self.game_state.board
 
 
         # TODO: We perform the square's landed-on action...

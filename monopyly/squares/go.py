@@ -1,8 +1,14 @@
+from .square import Square
 
-class Go(object):
+
+class Go(Square):
     '''
     Represents the Go square.
     '''
-    pass
+    def __init__(self):
+        '''
+        The 'constructor'.
+        '''
+        super().__init__(Square.Name.GO)
 
 

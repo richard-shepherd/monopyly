@@ -10,6 +10,6 @@ class Utility(Property):
         '''
         The 'constructor'
         '''
-        super(Utility, self).__init__(name=name, street_set=Property.Set.UTILITY, price=150)
+        super().__init__(name=name, street_set=Property.Set.UTILITY, price=150)
 
 

@@ -1,7 +1,13 @@
+from .square import Square
 
-class CommunityChest(object):
+
+class CommunityChest(Square):
     '''
     Represents one of the Community Chest squares.
     '''
-    pass
+    def __init__(self):
+        '''
+        The 'constructor'.
+        '''
+        super().__init__(Square.Name.COMMUNITY_CHEST)
 

@@ -1,5 +1,7 @@
+from .square import Square
 
-class Tax(object):
+
+class Tax(Square):
     '''
     Represents the Income Tax and Super Tax squares.
     '''
@@ -8,7 +10,7 @@ class Tax(object):
         '''
         The 'constructor'.
         '''
-        self.name = name
+        super().__init__(name)
         self.tax = tax
 
 

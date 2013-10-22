@@ -1,3 +1,4 @@
+from .square import Square
 from .go import Go
 from .property import Property
 from .street import Street

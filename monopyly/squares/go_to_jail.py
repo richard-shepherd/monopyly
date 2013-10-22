@@ -1,8 +1,14 @@
+from .square import Square
 
-class GoToJail(object):
+
+class GoToJail(Square):
     '''
     Represents the Go To Jail square.
     '''
-    pass
+    def __init__(self):
+        '''
+        The 'constructor'.
+        '''
+        super().__init__(Square.Name.GO_TO_JAIL)
 
 
