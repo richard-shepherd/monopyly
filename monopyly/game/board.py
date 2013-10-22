@@ -10,6 +10,9 @@ class Board(object):
     of Chance and Community Chest cards.
     '''
 
+    # A constant for the number of squares on the board...
+    NUMBER_OF_SQUARES = 40
+
     def __init__(self):
         '''
         The 'constructor'.

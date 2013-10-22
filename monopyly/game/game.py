@@ -19,6 +19,13 @@ class Game(object):
     properties mortgaged) and the winner is the player with the most money.
     '''
 
+    class Action(object):
+        '''
+        An 'enum' for actions that can happen during the game.
+        '''
+        ROLL_AGAIN = 1
+        DO_NOT_ROLL_AGAIN = 2
+
     def __init__(self):
         '''
         The 'constructor'.
@@ -62,4 +69,54 @@ class Game(object):
         for player in self.game_state.players:
             game_state = self.game_state.copy()
             player.ai.start_of_turn(game_state, current_player.number)
+
+        # TODO: Before the start of the turn we give the player an
+        # option to perform deals or mortgage properties so that they
+        # can raise money for house-building...
+
+        # TODO: The player can build houses...
+
+        # TODO: If the player is in jail, they can buy themselves out,
+        # or play Get Out Of Jail Free.
+
+        # This while loop manages rolling again if the player
+        # rolls doubles...
+        roll_again = Game.Action.ROLL_AGAIN
+        number_of_doubles_rolled = 0
+        while roll_again == Game.Action.ROLL_AGAIN:
+            roll_again, number_of_doubles_rolled = self.roll_and_move(current_player, number_of_doubles_rolled)
+
+    def roll_and_move(self, current_player, number_of_doubles_rolled):
+        '''
+        Rolls the dice, moves the player and takes the appropriate
+        action for the square landed on.
+
+        Returns whether we should roll again and the number of doubles rolled.
+        '''
+        # TODO: We roll the dice and move the player.
+        # We notify all players that the player has landed
+        # on the new square.
+        roll1, roll2 = self.dice.roll()
+
+        # We check if doubles was rolled...
+        roll_again = Game.Action.DO_NOT_ROLL_AGAIN
+        if(roll1 == roll2):
+            # Doubles was rolled...
+            number_of_doubles_rolled += 1
+            if(number_of_doubles_rolled == 3):
+                # TODO: Go to jail
+                return Game.Action.DO_NOT_ROLL_AGAIN, number_of_doubles_rolled
+            else:
+                roll_again = Game.Action.ROLL_AGAIN
+
+        # We move the player to the new square, and notify all players
+        # that they are there...
+        total_roll = roll1 + roll2
+
+
+
+        # TODO: We perform the square's landed-on action...
+
+
+        return roll_again, number_of_doubles_rolled
 
