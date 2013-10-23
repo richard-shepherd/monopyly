@@ -250,3 +250,15 @@ class Board(object):
                    house_price=200,
                    rents=Street.Rents(50, 200, 600, 1400, 1700, 2000)))
 
+    def move_player(self, player, number_of_squares):
+        '''
+        Advances the player by the number of squares passed in.
+
+        Returns the square landed on.
+        '''
+        player.state.square += number_of_squares
+        if(player.state.square >= Board.NUMBER_OF_SQUARES):
+            player.state.square -= Board.NUMBER_OF_SQUARES
+
+        square = self.squares[player.state.square]
+        return square

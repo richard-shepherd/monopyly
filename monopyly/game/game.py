@@ -1,5 +1,4 @@
 from .dice import Dice
-from monopyly.game.board import Board
 from .player import Player
 from .game_state import GameState
 
@@ -68,8 +67,7 @@ class Game(object):
         '''
         # We notify all players that this player's turn is starting...
         for player in self.game_state.players:
-            game_state = self.game_state.copy()
-            player.ai.start_of_turn(game_state, current_player.number)
+            player.ai.start_of_turn(self.game_state.copy(), current_player.number)
 
         # TODO: Before the start of the turn we give the player an
         # option to perform deals or mortgage properties so that they
@@ -94,9 +92,7 @@ class Game(object):
 
         Returns whether we should roll again and the number of doubles rolled.
         '''
-        # TODO: We roll the dice and move the player.
-        # We notify all players that the player has landed
-        # on the new square.
+        # We roll the dice and move the player...
         roll1, roll2 = self.dice.roll()
 
         # We check if doubles was rolled...
@@ -112,18 +108,41 @@ class Game(object):
 
         # We move the player to the new square...
         total_roll = roll1 + roll2
-        current_player.state.square += total_roll
-        if(current_player.state.square >= Board.NUMBER_OF_SQUARES):
-            current_player.state.square -= Board.NUMBER_OF_SQUARES
+        square = self.game_state.board.move_player(current_player, total_roll)
 
-        # We notify all players that they are there...
+        # We notify all players that the player has landed
+        # on this square...
         for player in self.game_state.players:
-            game_state = self.game_state.copy()
-            square = self.game_state.board
+            player.ai.landed_on_square(self.game_state.copy(), square.name, player.state.number)
 
-
-        # TODO: We perform the square's landed-on action...
-
+        # We perform the square's landed-on action...
+        square.landed_on(self.game_state, current_player)
 
         return roll_again, number_of_doubles_rolled
+
+    def take_money_from_player(self, player, amount):
+        '''
+        Takes some money from the player.
+
+        The player is given the option to make a deal or
+        mortgage properties first.
+        '''
+        # We tell the player that we need money from them...
+        player.ai.money_will_be_taken(player.state.copy(), amount)
+
+        # TODO: We allow the player to make deals...
+
+        # TODO: We allow the player to mortgage properties...
+
+        # We take the money, and tell the player that it was taken...
+        player.state.cash -= amount
+        player.ai.money_taken(player.state.copy(), amount)
+
+    def give_money_to_player(self, player, amount):
+        '''
+        Gives some money to the player.
+        '''
+        # We give the money to the player and tell them about it...
+        player.state.cash += amount
+        player.ai.money_given(player.state.copy(), amount)
 

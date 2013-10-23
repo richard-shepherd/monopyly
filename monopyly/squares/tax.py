@@ -13,4 +13,10 @@ class Tax(Square):
         super().__init__(name)
         self.tax = tax
 
+    def landed_on(self, game, player):
+        '''
+        Called when the square is landed on.
+        '''
+        game.take_money_from_player(player, self.tax)
+
 

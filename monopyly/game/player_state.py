@@ -14,7 +14,7 @@ class PlayerState(object):
         The 'constructor'.
         '''
         self.square = 0
-        self.cash = 0
+        self.cash = 1500
         self.properties = []
 
     def copy(self):

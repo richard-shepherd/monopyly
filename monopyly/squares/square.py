@@ -54,6 +54,12 @@ class Square(object):
         '''
         self.name = name
 
+    def landed_on(self, game, player):
+        '''
+        Must be overridden in derived classes.
+        '''
+        raise Exception("landed_on not implemented")
+
     def copy(self):
         '''
         Returns a copy of the square.

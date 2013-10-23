@@ -47,7 +47,7 @@ class PlayerAIBase(object):
         '''
         pass
 
-    def player_moved_to_square(self, game_state, square, player_number):
+    def player_landed_on_square(self, game_state, square_name, player_number):
         '''
         Called when a player lands on a square. All AIs receive this notification.
         '''
@@ -64,6 +64,40 @@ class PlayerAIBase(object):
         The default behaviour is DO_NOT_BUY.
         '''
         return PlayerAIBase.Action.DO_NOT_BUY
+
+    def money_will_be_taken(self, player_state, amount):
+        '''
+        Called shortly before money will be taken from the player.
+
+        Before the money is taken, there will be an opportunity to
+        make deals and/or mortgage properties. (This will be done via
+        subsequent callbacks.)
+
+        No response is required.
+        '''
+        pass
+
+    def money_taken(self, player_state, amount):
+        '''
+        Called when money has been taken from the player.
+
+        No response is required.
+        '''
+        pass
+
+    def money_given(self, player_state, amount):
+        '''
+        Called when money has been given to the player.
+
+        No response is required.
+        '''
+        pass
+
+
+
+
+
+
 
 
 
