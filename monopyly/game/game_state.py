@@ -29,4 +29,9 @@ class GameState(object):
         for player in game_copy.players:
             player._ai = None
 
-
+    @property
+    def number_of_players(self):
+        '''
+        The number of players.
+        '''
+        return len(self.players)
