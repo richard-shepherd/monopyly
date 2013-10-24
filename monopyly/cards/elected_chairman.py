@@ -1,5 +1,7 @@
+from .card import Card
 
-class ElectedChairman(object):
+
+class ElectedChairman(Card):
     '''
     You have been elected chairman of the board.
     Pay each player £50.

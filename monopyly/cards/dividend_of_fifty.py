@@ -1,5 +1,7 @@
+from .card import Card
 
-class DividendOfFifty(object):
+
+class DividendOfFifty(Card):
     '''
     Bank pays you a dividend of £50.
     '''
