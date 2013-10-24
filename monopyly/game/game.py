@@ -30,7 +30,7 @@ class Game(object):
         '''
         The 'constructor'.
         '''
-        self.game_state = GameState()
+        self.state = GameState()
         self.dice = Dice()
 
     def add_player(self, ai):
@@ -38,8 +38,8 @@ class Game(object):
         Adds a player AI.
         '''
         # We wrap the AI up into a Player object...
-        player_number = len(self.game_state.players) + 1
-        self.game_state.players.append(Player(ai, player_number))
+        player_number = len(self.state.players) + 1
+        self.state.players.append(Player(ai, player_number))
 
     def play_game(self):
         '''
@@ -47,7 +47,7 @@ class Game(object):
         '''
         # We tell the players that the game is starting, and which
         # player-number they are...
-        for player in self.game_state.players:
+        for player in self.state.players:
             player.ai.start_of_game(player.number)
 
     def play_one_round(self):
@@ -58,7 +58,7 @@ class Game(object):
         The round can come to an end before all players' turns
         are finished if one of the players wins.
         '''
-        for player in self.game_state.players:
+        for player in self.state.players:
             self.play_one_turn(player)
 
     def play_one_turn(self, current_player):
@@ -66,8 +66,8 @@ class Game(object):
         Plays one turn for one player.
         '''
         # We notify all players that this player's turn is starting...
-        for player in self.game_state.players:
-            player.ai.start_of_turn(self.game_state.copy(), current_player.number)
+        for player in self.state.players:
+            player.ai.start_of_turn(self.state.copy(), current_player.number)
 
         # TODO: Before the start of the turn we give the player an
         # option to perform deals or mortgage properties so that they
@@ -108,15 +108,15 @@ class Game(object):
 
         # We move the player to the new square...
         total_roll = roll1 + roll2
-        square = self.game_state.board.move_player(current_player, total_roll)
+        square = self.state.board.move_player(current_player, total_roll)
 
         # We notify all players that the player has landed
         # on this square...
-        for player in self.game_state.players:
-            player.ai.landed_on_square(self.game_state.copy(), square.name, player.state.number)
+        for player in self.state.players:
+            player.ai.landed_on_square(self.state.copy(), square.name, player.state.number)
 
         # We perform the square's landed-on action...
-        square.landed_on(self.game_state, current_player)
+        square.landed_on(self.state, current_player)
 
         return roll_again, number_of_doubles_rolled
 
