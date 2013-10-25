@@ -9,7 +9,7 @@ def test_roll_and_land_on_chance():
     player £120.
 
     The dice are set to roll a (1, 1) to land on Community Chest, then
-    (2, 3) to Land on Chance.
+    (2, 3) to land on Chance.
 
     We check that the player's cash is altered as we expect.
     This also tests that doubles causes the player to roll again.

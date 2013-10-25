@@ -285,9 +285,9 @@ class Board(object):
         if(player.state.square >= Board.NUMBER_OF_SQUARES):
             player.state.square -= Board.NUMBER_OF_SQUARES
 
-    def get_index(self, square_name):
+    def get_index_list(self, square_name):
         '''
-        Returns the zero-based index (ie, the board position)
+        Returns the zero-based indexes (ie, the board positions)
         for the square passed in.
 
         Note that this is returned as a list, as some names have more

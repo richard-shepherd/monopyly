@@ -11,3 +11,8 @@ class FreeParking(Square):
         '''
         super().__init__(Square.Name.FREE_PARKING)
 
+    def landed_on(self, game, player):
+        '''
+        Nothing happens when you land on Free Parking.
+        '''
+        pass

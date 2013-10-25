@@ -11,4 +11,9 @@ class Go(Square):
         '''
         super().__init__(Square.Name.GO)
 
+    def landed_on(self, game, player):
+        '''
+        When a player lands on Go they get £200.
+        '''
+        game.give_money_to_player(player, 200)
 
