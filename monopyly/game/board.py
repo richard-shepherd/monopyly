@@ -1,4 +1,5 @@
 from ..squares import *
+from ..cards import *
 
 
 class Board(object):
@@ -25,6 +26,10 @@ class Board(object):
         self._name_to_index_map = {}
         self.map_names_to_indexes()
 
+        # The cards...
+        self.chance_deck = ChanceDeck()
+        self.community_chest_deck = CommunityChestDeck()
+
     def add_squares_to_board(self):
         '''
         Sets up the collection of squares that make up the board.
@@ -34,7 +39,7 @@ class Board(object):
 
         # Old Kent Road...
         self.squares.append(
-            Street(name=Property.Name.OLD_KENT_ROAD,
+            Street(name=Square.Name.OLD_KENT_ROAD,
                    street_set=Property.Set.BROWN,
                    price=60,
                    house_price=50,
@@ -45,21 +50,21 @@ class Board(object):
 
         # Whitechapel Road...
         self.squares.append(
-            Street(name=Property.Name.WHITECHAPEL_ROAD,
+            Street(name=Square.Name.WHITECHAPEL_ROAD,
                    street_set=Property.Set.BROWN,
                    price=60,
                    house_price=50,
                    rents=Street.Rents(4, 20, 60, 180, 320, 450)))
 
         # Income tax...
-        self.squares.append(Tax(name=Property.Name.INCOME_TAX, tax=200))
+        self.squares.append(Tax(name=Square.Name.INCOME_TAX, tax=200))
 
         # Kings Cross...
-        self.squares.append(Station(name=Property.Name.KINGS_CROSS_STATION))
+        self.squares.append(Station(name=Square.Name.KINGS_CROSS_STATION))
 
         # The Angel Islington...
         self.squares.append(
-            Street(name=Property.Name.THE_ANGEL_ISLINGTON,
+            Street(name=Square.Name.THE_ANGEL_ISLINGTON,
                    street_set=Property.Set.LIGHT_BLUE,
                    price=100,
                    house_price=50,
@@ -70,7 +75,7 @@ class Board(object):
 
         # Euston Road
         self.squares.append(
-            Street(name=Property.Name.EUSTON_ROAD,
+            Street(name=Square.Name.EUSTON_ROAD,
                    street_set=Property.Set.LIGHT_BLUE,
                    price=100,
                    house_price=50,
@@ -78,7 +83,7 @@ class Board(object):
 
         # Pentonville Road...
         self.squares.append(
-            Street(name=Property.Name.PENTONVILLE_ROAD,
+            Street(name=Square.Name.PENTONVILLE_ROAD,
                    street_set=Property.Set.LIGHT_BLUE,
                    price=120,
                    house_price=50,
@@ -89,18 +94,18 @@ class Board(object):
 
         # Pall Mall...
         self.squares.append(
-            Street(name=Property.Name.PALL_MALL,
+            Street(name=Square.Name.PALL_MALL,
                    street_set=Property.Set.PURPLE,
                    price=140,
                    house_price=100,
                    rents=Street.Rents(10, 50, 150, 450, 625, 750)))
 
         # Electric Company...
-        self.squares.append(Utility(Property.Name.ELECTRIC_COMPANY))
+        self.squares.append(Utility(Square.Name.ELECTRIC_COMPANY))
 
         # Whitehall...
         self.squares.append(
-            Street(name=Property.Name.WHITEHALL,
+            Street(name=Square.Name.WHITEHALL,
                    street_set=Property.Set.PURPLE,
                    price=140,
                    house_price=100,
@@ -108,18 +113,18 @@ class Board(object):
 
         # Northumberland Avenue...
         self.squares.append(
-            Street(name=Property.Name.NORTHUMBERLAND_AVENUE,
+            Street(name=Square.Name.NORTHUMBERLAND_AVENUE,
                    street_set=Property.Set.PURPLE,
                    price=160,
                    house_price=100,
                    rents=Street.Rents(12, 60, 180, 500, 700, 900)))
 
         # Marylebone Station...
-        self.squares.append(Station(name=Property.Name.MARYLEBONE_STATION))
+        self.squares.append(Station(name=Square.Name.MARYLEBONE_STATION))
 
         # Bow Street...
         self.squares.append(
-            Street(name=Property.Name.BOW_STREET,
+            Street(name=Square.Name.BOW_STREET,
                    street_set=Property.Set.ORANGE,
                    price=180,
                    house_price=100,
@@ -130,7 +135,7 @@ class Board(object):
 
         # Marlborough Street...
         self.squares.append(
-            Street(name=Property.Name.MARLBOROUGH_STREET,
+            Street(name=Square.Name.MARLBOROUGH_STREET,
                    street_set=Property.Set.ORANGE,
                    price=180,
                    house_price=100,
@@ -138,7 +143,7 @@ class Board(object):
 
         # Vine Street...
         self.squares.append(
-            Street(name=Property.Name.VINE_STREET,
+            Street(name=Square.Name.VINE_STREET,
                    street_set=Property.Set.ORANGE,
                    price=200,
                    house_price=100,
@@ -149,7 +154,7 @@ class Board(object):
 
         # Strand...
         self.squares.append(
-            Street(name=Property.Name.STRAND,
+            Street(name=Square.Name.STRAND,
                    street_set=Property.Set.RED,
                    price=220,
                    house_price=150,
@@ -160,7 +165,7 @@ class Board(object):
 
         # Fleet Street...
         self.squares.append(
-            Street(name=Property.Name.FLEET_STREET,
+            Street(name=Square.Name.FLEET_STREET,
                    street_set=Property.Set.RED,
                    price=220,
                    house_price=150,
@@ -168,18 +173,18 @@ class Board(object):
 
         # Trafalgar Square...
         self.squares.append(
-            Street(name=Property.Name.TRAFALGAR_SQUARE,
+            Street(name=Square.Name.TRAFALGAR_SQUARE,
                    street_set=Property.Set.RED,
                    price=240,
                    house_price=150,
                    rents=Street.Rents(20, 100, 300, 750, 925, 1100)))
 
         # Fenchurch Street Station...
-        self.squares.append(Station(name=Property.Name.FENCHURCH_STREET_STATION))
+        self.squares.append(Station(name=Square.Name.FENCHURCH_STREET_STATION))
 
         # Leicester Square...
         self.squares.append(
-            Street(name=Property.Name.LEICESTER_SQUARE,
+            Street(name=Square.Name.LEICESTER_SQUARE,
                    street_set=Property.Set.YELLOW,
                    price=260,
                    house_price=150,
@@ -187,18 +192,18 @@ class Board(object):
 
         # Coventry Street...
         self.squares.append(
-            Street(name=Property.Name.COVENTRY_STREET,
+            Street(name=Square.Name.COVENTRY_STREET,
                    street_set=Property.Set.YELLOW,
                    price=260,
                    house_price=150,
                    rents=Street.Rents(22, 110, 330, 800, 975, 1150)))
 
         # Water Works...
-        self.squares.append(Utility(Property.Name.WATER_WORKS))
+        self.squares.append(Utility(Square.Name.WATER_WORKS))
 
         # Piccadilly...
         self.squares.append(
-            Street(name=Property.Name.PICCADILLY,
+            Street(name=Square.Name.PICCADILLY,
                    street_set=Property.Set.YELLOW,
                    price=280,
                    house_price=150,
@@ -209,7 +214,7 @@ class Board(object):
 
         # Regent Street...
         self.squares.append(
-            Street(name=Property.Name.REGENT_STREET,
+            Street(name=Square.Name.REGENT_STREET,
                    street_set=Property.Set.GREEN,
                    price=300,
                    house_price=200,
@@ -217,7 +222,7 @@ class Board(object):
 
         # Oxford Street...
         self.squares.append(
-            Street(name=Property.Name.OXFORD_STREET,
+            Street(name=Square.Name.OXFORD_STREET,
                    street_set=Property.Set.GREEN,
                    price=300,
                    house_price=200,
@@ -228,32 +233,32 @@ class Board(object):
 
         # Bond Street...
         self.squares.append(
-            Street(name=Property.Name.BOND_STREET,
+            Street(name=Square.Name.BOND_STREET,
                    street_set=Property.Set.GREEN,
                    price=320,
                    house_price=200,
                    rents=Street.Rents(28, 150, 450, 1000, 1200, 1400)))
 
         # Liverpool Street Station...
-        self.squares.append(Station(Property.Name.LIVERPOOL_STREET_STATION))
+        self.squares.append(Station(Square.Name.LIVERPOOL_STREET_STATION))
 
         # Chance...
         self.squares.append(Chance())
 
         # Park Lane...
         self.squares.append(
-            Street(name=Property.Name.PARK_LANE,
+            Street(name=Square.Name.PARK_LANE,
                    street_set=Property.Set.DARK_BLUE,
                    price=350,
                    house_price=200,
                    rents=Street.Rents(35, 175, 500, 1100, 1300, 1500)))
 
         # Super Tax...
-        self.squares.append(Tax(name=Property.Name.SUPER_TAX, tax=100))
+        self.squares.append(Tax(name=Square.Name.SUPER_TAX, tax=100))
 
         # Mayfair...
         self.squares.append(
-            Street(name=Property.Name.MAYFAIR,
+            Street(name=Square.Name.MAYFAIR,
                    street_set=Property.Set.DARK_BLUE,
                    price=400,
                    house_price=200,

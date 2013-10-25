@@ -11,3 +11,8 @@ class Chance(Square):
         '''
         super().__init__(Square.Name.CHANCE)
 
+    def landed_on(self, game, player):
+        '''
+        Called when a player has landed on Chance.
+        '''
+        game.state.board.chance_deck.take_card(game, player)

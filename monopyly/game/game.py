@@ -50,6 +50,8 @@ class Game(object):
         for player in self.state.players:
             player.ai.start_of_game(player.number)
 
+        # TODO: Play the game!
+
     def play_one_round(self):
         '''
         Plays one round of the game, ie one turn for each of
@@ -67,7 +69,7 @@ class Game(object):
         '''
         # We notify all players that this player's turn is starting...
         for player in self.state.players:
-            player.ai.start_of_turn(self.state.copy(), current_player.number)
+            player.ai.start_of_turn(self.state.copy(), current_player.state.player_number)
 
         # TODO: Before the start of the turn we give the player an
         # option to perform deals or mortgage properties so that they
@@ -124,10 +126,10 @@ class Game(object):
         # We notify all players that the player has landed
         # on this square...
         for player in self.state.players:
-            player.ai.landed_on_square(self.state.copy(), square.name, player.state.number)
+            player.ai.player_landed_on_square(self.state.copy(), square.name, player.state.player_number)
 
         # We perform the square's landed-on action...
-        square.landed_on(self.state, current_player)
+        square.landed_on(self, current_player)
 
     def take_money_from_player(self, player, amount):
         '''

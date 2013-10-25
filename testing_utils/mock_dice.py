@@ -9,8 +9,8 @@ class MockDice(object):
         '''
         The 'constructor'
         '''
-        self.roll_results = []
-        self.next_roll_index = 0
+        self._roll_results = []
+        self._next_roll_index = 0
 
     def set_roll_results(self, roll_results):
         '''
@@ -18,20 +18,20 @@ class MockDice(object):
         of the values of the two dice. For example:
         [(3, 4), (1, 5), (6, 4)]
         '''
-        self.roll_results = roll_results
-        self.next_roll_index = 0
+        self._roll_results = roll_results
+        self._next_roll_index = 0
 
     def roll(self):
         '''
         Returns the next rolls from the results.
         '''
         # We check if we have results to return...
-        if(self.next_roll_index >= len(self.roll_results)):
+        if(self._next_roll_index >= len(self._roll_results)):
             raise Exception("next_roll_index out of range")
 
         # We get the next rolls and return them...
-        rolls = self.roll_results[self.next_roll_index]
-        self.next_roll_index += 1
+        rolls = self._roll_results[self._next_roll_index]
+        self._next_roll_index += 1
         return rolls[0], rolls[1]
 
 

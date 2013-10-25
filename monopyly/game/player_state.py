@@ -9,7 +9,7 @@ class PlayerState(object):
     Note: The player algorithm is not in this class (or in a derived class).
     '''
 
-    def __init__(self):
+    def __init__(self, player_number):
         '''
         The 'constructor'.
         '''
@@ -17,6 +17,7 @@ class PlayerState(object):
         self.cash = 1500
         self.properties = []
         self.number_of_get_out_of_jail_free_cards = 0
+        self.player_number = player_number
 
     def copy(self):
         '''
