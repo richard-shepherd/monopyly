@@ -6,8 +6,8 @@ class Board(object):
     Represents the board.
 
     Holds a collection of objects which each implement the
-    (implicit) Square interface, as well as the collection
-    of Chance and Community Chest cards.
+    Square interface, as well as the collection of Chance
+    and Community Chest cards.
     '''
 
     # A constant for the number of squares on the board...
@@ -19,7 +19,16 @@ class Board(object):
         '''
         # We add the collection of squares to the board...
         self.squares = []
+        self.add_squares_to_board()
 
+        # We map the square names to their positions on the board...
+        self._name_to_index_map = {}
+        self.map_names_to_indexes()
+
+    def add_squares_to_board(self):
+        '''
+        Sets up the collection of squares that make up the board.
+        '''
         # Go...
         self.squares.append(Go())
 
@@ -250,6 +259,19 @@ class Board(object):
                    house_price=200,
                    rents=Street.Rents(50, 200, 600, 1400, 1700, 2000)))
 
+    def map_names_to_indexes(self):
+        '''
+        Maps the square names to their (zero-based) indexes on the board.
+
+        Each name maps to a list of locations, as some square names (Chance
+        and Community Chest) have multiple squares on the board.
+        '''
+        for index in range(len(self.squares)):
+            name = self.squares[index].name
+            if(name not in self._name_to_index_map):
+                self._name_to_index_map[name] = []
+            self._name_to_index_map[name].append(index)
+
     def move_player(self, player, number_of_squares):
         '''
         Advances the player by the number of squares passed in.
@@ -262,3 +284,13 @@ class Board(object):
 
         square = self.squares[player.state.square]
         return square
+
+    def get_index(self, square_name):
+        '''
+        Returns the zero-based index (ie, the board position)
+        for the square passed in.
+
+        Note that this is returned as a list, as some names have more
+        than one location.
+        '''
+        return self._name_to_index_map[square_name]
