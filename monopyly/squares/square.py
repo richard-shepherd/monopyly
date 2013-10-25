@@ -9,8 +9,7 @@ class Square(object):
         '''
         An 'enum' for the squares on the board.
         '''
-
-        # The "enum"...
+        # TODO: maybe make the names map to a structure or tuple (including the square number on the board)
         GO = "Go"
         OLD_KENT_ROAD = "Old Kent Road"
         COMMUNITY_CHEST = "Community Chest"
