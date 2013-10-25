@@ -93,6 +93,15 @@ class PlayerAIBase(object):
         '''
         pass
 
+    def got_get_out_of_jail_free_card(self):
+        '''
+        Called when the player has picked up a
+        Get Out Of Jail Free card.
+
+        No response is required.
+        '''
+        pass
+
 
 
 

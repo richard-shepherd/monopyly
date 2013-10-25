@@ -16,6 +16,7 @@ class PlayerState(object):
         self.square = 0
         self.cash = 1500
         self.properties = []
+        self.number_of_get_out_of_jail_free_cards = 0
 
     def copy(self):
         '''

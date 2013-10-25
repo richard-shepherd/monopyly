@@ -29,13 +29,21 @@ class Deck(object):
 
         # We find the card for the current index...
         card = self.cards[self.index]
-        self.index += 1
 
         # We play the card...
         if(type(card) == GetOutOfJailFree):
-            # The card is not Get Out Of Jail Free...
-            pass
+            # The card is Get Out Of Jail Free.
+            # We give it to the player...
+            player.number_of_get_out_of_jail_free_cards += 1
+            player.ai.got_get_out_of_jail_free_card()
+
+            # And remove it from the deck...
+            del self.cards[self.index]
         else:
-            # The card is not Get Out Of Jail Free, so we
-            # can play it now...
-            pass
+            # The card is not Get Out Of Jail Free, so we can play it now...
+            card.play(game, player)
+
+            # We 'put the card to the bottom of the deck'...
+            self.index += 1
+            if(self.index >= number_of_cards):
+                self.index = 0

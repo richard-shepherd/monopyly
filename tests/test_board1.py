@@ -1,6 +1,3 @@
-'''
-Some tests of the Board class.
-'''
 from monopyly import Board
 
 

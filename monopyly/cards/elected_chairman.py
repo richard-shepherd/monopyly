@@ -8,7 +8,7 @@ class ElectedChairman(Card):
     '''
     def play(self, game, current_player):
         # We take the money from the player...
-        amount_to_pay = game.state.number_of_players * 50
+        amount_to_pay = (game.state.number_of_players - 1) * 50
         game.take_money_from_player(current_player, amount_to_pay)
         if(current_player.state.cash < 0):
             return
