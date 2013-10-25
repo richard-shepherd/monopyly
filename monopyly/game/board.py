@@ -275,15 +275,10 @@ class Board(object):
     def move_player(self, player, number_of_squares):
         '''
         Advances the player by the number of squares passed in.
-
-        Returns the square landed on.
         '''
         player.state.square += number_of_squares
         if(player.state.square >= Board.NUMBER_OF_SQUARES):
             player.state.square -= Board.NUMBER_OF_SQUARES
-
-        square = self.squares[player.state.square]
-        return square
 
     def get_index(self, square_name):
         '''

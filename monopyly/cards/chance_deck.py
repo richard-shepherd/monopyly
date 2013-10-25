@@ -45,7 +45,6 @@ class ChanceDeck(Deck):
         # Get out of Jail Free...
         self.cards.append(GetOutOfJailFree())
 
-
         # TODO: 13) Advance to Trafalgar Square If you Pass "Go" Collect $200
         # TODO: 14) take a Trip to Marylebone Station and if you Pass "Go" Collect $200
         # TODO: 15) Advance to Pall Mall If you Pass "Go" Collect $200

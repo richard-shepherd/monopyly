@@ -108,7 +108,18 @@ class Game(object):
 
         # We move the player to the new square...
         total_roll = roll1 + roll2
-        square = self.state.board.move_player(current_player, total_roll)
+        self.state.board.move_player(current_player, total_roll)
+        self.player_has_changed_square(current_player)
+
+        return roll_again, number_of_doubles_rolled
+
+    def player_has_changed_square(self, current_player):
+        '''
+        Called when the player has moved squares.
+
+        We take whatever action is appropriate for the square landed on.
+        '''
+        square = self.state.board.squares[current_player.state.square]
 
         # We notify all players that the player has landed
         # on this square...
@@ -117,8 +128,6 @@ class Game(object):
 
         # We perform the square's landed-on action...
         square.landed_on(self.state, current_player)
-
-        return roll_again, number_of_doubles_rolled
 
     def take_money_from_player(self, player, amount):
         '''
