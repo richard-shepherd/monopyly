@@ -4,12 +4,10 @@ class Card(object):
     A base class for cards.
     '''
 
-    def __init__(self):
+    def play(self, game, current_player):
         '''
-        The 'constructor'.
+        Must be overridden in derived classes.
         '''
-        # True if the card is in the deck.
-        # This can be False for the Get Out Of Jail Free cards when
-        # they are owned by a player.
-        self.in_deck = True
+        raise Exception("play() not implemented")
+
 

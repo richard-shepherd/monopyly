@@ -6,7 +6,7 @@ class ElectedChairman(Card):
     You have been elected chairman of the board.
     Pay each player £50.
     '''
-    def played(self, game, current_player):
+    def play(self, game, current_player):
         # We take the money from the player...
         amount_to_pay = game.state.number_of_players * 50
         game.take_money_from_player(current_player, amount_to_pay)

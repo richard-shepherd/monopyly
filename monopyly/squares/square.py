@@ -58,7 +58,7 @@ class Square(object):
         '''
         Must be overridden in derived classes.
         '''
-        raise Exception("landed_on not implemented")
+        raise Exception("landed_on() not implemented")
 
     def copy(self):
         '''
