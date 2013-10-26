@@ -294,3 +294,13 @@ class Board(object):
         than one location.
         '''
         return self._name_to_index_map[square_name]
+
+    def get_index(self, square_name):
+        '''
+        Returns the zero-based index (ie, the board position)
+        for the square passed in.
+
+        For squares with more than one location (Chance and Community
+        Chest) this returns the first square.
+        '''
+        return self._name_to_index_map[square_name][0]

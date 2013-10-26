@@ -1,7 +1,9 @@
+from ..squares import Square
 from .deck import Deck
 from .reward_card import RewardCard
 from .fine_card import FineCard
 from .get_out_of_jail_free import GetOutOfJailFree
+from .advance_to import AdvanceTo
 import random
 
 
@@ -26,8 +28,12 @@ class CommunityChestDeck(Deck):
         # Receive Interest on 7% Preference Shares £25...
         self.cards.append(RewardCard(25))
 
-        # TODO: 5) Get out of Jail Free
-        # TODO: 6) Advance to "Go"
+        # Get out of Jail Free...
+        self.cards.append(GetOutOfJailFree())
+
+        # Advance to "Go"...
+        self.cards.append(AdvanceTo(Square.Name.GO))
+
         # Pay Hospital £100...
         self.cards.append(FineCard(100))
 

@@ -22,8 +22,8 @@ class AdvanceTo(Card):
         # We need to find if the player is further round the board than
         # the destination square, so we can decide whether to give them
         # £200 for passing go...
-        go_square_position = game.state.board.get_index_list(Square.Name.GO)[0]
-        destination_square_position = game.state.board.get_index_list(self.destination_square_name)[0]
+        go_square_position = game.state.board.get_index(Square.Name.GO)
+        destination_square_position = game.state.board.get_index(self.destination_square_name)
         player_position = current_player.state.square
         if((player_position > destination_square_position) and (destination_square_position != go_square_position)):
             # The player has to pass Go to get to the destination...
