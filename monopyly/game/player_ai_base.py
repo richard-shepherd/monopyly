@@ -1,3 +1,5 @@
+from ..cards.ten_pound_fine_or_take_a_chance import TenPoundFineOrTakeAChance
+
 
 class PlayerAIBase(object):
     '''
@@ -113,7 +115,16 @@ class PlayerAIBase(object):
         '''
         return "I hope you choke on your birthday cake!"
 
+    def pay_ten_pounds_or_take_a_chance(self):
+        '''
+        Called when the player picks up the "Pay a £10 fine or take a Chance" card.
 
+        Return either:
+            TenPoundFineOrTakeAChance.Action.PAY_TEN_POUND_FINE
+            or
+            TenPoundFineOrTakeAChance.Action.TAKE_A_CHANCE
+        '''
+        return TenPoundFineOrTakeAChance.Action.PAY_TEN_POUND_FINE
 
 
 

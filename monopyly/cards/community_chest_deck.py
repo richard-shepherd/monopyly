@@ -5,6 +5,8 @@ from .fine_card import FineCard
 from .get_out_of_jail_free import GetOutOfJailFree
 from .advance_to import AdvanceTo
 from .go_back import GoBack
+from .it_is_your_birthday import ItIsYourBirthday
+from .ten_pound_fine_or_take_a_chance import TenPoundFineOrTakeAChance
 import random
 
 
@@ -25,7 +27,9 @@ class CommunityChestDeck(Deck):
         # From Sale of Stock you get £50...
         self.cards.append(RewardCard(50))
 
-        # TODO: 3) It is YourBirthday Collect $10 from each Player
+        # It is YourBirthday Collect £10 from each Player...
+        self.cards.append(ItIsYourBirthday())
+
         # Receive Interest on 7% Preference Shares £25...
         self.cards.append(RewardCard(25))
 
@@ -51,7 +55,9 @@ class CommunityChestDeck(Deck):
         # Pay your Insurance Premium £50...
         self.cards.append(FineCard(50))
 
-        # TODO: 13) Pay a $10 Fine or Take a "Chance"
+        # Pay a £10 Fine or Take a "Chance"...
+        self.cards.append(TenPoundFineOrTakeAChance())
+
         # Doctor's Fee Pay £50...
         self.cards.append(FineCard(50))
 

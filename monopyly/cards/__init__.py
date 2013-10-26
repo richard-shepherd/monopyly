@@ -8,3 +8,4 @@ from .get_out_of_jail_free import GetOutOfJailFree
 from .advance_to import AdvanceTo
 from .go_back import GoBack
 from .it_is_your_birthday import ItIsYourBirthday
+from .ten_pound_fine_or_take_a_chance import TenPoundFineOrTakeAChance
