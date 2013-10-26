@@ -6,3 +6,4 @@ from .reward_card import RewardCard
 from .fine_card import FineCard
 from .get_out_of_jail_free import GetOutOfJailFree
 from .advance_to import AdvanceTo
+from .go_back import GoBack
