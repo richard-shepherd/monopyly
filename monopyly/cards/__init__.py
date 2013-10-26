@@ -7,3 +7,4 @@ from .fine_card import FineCard
 from .get_out_of_jail_free import GetOutOfJailFree
 from .advance_to import AdvanceTo
 from .go_back import GoBack
+from .it_is_your_birthday import ItIsYourBirthday

@@ -102,6 +102,17 @@ class PlayerAIBase(object):
         '''
         pass
 
+    def players_birthday(self):
+        '''
+        Called when a player picks up the 'It is your birthday...'
+        Community Chest card.
+
+        You should return "Happy Birthday!" (with this casing and the
+        exclamation mark). If not, you will have to pay £100 instead of
+        the standard £10.
+        '''
+        return "I hope you choke on your birthday cake!"
+
 
 
 

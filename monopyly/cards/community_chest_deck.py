@@ -4,6 +4,7 @@ from .reward_card import RewardCard
 from .fine_card import FineCard
 from .get_out_of_jail_free import GetOutOfJailFree
 from .advance_to import AdvanceTo
+from .go_back import GoBack
 import random
 
 
@@ -54,7 +55,9 @@ class CommunityChestDeck(Deck):
         # Doctor's Fee Pay £50...
         self.cards.append(FineCard(50))
 
-        # TODO: 15) Go Back to Old Kent Road
+        # Go Back to Old Kent Road...
+        self.cards.append(GoBack(Square.Name.OLD_KENT_ROAD))
+
         # Annuity Matures Collect £100...
         self.cards.append(RewardCard(100))
 
