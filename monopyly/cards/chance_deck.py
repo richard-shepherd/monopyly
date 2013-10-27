@@ -4,6 +4,7 @@ from .reward_card import RewardCard
 from .fine_card import FineCard
 from .get_out_of_jail_free import GetOutOfJailFree
 from .advance_to import AdvanceTo
+from .go_back_three_spaces import GoBackThreeSpaces
 import random
 
 
@@ -30,7 +31,8 @@ class ChanceDeck(Deck):
         # Bank pays you Dividend of £50...
         self.cards.append(RewardCard(50))
 
-        # TODO: 6) Go back 3 Spaces
+        # Go back 3 Spaces...
+        self.cards.append(GoBackThreeSpaces())
 
         # Pay School Fees of £150...
         self.cards.append(FineCard(150))

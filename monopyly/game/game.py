@@ -110,6 +110,7 @@ class Game(object):
 
         # We move the player to the new square...
         # TODO: Get £200 for passing Go.
+        # TODO: Player doesn't move if in Jail.
         total_roll = roll1 + roll2
         self.state.board.move_player(current_player, total_roll)
         self.player_has_changed_square(current_player)
