@@ -1,6 +1,7 @@
 from .dice import Dice
 from .player import Player
 from .game_state import GameState
+from ..squares import Square
 
 
 class Game(object):
@@ -103,7 +104,7 @@ class Game(object):
             # Doubles was rolled...
             number_of_doubles_rolled += 1
             if(number_of_doubles_rolled == 3):
-                # TODO: Go to jail
+                self.send_player_to_jail(current_player)
                 return Game.Action.DO_NOT_ROLL_AGAIN, number_of_doubles_rolled
             else:
                 roll_again = Game.Action.ROLL_AGAIN
@@ -114,6 +115,11 @@ class Game(object):
         total_roll = roll1 + roll2
         self.state.board.move_player(current_player, total_roll)
         self.player_has_changed_square(current_player)
+
+        # If the player has ended up in jail, their turn is over
+        # (even if doubles were rolled)...
+        if(current_player.state.in_jail is True):
+            roll_again = Game.Action.DO_NOT_ROLL_AGAIN
 
         return roll_again, number_of_doubles_rolled
 
@@ -158,4 +164,14 @@ class Game(object):
         # We give the money to the player and tell them about it...
         player.state.cash += amount
         player.ai.money_given(player.state.copy(), amount)
+
+    def send_player_to_jail(self, player):
+        '''
+        Sends the player to jail.
+        '''
+        player.state.in_jail = True
+        player.state.number_of_turns_in_jail = 0
+        player.state.square = self.state.board.get_index(Square.Name.JAIL)
+        self.player_has_changed_square(player)
+
 

@@ -13,4 +13,9 @@ class GoToJailSquare(Square):
         '''
         super().__init__(Square.Name.GO_TO_JAIL)
 
+    def landed_on(self, game, player):
+        '''
+        Sends the player to jail.
+        '''
+        game.send_player_to_jail(player)
 

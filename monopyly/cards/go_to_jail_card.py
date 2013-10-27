@@ -12,8 +12,5 @@ class GoToJailCard(Card):
         '''
         Moves the player to Jail.
         '''
-        current_player.state.in_jail = True
-        current_player.state.number_of_turns_in_jail = 0
-        current_player.state.square = game.state.board.get_index(Square.Name.JAIL)
-        game.player_has_changed_square(current_player)
+        game.send_player_to_jail(current_player)
 
