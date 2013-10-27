@@ -6,6 +6,7 @@ from .get_out_of_jail_free import GetOutOfJailFree
 from .advance_to import AdvanceTo
 from .go_back_three_spaces import GoBackThreeSpaces
 from .go_to_jail_card import GoToJailCard
+from .repairs import Repairs
 import random
 
 
@@ -26,7 +27,9 @@ class ChanceDeck(Deck):
         # Advance to Go...
         self.cards.append(AdvanceTo(Square.Name.GO))
 
-        # TODO: 3) You are Assessed for Street Repairs $40 per House $115 per Hotel
+        # You are Assessed for Street Repairs £40 per House £115 per Hotel...
+        self.cards.append(Repairs(40, 115))
+
         # Go to Jail. Move Directly to Jail. Do not pass "Go" Do not Collect £200...
         self.cards.append(GoToJailCard())
 
@@ -39,9 +42,8 @@ class ChanceDeck(Deck):
         # Pay School Fees of £150...
         self.cards.append(FineCard(150))
 
-        # TODO: 8) Make General Repairs on all of Your Houses
-        #For each House pay $25
-        #For each Hotel pay $100
+        # Make General Repairs on all of Your Houses. For each House pay £25. For each Hotel pay £100...
+        self.cards.append(Repairs(25, 100))
 
         # Speeding Fine £15...
         self.cards.append(FineCard(15))

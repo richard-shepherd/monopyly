@@ -11,3 +11,4 @@ from .it_is_your_birthday import ItIsYourBirthday
 from .ten_pound_fine_or_take_a_chance import TenPoundFineOrTakeAChance
 from .go_back_three_spaces import GoBackThreeSpaces
 from .go_to_jail_card import GoToJailCard
+from .repairs import Repairs

@@ -27,4 +27,6 @@ class Street(Property):
         # We hold the ones specific to streets...
         self.house_price = house_price
         self.rents = rents
+        self.number_of_houses = 0
+        self.has_hotel = False
 

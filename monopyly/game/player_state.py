@@ -1,4 +1,5 @@
 import copy
+from ..squares import Street
 
 
 class PlayerState(object):
@@ -26,3 +27,22 @@ class PlayerState(object):
         Returns a copy of the player state.
         '''
         return copy.deepcopy(self)
+
+    def get_number_of_houses_and_hotels(self):
+        '''
+        Returns the number of houses and hotels owned by this player.
+        '''
+        number_of_houses = 0
+        number_of_hotels = 0
+        for property in self.properties:
+            # Only streets have houses or hotels...
+            if(type(property) != Street):
+                continue
+            number_of_houses += property.number_of_houses
+            number_of_hotels += (1 if property.has_hotel else 0)
+
+        return number_of_houses, number_of_hotels
+
+
+
+
