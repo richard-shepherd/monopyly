@@ -17,7 +17,7 @@ def test_go_to_jail_card_1():
 
     # The player should be in jail...
     assert player.state.square == 10
-    assert player.state.in_jail == True
+    assert player.state.in_jail is True
     assert player.state.number_of_turns_in_jail == 0
 
 
