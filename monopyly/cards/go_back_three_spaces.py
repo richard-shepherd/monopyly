@@ -1,5 +1,4 @@
 from .card import Card
-from ..game import Board
 
 
 class GoBackThreeSpaces(Card):
@@ -7,6 +6,8 @@ class GoBackThreeSpaces(Card):
     Go back three spaces.
     '''
     def play(self, game, current_player):
+        # We defer this import to avoid a circular reference...
+        from ..game import Board
 
         # We move the player back three squares...
         current_player.state.square -= 3

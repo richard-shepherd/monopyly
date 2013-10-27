@@ -1,7 +1,9 @@
 from .square import Square
 
 
-class GoToJail(Square):
+# This is called GoToJailSquare to make the distinction clear between
+# it and the GoToJailCard...
+class GoToJailSquare(Square):
     '''
     Represents the Go To Jail square.
     '''

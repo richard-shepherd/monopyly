@@ -11,3 +11,11 @@ class Jail(Square):
         '''
         super().__init__(Square.Name.JAIL)
 
+    def landed_on(self, game, player):
+        '''
+        Nothing happens when you land on this square.
+
+        If you were sent to jail, then the thing that caused this
+        will have set the player as being in jail.
+        '''
+        pass

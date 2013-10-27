@@ -18,6 +18,8 @@ class PlayerState(object):
         self.properties = []
         self.number_of_get_out_of_jail_free_cards = 0
         self.player_number = player_number
+        self.in_jail = False
+        self.number_of_turns_in_jail = 0
 
     def copy(self):
         '''

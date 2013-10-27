@@ -5,6 +5,7 @@ from .fine_card import FineCard
 from .get_out_of_jail_free import GetOutOfJailFree
 from .advance_to import AdvanceTo
 from .go_back_three_spaces import GoBackThreeSpaces
+from .go_to_jail_card import GoToJailCard
 import random
 
 
@@ -26,7 +27,8 @@ class ChanceDeck(Deck):
         self.cards.append(AdvanceTo(Square.Name.GO))
 
         # TODO: 3) You are Assessed for Street Repairs $40 per House $115 per Hotel
-        # TODO: 4) Go to Jail. Move Directly to Jail. Do not pass "Go" Do not Collect $200.
+        # Go to Jail. Move Directly to Jail. Do not pass "Go" Do not Collect £200...
+        self.cards.append(GoToJailCard())
 
         # Bank pays you Dividend of £50...
         self.cards.append(RewardCard(50))

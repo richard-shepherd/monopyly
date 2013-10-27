@@ -210,7 +210,7 @@ class Board(object):
                    rents=Street.Rents(22, 120, 360, 850, 1025, 1200)))
 
         # Go To Jail...
-        self.squares.append(GoToJail())
+        self.squares.append(GoToJailSquare())
 
         # Regent Street...
         self.squares.append(

@@ -9,4 +9,4 @@ from .chance import Chance
 from .jail import Jail
 from .utility import Utility
 from .free_parking import FreeParking
-from .go_to_jail import GoToJail
+from .go_to_jail_square import GoToJailSquare

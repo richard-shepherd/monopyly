@@ -7,6 +7,7 @@ from .advance_to import AdvanceTo
 from .go_back import GoBack
 from .it_is_your_birthday import ItIsYourBirthday
 from .ten_pound_fine_or_take_a_chance import TenPoundFineOrTakeAChance
+from .go_to_jail_card import GoToJailCard
 import random
 
 
@@ -51,7 +52,9 @@ class CommunityChestDeck(Deck):
         # You Inherit £100...
         self.cards.append(RewardCard(100))
 
-        # TODO: 11) Go to Jail. Move Directly to Jail. Do not Pass "Go". Do not Collect $200
+        # Go to Jail. Move Directly to Jail. Do not Pass "Go". Do not Collect £200...
+        self.cards.append(GoToJailCard())
+
         # Pay your Insurance Premium £50...
         self.cards.append(FineCard(50))
 
