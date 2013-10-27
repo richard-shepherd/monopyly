@@ -20,6 +20,7 @@ def test_go_to_jail_card_1():
     assert player.state.in_jail == True
     assert player.state.number_of_turns_in_jail == 0
 
+
 def test_go_to_jail_square_1():
     '''
     Tests that landing on the Go To Jail square sends you to jail.
