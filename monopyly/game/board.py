@@ -68,6 +68,19 @@ class Board(object):
         '''
         return self._set_to_property_map[street_set]
 
+    def get_square_by_index(self, index):
+        '''
+        Returns a square by its index.
+        '''
+        return self.squares[index]
+
+    def get_square_by_name(self, square_name):
+        '''
+        Returns a square by its name.
+        '''
+        index = self.get_index(square_name)
+        return self.get_square_by_index(index)
+
     def _add_squares_to_board(self):
         '''
         Sets up the collection of squares that make up the board.
