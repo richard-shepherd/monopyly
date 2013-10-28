@@ -20,17 +20,55 @@ class Board(object):
         '''
         # We add the collection of squares to the board...
         self.squares = []
-        self.add_squares_to_board()
+        self._add_squares_to_board()
 
         # We map the square names to their positions on the board...
         self._name_to_index_map = {}
-        self.map_names_to_indexes()
+        self._map_names_to_indexes()
+
+        # We map the street sets to the collections of properties in them...
+        self._set_to_property_map = {}
+        self._map_sets_to_properties()
 
         # The cards...
         self.chance_deck = ChanceDeck()
         self.community_chest_deck = CommunityChestDeck()
 
-    def add_squares_to_board(self):
+    def move_player(self, player, number_of_squares):
+        '''
+        Advances the player by the number of squares passed in.
+        '''
+        player.state.square += number_of_squares
+        if(player.state.square >= Board.NUMBER_OF_SQUARES):
+            player.state.square -= Board.NUMBER_OF_SQUARES
+
+    def get_index_list(self, square_name):
+        '''
+        Returns the zero-based indexes (ie, the board positions)
+        for the square passed in.
+
+        Note that this is returned as a list, as some names have more
+        than one location.
+        '''
+        return self._name_to_index_map[square_name]
+
+    def get_index(self, square_name):
+        '''
+        Returns the zero-based index (ie, the board position)
+        for the square passed in.
+
+        For squares with more than one location (Chance and Community
+        Chest) this returns the first square.
+        '''
+        return self._name_to_index_map[square_name][0]
+
+    def get_properties_for_set(self, street_set):
+        '''
+        Returns the list of properties in the set passed in.
+        '''
+        return self._set_to_property_map[street_set]
+
+    def _add_squares_to_board(self):
         '''
         Sets up the collection of squares that make up the board.
         '''
@@ -264,7 +302,7 @@ class Board(object):
                    house_price=200,
                    rents=Street.Rents(50, 200, 600, 1400, 1700, 2000)))
 
-    def map_names_to_indexes(self):
+    def _map_names_to_indexes(self):
         '''
         Maps the square names to their (zero-based) indexes on the board.
 
@@ -277,30 +315,21 @@ class Board(object):
                 self._name_to_index_map[name] = []
             self._name_to_index_map[name].append(index)
 
-    def move_player(self, player, number_of_squares):
+    def _map_sets_to_properties(self):
         '''
-        Advances the player by the number of squares passed in.
+        Maps each street set (Browns, Blues etc) to the list of
+        properties in the set.
         '''
-        player.state.square += number_of_squares
-        if(player.state.square >= Board.NUMBER_OF_SQUARES):
-            player.state.square -= Board.NUMBER_OF_SQUARES
+        for square in self.squares:
+            # Is the square a street?
+            if(isinstance(square, Property) is False):
+                continue
 
-    def get_index_list(self, square_name):
-        '''
-        Returns the zero-based indexes (ie, the board positions)
-        for the square passed in.
+            # We add the property to the list of properties for its set...
+            street_set = square.street_set
+            if(street_set not in self._set_to_property_map):
+                self._set_to_property_map[street_set] = []
+            self._set_to_property_map[street_set].append(square)
 
-        Note that this is returned as a list, as some names have more
-        than one location.
-        '''
-        return self._name_to_index_map[square_name]
 
-    def get_index(self, square_name):
-        '''
-        Returns the zero-based index (ie, the board position)
-        for the square passed in.
 
-        For squares with more than one location (Chance and Community
-        Chest) this returns the first square.
-        '''
-        return self._name_to_index_map[square_name][0]
