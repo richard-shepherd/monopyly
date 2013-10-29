@@ -18,7 +18,9 @@ class Board(object):
         '''
         The 'constructor'.
         '''
-        # We add the collection of squares to the board...
+        # We add the collection of squares to the board.
+        # This is a list of objects derived from the Square base class.
+        # Indexes are: Go = 0, Mayfair = 39 etc.
         self.squares = []
         self._add_squares_to_board()
 
@@ -31,6 +33,7 @@ class Board(object):
         self._map_sets_to_properties()
 
         # The cards...
+        # TODO: redact the decks on copy (otherwise the players can peek at them!)
         self.chance_deck = ChanceDeck()
         self.community_chest_deck = CommunityChestDeck()
 

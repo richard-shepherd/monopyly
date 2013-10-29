@@ -14,11 +14,32 @@ class PlayerState(object):
         '''
         The 'constructor'.
         '''
+
+        # The square the player is currently on (0 = Go, 39 = Mayfair etc).
+        # This can be used as an index into the squares property of the board...
         self.square = 0
+
+        # The amount of money owned by the player...
         self.cash = 1500
+
+        # The collection of properties owned by the player.
+        # This is held as a set of integers, each of which is an index
+        # to one of the squares on the board. The squares themselves hold
+        # information about how many houses are on them, whether they are
+        # mortgages and so on...
         self.property_indexes = set()
+
+        # How many Get Out Of Jail Free cards the player is holding...
         self.number_of_get_out_of_jail_free_cards = 0
+
+        # The player number. Each player is assigned a number when the
+        # game starts, and this is reported to the player AI. This can help
+        # an AI know which player is themself when looking at the state of
+        # the game...
         self.player_number = player_number
+
+        # Whether the player is in jail, and if so how many turns they
+        # have been there...
         self.in_jail = False
         self.number_of_turns_in_jail = 0
 

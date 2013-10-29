@@ -15,7 +15,11 @@ class GameState(object):
         '''
         The 'constructor'.
         '''
+
+        # The board...
         self.board = Board()
+
+        # The collection of players (Player objects) playing the game...
         self.players = []
 
     def copy(self):
