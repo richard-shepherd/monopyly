@@ -16,7 +16,7 @@ class PlayerState(object):
         '''
         self.square = 0
         self.cash = 1500
-        self.properties = set()
+        self.property_indexes = set()
         self.number_of_get_out_of_jail_free_cards = 0
         self.player_number = player_number
         self.in_jail = False
@@ -28,16 +28,19 @@ class PlayerState(object):
         '''
         return copy.deepcopy(self)
 
-    def get_number_of_houses_and_hotels(self):
+    def get_number_of_houses_and_hotels(self, board):
         '''
         Returns the number of houses and hotels owned by this player.
         '''
         number_of_houses = 0
         number_of_hotels = 0
-        for property in self.properties:
-            # Only streets have houses or hotels...
-            if(type(property) != Street):
+        for index in self.property_indexes:
+            # We find the square for this index and check if
+            # it is a street (ie, not a station or utility)...
+            square = board.get_square_by_index(index)
+            if(type(square) != Street):
                 continue
+
             number_of_houses += property.number_of_houses
             number_of_hotels += (1 if property.has_hotel else 0)
 
