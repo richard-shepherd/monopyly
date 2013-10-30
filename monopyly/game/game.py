@@ -39,7 +39,7 @@ class Game(object):
         Adds a player AI.
         '''
         # We wrap the AI up into a Player object...
-        player_number = len(self.state.players) + 1
+        player_number = len(self.state.players)
         self.state.players.append(Player(ai, player_number))
 
     def play_game(self):

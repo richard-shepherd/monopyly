@@ -97,7 +97,7 @@ class Board(object):
                    street_set=Property.Set.BROWN,
                    price=60,
                    house_price=50,
-                   rents=Street.Rents(2, 10, 30, 90, 160, 250)))
+                   rents=[2, 10, 30, 90, 160, 250]))
 
         # Community Chest...
         self.squares.append(CommunityChest())
@@ -108,7 +108,7 @@ class Board(object):
                    street_set=Property.Set.BROWN,
                    price=60,
                    house_price=50,
-                   rents=Street.Rents(4, 20, 60, 180, 320, 450)))
+                   rents=[4, 20, 60, 180, 320, 450]))
 
         # Income tax...
         self.squares.append(Tax(name=Square.Name.INCOME_TAX, tax=200))
@@ -122,7 +122,7 @@ class Board(object):
                    street_set=Property.Set.LIGHT_BLUE,
                    price=100,
                    house_price=50,
-                   rents=Street.Rents(6, 30, 90, 270, 400, 550)))
+                   rents=[6, 30, 90, 270, 400, 550]))
 
         # Chance...
         self.squares.append(Chance())
@@ -133,7 +133,7 @@ class Board(object):
                    street_set=Property.Set.LIGHT_BLUE,
                    price=100,
                    house_price=50,
-                   rents=Street.Rents(6, 30, 90, 270, 400, 550)))
+                   rents=[6, 30, 90, 270, 400, 550]))
 
         # Pentonville Road...
         self.squares.append(
@@ -141,7 +141,7 @@ class Board(object):
                    street_set=Property.Set.LIGHT_BLUE,
                    price=120,
                    house_price=50,
-                   rents=Street.Rents(8, 40, 100, 300, 450, 600)))
+                   rents=[8, 40, 100, 300, 450, 600]))
 
         # Jail...
         self.squares.append(Jail())
@@ -152,7 +152,7 @@ class Board(object):
                    street_set=Property.Set.PURPLE,
                    price=140,
                    house_price=100,
-                   rents=Street.Rents(10, 50, 150, 450, 625, 750)))
+                   rents=[10, 50, 150, 450, 625, 750]))
 
         # Electric Company...
         self.squares.append(Utility(Square.Name.ELECTRIC_COMPANY))
@@ -163,7 +163,7 @@ class Board(object):
                    street_set=Property.Set.PURPLE,
                    price=140,
                    house_price=100,
-                   rents=Street.Rents(10, 50, 150, 450, 625, 750)))
+                   rents=[10, 50, 150, 450, 625, 750]))
 
         # Northumberland Avenue...
         self.squares.append(
@@ -171,7 +171,7 @@ class Board(object):
                    street_set=Property.Set.PURPLE,
                    price=160,
                    house_price=100,
-                   rents=Street.Rents(12, 60, 180, 500, 700, 900)))
+                   rents=[12, 60, 180, 500, 700, 900]))
 
         # Marylebone Station...
         self.squares.append(Station(name=Square.Name.MARYLEBONE_STATION))
@@ -182,7 +182,7 @@ class Board(object):
                    street_set=Property.Set.ORANGE,
                    price=180,
                    house_price=100,
-                   rents=Street.Rents(14, 70, 200, 550, 750, 950)))
+                   rents=[14, 70, 200, 550, 750, 950]))
 
         # Community Chest...
         self.squares.append(CommunityChest())
@@ -193,7 +193,7 @@ class Board(object):
                    street_set=Property.Set.ORANGE,
                    price=180,
                    house_price=100,
-                   rents=Street.Rents(14, 70, 200, 550, 750, 950)))
+                   rents=[14, 70, 200, 550, 750, 950]))
 
         # Vine Street...
         self.squares.append(
@@ -201,7 +201,7 @@ class Board(object):
                    street_set=Property.Set.ORANGE,
                    price=200,
                    house_price=100,
-                   rents=Street.Rents(16, 80, 220, 600, 800, 1000)))
+                   rents=[16, 80, 220, 600, 800, 1000]))
 
         # Free Parking...
         self.squares.append(FreeParking())
@@ -212,7 +212,7 @@ class Board(object):
                    street_set=Property.Set.RED,
                    price=220,
                    house_price=150,
-                   rents=Street.Rents(18, 90, 250, 700, 875, 1050)))
+                   rents=[18, 90, 250, 700, 875, 1050]))
 
         # Chance...
         self.squares.append(Chance())
@@ -223,7 +223,7 @@ class Board(object):
                    street_set=Property.Set.RED,
                    price=220,
                    house_price=150,
-                   rents=Street.Rents(18, 90, 250, 700, 875, 1050)))
+                   rents=[18, 90, 250, 700, 875, 1050]))
 
         # Trafalgar Square...
         self.squares.append(
@@ -231,7 +231,7 @@ class Board(object):
                    street_set=Property.Set.RED,
                    price=240,
                    house_price=150,
-                   rents=Street.Rents(20, 100, 300, 750, 925, 1100)))
+                   rents=[20, 100, 300, 750, 925, 1100]))
 
         # Fenchurch Street Station...
         self.squares.append(Station(name=Square.Name.FENCHURCH_STREET_STATION))
@@ -242,7 +242,7 @@ class Board(object):
                    street_set=Property.Set.YELLOW,
                    price=260,
                    house_price=150,
-                   rents=Street.Rents(22, 110, 330, 800, 975, 1150)))
+                   rents=[22, 110, 330, 800, 975, 1150]))
 
         # Coventry Street...
         self.squares.append(
@@ -250,7 +250,7 @@ class Board(object):
                    street_set=Property.Set.YELLOW,
                    price=260,
                    house_price=150,
-                   rents=Street.Rents(22, 110, 330, 800, 975, 1150)))
+                   rents=[22, 110, 330, 800, 975, 1150]))
 
         # Water Works...
         self.squares.append(Utility(Square.Name.WATER_WORKS))
@@ -261,7 +261,7 @@ class Board(object):
                    street_set=Property.Set.YELLOW,
                    price=280,
                    house_price=150,
-                   rents=Street.Rents(22, 120, 360, 850, 1025, 1200)))
+                   rents=[22, 120, 360, 850, 1025, 1200]))
 
         # Go To Jail...
         self.squares.append(GoToJailSquare())
@@ -272,7 +272,7 @@ class Board(object):
                    street_set=Property.Set.GREEN,
                    price=300,
                    house_price=200,
-                   rents=Street.Rents(26, 130, 390, 900, 1100, 1275)))
+                   rents=[26, 130, 390, 900, 1100, 1275]))
 
         # Oxford Street...
         self.squares.append(
@@ -280,7 +280,7 @@ class Board(object):
                    street_set=Property.Set.GREEN,
                    price=300,
                    house_price=200,
-                   rents=Street.Rents(26, 130, 390, 900, 1100, 1275)))
+                   rents=[26, 130, 390, 900, 1100, 1275]))
 
         # Community Chest...
         self.squares.append(CommunityChest())
@@ -291,7 +291,7 @@ class Board(object):
                    street_set=Property.Set.GREEN,
                    price=320,
                    house_price=200,
-                   rents=Street.Rents(28, 150, 450, 1000, 1200, 1400)))
+                   rents=[28, 150, 450, 1000, 1200, 1400]))
 
         # Liverpool Street Station...
         self.squares.append(Station(Square.Name.LIVERPOOL_STREET_STATION))
@@ -305,7 +305,7 @@ class Board(object):
                    street_set=Property.Set.DARK_BLUE,
                    price=350,
                    house_price=200,
-                   rents=Street.Rents(35, 175, 500, 1100, 1300, 1500)))
+                   rents=[35, 175, 500, 1100, 1300, 1500]))
 
         # Super Tax...
         self.squares.append(Tax(name=Square.Name.SUPER_TAX, tax=100))
@@ -316,7 +316,7 @@ class Board(object):
                    street_set=Property.Set.DARK_BLUE,
                    price=400,
                    house_price=200,
-                   rents=Street.Rents(50, 200, 600, 1400, 1700, 2000)))
+                   rents=[50, 200, 600, 1400, 1700, 2000]))
 
     def _map_names_to_indexes(self):
         '''

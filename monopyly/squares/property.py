@@ -12,6 +12,10 @@ class Property(Square):
     Derived classes are: Street, Station, Utility.
     '''
 
+    # A constant for an invalid player number, used to indicate
+    # that the property is not owned...
+    NOT_OWNED = -1
+
     class Set(object):
         '''
         An 'enum' for the different property sets.
@@ -33,10 +37,19 @@ class Property(Square):
         The 'constructor'.
         '''
         super().__init__(name)
+
+        # The set (BROWN, ORANGE etc)...
         self.street_set = street_set
+
+        # The full price of the property.
+        # The mortgage price is half of this price.
         self.price = price
-        self.mortgaged = False
-        self.owner = None
+
+        # True if the property is mortgaged...
+        self.is_mortgaged = False
+
+        # The player number of the owner...
+        self.owner_player_number = Property.NOT_OWNED
 
 
 

@@ -35,13 +35,21 @@ class PlayerState(object):
         # The player number. Each player is assigned a number when the
         # game starts, and this is reported to the player AI. This can help
         # an AI know which player is themself when looking at the state of
-        # the game...
+        # the game.
+        #
+        # This is a zero-based number, which can be used as an index into
+        # the GameState.players list to find the corresponding Player object.
         self.player_number = player_number
 
         # Whether the player is in jail, and if so how many turns they
         # have been there...
         self.in_jail = False
         self.number_of_turns_in_jail = 0
+
+        # The collection of complete sets owned by this player.
+        # The items in the collection are Property.Set 'enums'.
+        # TODO: Fill this in when ownership of properties changes.
+        self.sets_owned = set()
 
     def copy(self):
         '''
