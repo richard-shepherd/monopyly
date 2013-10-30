@@ -22,13 +22,9 @@ def test_it_is_your_birthday():
     # We set up a game with three players: the player who picks up
     # the card, one that says Happy Birthday! and one that does not...
     game = Game()
-    game.add_player(DefaultPlayerAI())
-    game.add_player(PlayerWhoSaysHappyBirthday())
-    game.add_player(PlayerWhoDoesNotSayHappyBirthday())
-
-    current_player = game.state.players[0]
-    player_who_says_happy_birthday = game.state.players[1]
-    player_who_does_not_say_happy_birthday = game.state.players[2]
+    current_player = game.add_player(DefaultPlayerAI())
+    player_who_says_happy_birthday = game.add_player(PlayerWhoSaysHappyBirthday())
+    player_who_does_not_say_happy_birthday = game.add_player(PlayerWhoDoesNotSayHappyBirthday())
 
     # The current player takes the "It is your birthday" card...
     card = ItIsYourBirthday()

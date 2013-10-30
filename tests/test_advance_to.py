@@ -9,8 +9,7 @@ def test_advance_to():
     '''
     # We set up a game with a single player...
     game = Game()
-    game.add_player(DefaultPlayerAI())
-    player = game.state.players[0]
+    player = game.add_player(DefaultPlayerAI())
 
     # We put the player on square 17 (Community Chest) and
     # simulate Advance to Free Parking...

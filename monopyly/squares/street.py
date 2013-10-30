@@ -64,12 +64,23 @@ class Street(Property):
         The player has landed on a square owned by another player
         and must pay rent.
         '''
-        # TODO: pay rent
         # We find the player to pay...
         player_to_pay = game.state.players[self.owner_player_number]
 
         # Are there any houses?
-        #if()
+        if(self.number_of_houses == 0):
+            rent = self.rents[0]
+            if(self.street_set in player_to_pay.state.sets_owned):
+                # The player owns the whole set, so the rent is doubled...
+                rent *= 2
+        else:
+            # The street has houses, so we find the rent for the number
+            # of houses there are...
+            rent = self.rents[self.number_of_houses]
 
+        # We take the rent from the player, and give it to the
+        # player who owns the square...
+        amount_taken = game.take_money_from_player(player, rent)
+        game.give_money_to_player(player_to_pay, amount_taken)
 
 

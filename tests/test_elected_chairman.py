@@ -13,15 +13,10 @@ def test_elected_chairman():
     '''
     # We set up a game with 4 players...
     game = Game()
-    game.add_player(DefaultPlayerAI())
-    game.add_player(DefaultPlayerAI())
-    game.add_player(DefaultPlayerAI())
-    game.add_player(DefaultPlayerAI())
-
-    player1 = game.state.players[0]
-    player2 = game.state.players[1]
-    player3 = game.state.players[2]
-    player4 = game.state.players[3]
+    player1 = game.add_player(DefaultPlayerAI())
+    player2 = game.add_player(DefaultPlayerAI())
+    player3 = game.add_player(DefaultPlayerAI())
+    player4 = game.add_player(DefaultPlayerAI())
 
     # Player 2 picks up the 'elected chairman' card...
     card = ElectedChairman()

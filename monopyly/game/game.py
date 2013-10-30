@@ -37,10 +37,14 @@ class Game(object):
     def add_player(self, ai):
         '''
         Adds a player AI.
+
+        Returns the Player object created.
         '''
         # We wrap the AI up into a Player object...
         player_number = len(self.state.players)
-        self.state.players.append(Player(ai, player_number))
+        player = Player(ai, player_number)
+        self.state.players.append(player)
+        return player
 
     def play_game(self):
         '''
@@ -145,6 +149,9 @@ class Game(object):
 
         The player is given the option to make a deal or
         mortgage properties first.
+
+        Returns the money taken. In the case that the player has
+        gone bankrupt, this may not be the same as the amount requested.
         '''
         # We tell the player that we need money from them...
         player.ai.money_will_be_taken(player.state.copy(), amount)
@@ -154,8 +161,15 @@ class Game(object):
         # TODO: We allow the player to mortgage properties...
 
         # We take the money, and tell the player that it was taken...
+        cash_before_money_taken = player.state.cash
         player.state.cash -= amount
         player.ai.money_taken(player.state.copy(), amount)
+
+        # We return the amount taken...
+        if(player.state.cash >= 0):
+            return amount
+        else:
+            return cash_before_money_taken
 
     def give_money_to_player(self, player, amount):
         '''
@@ -174,4 +188,15 @@ class Game(object):
         player.state.square = self.state.board.get_index(Square.Name.JAIL)
         self.player_has_changed_square(player)
 
+    def give_property_to_player(self, player, square_name):
+        '''
+        Gives a named property to a player.
+        '''
+        # The square on the board is given the player number of its owner,
+        # and the player is given the index of the square on the board.
+        # So they both know about each other...
+        index = self.state.board.get_index(square_name)
+        square = self.state.board.get_square_by_index(index)
+        square.owner_player_number = player.state.player_number
+        player.state.property_indexes.add(index)
 

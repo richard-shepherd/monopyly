@@ -8,8 +8,7 @@ def test_go_to_jail_card_1():
     '''
     # We set up the game...
     game = Game()
-    game.add_player(DefaultPlayerAI())
-    player = game.state.players[0]
+    player = game.add_player(DefaultPlayerAI())
 
     # We play the card...
     card = GoToJailCard()
@@ -27,13 +26,10 @@ def test_go_to_jail_square_1():
     '''
     # We set up the game...
     game = Game()
-    game.add_player(DefaultPlayerAI())
-    player = game.state.players[0]
+    player = game.add_player(DefaultPlayerAI())
 
     # And mock the dice...
-    mock_dice = MockDice()
-    game.dice = mock_dice
-    mock_dice.set_roll_results([(2, 4)])
+    game.dice = MockDice([(2, 4)])
 
     # The player starts on square 24 (Trafalgar Square) and we
     # roll a six (not as doubles) to end up on Go To Jail...
@@ -54,13 +50,10 @@ def test_go_to_jail_square_2():
     '''
     # We set up the game...
     game = Game()
-    game.add_player(DefaultPlayerAI())
-    player = game.state.players[0]
+    player = game.add_player(DefaultPlayerAI())
 
     # And mock the dice...
-    mock_dice = MockDice()
-    game.dice = mock_dice
-    mock_dice.set_roll_results([(3, 3), [3, 4]])
+    game.dice = MockDice([(3, 3), (3, 4)])
 
     # The player starts on square 24 (Trafalgar Square) and we
     # roll a six (not as doubles) to end up on Go To Jail...
@@ -79,15 +72,12 @@ def test_roll_doubles_three_times():
     '''
     # We set up the game...
     game = Game()
-    game.add_player(DefaultPlayerAI())
-    player = game.state.players[0]
+    player = game.add_player(DefaultPlayerAI())
 
     # And mock the dice. In this case, we roll double-zero
     # three times (as it makes other interactions simpler
     # if the player doesn't move).
-    mock_dice = MockDice()
-    game.dice = mock_dice
-    mock_dice.set_roll_results([(0, 0), (0, 0), (0, 0), [3, 4]])
+    game.dice = MockDice([(0, 0), (0, 0), (0, 0), (3, 4)])
 
     # The player starts on square 20 (Free Parking) and
     # rolls (0, 0) three times (not moving), but should

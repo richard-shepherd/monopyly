@@ -8,8 +8,7 @@ def test_go_back_three_spaces():
     '''
     # We set up a game...
     game = Game()
-    game.add_player(DefaultPlayerAI())
-    player = game.state.players[0]
+    player = game.add_player(DefaultPlayerAI())
 
     # We put the player on square 7 (Chance) and
     # play the card...

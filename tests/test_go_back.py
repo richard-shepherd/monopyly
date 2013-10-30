@@ -9,8 +9,7 @@ def test_go_back():
     '''
     # We set up a game with one player...
     game = Game()
-    game.add_player(DefaultPlayerAI())
-    player = game.state.players[0]
+    player = game.add_player(DefaultPlayerAI())
 
     # We put the player on square 16 (Bow Street) and send them
     # 'back' to Free Parking...

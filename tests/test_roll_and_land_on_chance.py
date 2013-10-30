@@ -17,8 +17,7 @@ def test_roll_and_land_on_chance():
 
     # We set up the game and the player...
     game = Game()
-    game.add_player(DefaultPlayerAI())
-    player = game.state.players[0]
+    player = game.add_player(DefaultPlayerAI())
 
     # We mock the card decks...
     mock_community_chest = MockCardDeck()
@@ -30,9 +29,7 @@ def test_roll_and_land_on_chance():
     game.state.board.chance_deck = mock_chance
 
     # We mock the dice...
-    mock_dice = MockDice()
-    game.dice = mock_dice
-    mock_dice.set_roll_results([(1, 1), (2, 3)])
+    game.dice = MockDice([(1, 1), (2, 3)])
 
     # We play the turn, and check the results...
     game.play_one_turn(player)
