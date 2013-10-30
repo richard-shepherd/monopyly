@@ -2,6 +2,7 @@ from .dice import Dice
 from .player import Player
 from .game_state import GameState
 from ..squares import Square
+from .player_ai_base import PlayerAIBase
 
 
 class Game(object):
@@ -26,6 +27,8 @@ class Game(object):
         '''
         ROLL_AGAIN = 1
         DO_NOT_ROLL_AGAIN = 2
+        PROPERTY_BOUGHT = 3
+        PROPERTY_NOT_BOUGHT = 4
 
     def __init__(self):
         '''
@@ -207,6 +210,48 @@ class Game(object):
         self._update_sets()
 
         return square
+
+    def offer_property_for_sale(self, current_player, square):
+        '''
+        Offers the property for sale, initially to the current player.
+        If they do not want it, it is then offered for auction to all
+        players.
+        '''
+        # We first offer the property to the current player...
+        action = self._offer_property_to_current_player(current_player, square)
+        if(action == Game.Action.PROPERTY_BOUGHT):
+            return
+
+        # The current player did not buy the property, so we put it
+        # up for auction...
+        # TODO: finish this (auctioning)
+
+    def _offer_property_to_current_player(self, player, square):
+        '''
+        Offers the property to the current player.
+
+        Returns Game.Action.PROPERTY_BOUGHT or PROPERTY_NOT_BOUGHT.
+        '''
+        # We ask the player if they want to buy the property...
+        action = player.ai.landed_on_unowned_property(
+            self.state.copy(),
+            player.state.copy(),
+            square.name,
+            square.price)
+        if(action == PlayerAIBase.Action.DO_NOT_BUY):
+            return Game.Action.PROPERTY_NOT_BOUGHT
+
+        # The player wants to buy the property, so we take the money...
+        self.take_money_from_player(player, square.price)
+
+        if(player.state.cash < 0):
+            # The player did not have enough money, so we revert the transaction...
+            self.give_money_to_player(player, square.price)
+            return Game.Action.PROPERTY_NOT_BOUGHT
+        else:
+            # The purchase was successful...
+            self.give_property_to_player(player, square.name)
+            return Game.Action.PROPERTY_BOUGHT
 
     def _update_sets(self):
         '''

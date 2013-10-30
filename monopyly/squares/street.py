@@ -45,19 +45,11 @@ class Street(Property):
 
         if(self.owner_player_number == Property.NOT_OWNED):
             # The property is not owned, so we offer it for sale...
-            self._offer_property_for_sale(game, player)
+            game.offer_property_for_sale(player, self)
         else:
             # The property is owned by another player (and is not
             # mortgaged), so rent needs to be paid...
             self._pay_rent(game, player)
-
-    def _offer_property_for_sale(self, game, player):
-        '''
-        We offer the property for sale, fist to the current player,
-        and then for auction if they do not want to buy it.
-        '''
-        # TODO: offer property for sale
-        pass
 
     def _pay_rent(self, game, player):
         '''

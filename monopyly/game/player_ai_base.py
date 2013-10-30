@@ -55,7 +55,7 @@ class PlayerAIBase(object):
         '''
         pass
 
-    def landed_on_unowned_property(self, game_state, player_state, property_name):
+    def landed_on_unowned_property(self, game_state, player_state, property_name, price):
         '''
         Called when the AI lands on an unowned property. Only the active
         player receives this notification.

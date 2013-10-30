@@ -7,9 +7,6 @@ def test_elected_chairman():
     '''
     Tests the "You have been elected chairman or the board"
     Chance card.
-
-    This includes testing that money can be taken from a player
-    and given to other players.
     '''
     # We set up a game with 4 players...
     game = Game()
