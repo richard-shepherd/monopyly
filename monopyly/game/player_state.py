@@ -69,8 +69,11 @@ class PlayerState(object):
             if(type(square) != Street):
                 continue
 
-            number_of_houses += property.number_of_houses
-            number_of_hotels += (1 if property.has_hotel else 0)
+            if(square.number_of_houses == 5):
+                # Five houses is a hotel...
+                number_of_hotels += 1
+            else:
+                number_of_houses += square.number_of_houses
 
         return number_of_houses, number_of_hotels
 

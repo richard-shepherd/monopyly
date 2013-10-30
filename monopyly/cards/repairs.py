@@ -18,7 +18,7 @@ class Repairs(Card):
         Takes money from the player depending on the number of houses
         and hotel they have.
         '''
-        number_of_houses, number_of_hotels = current_player.state.get_number_of_houses_and_hotels()
+        number_of_houses, number_of_hotels = current_player.state.get_number_of_houses_and_hotels(game.state.board)
         amount = self.amount_per_house * number_of_houses + self.amount_per_hotel * number_of_hotels
         game.take_money_from_player(current_player, amount)
 

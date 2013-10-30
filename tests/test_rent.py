@@ -54,8 +54,8 @@ def test_whole_set():
 
 def test_with_houses():
     '''
-    Tests that the base rent is taken when you land on a square owned
-    by another player (who does not own the whole set).
+    Tests that rents is calculated correctly for a property
+    with houses.
     '''
     # We set up the game and the players...
     game = Game()
@@ -77,4 +77,30 @@ def test_with_houses():
     assert owner.state.cash == 2250
 
 
-# TODO: Test when player does not have enough money
+def test_player_does_not_have_enough_money():
+    '''
+    Tests the as much money as possible is given to the owner
+    if a player lands on their property, but the player does
+    not have enough money to pay in full.
+    '''
+    # We set up the game and the players...
+    game = Game()
+    player = game.add_player(DefaultPlayerAI())
+    owner = game.add_player(DefaultPlayerAI())
+
+    # We give the owner Mayfair with a hotel...
+    trafalgar_square = game.give_property_to_player(owner, Square.Name.MAYFAIR)
+    trafalgar_square.number_of_houses = 5
+
+    # The player starts on Liverpool Street Station, and rolls a 4...
+    player.state.square = 35
+    game.dice = MockDice([(1, 3)])
+    game.play_one_turn(player)
+
+    # The player should be on Mayfair, and should be bankrupt.
+    # The owner should have got all the player's money...
+    assert player.state.square == 39
+    assert player.state.cash == -500
+    assert owner.state.cash == 3000
+
+
