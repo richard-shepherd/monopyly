@@ -84,6 +84,34 @@ class Board(object):
         index = self.get_index(square_name)
         return self.get_square_by_index(index)
 
+    def get_owned_sets(self):
+        '''
+        Returns which sets are owned by which players.
+
+        Returned as a dictionary of player-numbers to a set of
+        street-sets owned by them. For example:
+        { 2: {BROWN, PINK}, 4: {YELLOW} }
+
+        Only players which own a whole set are returned.
+        '''
+        # (I think this could be done in a slightly horrific dictionary
+        # comprehension with a nested set comprehension. But I'm doing it
+        # a longer way, as I think it will be clearer.)
+        results = {}
+        for street_set, properties in self._set_to_property_map.items():
+            # We see if all properties in this set are owned by the
+            # same player...
+            owners = list({p.owner_player_number for p in properties})
+            if(len(owners) == 1 and owners[0] != Property.NOT_OWNED):
+                # We've found a set owned by a player...
+                player_number = owners[0]
+                if(player_number not in results):
+                    results[player_number] = set()
+                results[player_number].add(street_set)
+
+        return results
+
+
     def _add_squares_to_board(self):
         '''
         Sets up the collection of squares that make up the board.

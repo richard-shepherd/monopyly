@@ -48,8 +48,7 @@ class PlayerState(object):
 
         # The collection of complete sets owned by this player.
         # The items in the collection are Property.Set 'enums'.
-        # TODO: Fill this in when ownership of properties changes.
-        self.sets_owned = set()
+        self.owned_sets = set()
 
     def copy(self):
         '''

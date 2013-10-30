@@ -191,6 +191,8 @@ class Game(object):
     def give_property_to_player(self, player, square_name):
         '''
         Gives a named property to a player.
+
+        Returns the property square.
         '''
         # The square on the board is given the player number of its owner,
         # and the player is given the index of the square on the board.
@@ -200,19 +202,29 @@ class Game(object):
         square.owner_player_number = player.state.player_number
         player.state.property_indexes.add(index)
 
+        # We update which sets are owned by which players, as this
+        # may have changed...
+        self._update_sets()
+
+        return square
+
     def _update_sets(self):
         '''
         Called after any properties have been bought or otherwise
         changed hands, to keep the information about which players
         own which sets up to date.
         '''
-        # We clear out the existing info...
+        # We find which players own sets, and put this info
+        # into the Player objects...
+        player_number_to_owned_sets_map = self.state.board.get_owned_sets()
         for player in self.state.players:
-            player.state.sets_owned.clear()
+            player_number = player.state.player_number
+            if(player_number in player_number_to_owned_sets_map):
+                player.state.owned_sets = player_number_to_owned_sets_map[player_number]
+            else:
+                # The player does not own any sets...
+                player.state.owned_sets.clear()
 
-        # We go through the sets, checking if one player owns
-        # all the properties in them...
-        # TODO: finish this
 
 
 
