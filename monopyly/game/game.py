@@ -200,3 +200,19 @@ class Game(object):
         square.owner_player_number = player.state.player_number
         player.state.property_indexes.add(index)
 
+    def _update_sets(self):
+        '''
+        Called after any properties have been bought or otherwise
+        changed hands, to keep the information about which players
+        own which sets up to date.
+        '''
+        # We clear out the existing info...
+        for player in self.state.players:
+            player.state.sets_owned.clear()
+
+        # We go through the sets, checking if one player owns
+        # all the properties in them...
+        # TODO: finish this
+
+
+
