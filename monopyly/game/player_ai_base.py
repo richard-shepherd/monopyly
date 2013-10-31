@@ -124,8 +124,27 @@ class PlayerAIBase(object):
             or
             TenPoundFineOrTakeAChance.Action.TAKE_A_CHANCE
         '''
+        # TODO: move this action to this class
         return TenPoundFineOrTakeAChance.Action.PAY_TEN_POUND_FINE
 
+    def property_offered_for_auction(self, game_state, player_state, property_name, face_value):
+        '''
+        Called when a property is put up for auction.
+
+        Properties are auctioned when a player lands on an unowned square but does
+        not want to buy it. All players take part in the auction, including the
+        player who landed on the square.
+
+        The property will be sold to the highest bidder using the 'eBay' rule,
+        ie, for £1 more than the second-highest bid.
+
+        Return the amount you bid. To put in a bid this must be a positive integer.
+        Zero means that you are not bidding (it does not mean that you are bidding
+        zero).
+
+        The default behaviour is not to bid.
+        '''
+        return 0
 
 
 

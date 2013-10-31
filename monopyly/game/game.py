@@ -271,5 +271,6 @@ class Game(object):
                 player.state.owned_sets.clear()
 
 
-
+    # TODO: Auctioning - only allow integer bids
+    # TODO: Auctioning - don't allow -ve bids
 
