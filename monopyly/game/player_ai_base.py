@@ -135,7 +135,7 @@ class PlayerAIBase(object):
         not want to buy it. All players take part in the auction, including the
         player who landed on the square.
 
-        The property will be sold to the highest bidder using the 'eBay' rule,
+        The property will be sold to the highest bidder using the eBay rule,
         ie, for £1 more than the second-highest bid.
 
         Return the amount you bid. To put in a bid this must be a positive integer.
