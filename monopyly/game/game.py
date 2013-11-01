@@ -123,9 +123,13 @@ class Game(object):
         # TODO: Player doesn't move if in Jail.
         current_player.state.square += self.most_recent_total_dice_roll
         if(current_player.state.square >= Board.NUMBER_OF_SQUARES):
-            # The player has passed Go...
-            current_player.state.cash += 200
             current_player.state.square -= Board.NUMBER_OF_SQUARES
+
+            # If the player has passed Go, they get £200.
+            # Note that we don't give £200 for landing on Go, as the
+            # square itself does this...
+            if(current_player.state.square != 0):
+                current_player.state.cash += 200
 
         # We perform any actions appropriate for the new square
         # the player has landed on...

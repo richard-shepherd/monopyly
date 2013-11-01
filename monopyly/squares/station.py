@@ -24,6 +24,7 @@ class Station(Property):
         owner = game.state.players[self.owner_player_number]
         owned_stations = set.intersection(self._station_indexes, owner.state.property_indexes)
         number_of_owned_stations = len(owned_stations)
+
         if(number_of_owned_stations == 1):
             return 25
         elif(number_of_owned_stations == 2):
@@ -32,6 +33,7 @@ class Station(Property):
             return 100
         elif(number_of_owned_stations == 4):
             return 200
+
         return 0
 
     def _find_station_indexes(self, board):
