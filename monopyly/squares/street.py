@@ -29,29 +29,7 @@ class Street(Property):
         # This can go up to 5, indicating that the street has a hotel.
         self.number_of_houses = 0
 
-    def landed_on(self, game, player):
-        '''
-        When a street is landed on we manage whether there is rent
-        to pay, or whether the property can be bought.
-        '''
-        # If the property is already owned by this player, then there
-        # is nothing to do...
-        if(self.owner_player_number == player.state.player_number):
-            return
-
-        # If the property is mortgaged, then there is nothing to do...
-        if(self.is_mortgaged):
-            return
-
-        if(self.owner_player_number == Property.NOT_OWNED):
-            # The property is not owned, so we offer it for sale...
-            game.offer_property_for_sale(player, self)
-        else:
-            # The property is owned by another player (and is not
-            # mortgaged), so rent needs to be paid...
-            self._pay_rent(game, player)
-
-    def _pay_rent(self, game, player):
+    def pay_rent(self, game, player):
         '''
         The player has landed on a square owned by another player
         and must pay rent.
