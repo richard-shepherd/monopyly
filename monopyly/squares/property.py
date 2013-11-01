@@ -71,12 +71,28 @@ class Property(Square):
         else:
             # The property is owned by another player (and is not
             # mortgaged), so rent needs to be paid...
-            self.pay_rent(game, player)
+            self._pay_rent(game, player)
 
-    def pay_rent(self, game, player):
+    def _pay_rent(self, game, player):
         '''
-        Derived classes must implement the pay_rent method.
+        The player has landed on a square owned by another player
+        and must pay rent.
         '''
-        raise Exception("pay_rent not implemented")
+        # We find the amount to pay...
+        rent = self.calculate_rent(game, player)
+
+        # We take the rent from the player, and give it to the
+        # player who owns the square...
+        amount_taken = game.take_money_from_player(player, rent)
+        owner = game.state.players[self.owner_player_number]
+        game.give_money_to_player(owner, amount_taken)
+
+    def calculate_rent(self, game, player):
+        '''
+        Derived classes must implement this method.
+
+        Returns the rent to be paid.
+        '''
+        raise Exception("calculate_rent not implemented")
 
 

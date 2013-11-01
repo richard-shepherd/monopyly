@@ -34,7 +34,7 @@ class Deck(object):
         if(type(card) == GetOutOfJailFree):
             # The card is Get Out Of Jail Free.
             # We give it to the player...
-            player.number_of_get_out_of_jail_free_cards += 1
+            player.state.number_of_get_out_of_jail_free_cards += 1
             player.ai.got_get_out_of_jail_free_card()
 
             # And remove it from the deck...
