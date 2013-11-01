@@ -1,10 +1,11 @@
 from .dice import Dice
 from .player import Player
 from .game_state import GameState
-from ..squares import Square
 from .player_ai_base import PlayerAIBase
 from .board import Board
+from ..squares import Square
 from ..squares import Property
+from ..squares import Street
 
 
 class Game(object):
@@ -367,9 +368,15 @@ class Game(object):
             if(square.is_mortgaged is True):
                 continue
 
+            # We check that there are no houses on the property.
+            # (You can't mortgage if a property has houses.)
+            if(isinstance(square, Street)):
+                if(square.number_of_houses != 0):
+                    continue
+
             # We mortgage the property...
             square.is_mortgaged = True
-            mortgage_value = square.price / 2
+            mortgage_value = square.mortgage_value
             self.give_money_to_player(current_player, mortgage_value)
 
         # We update the owned sets, as this may have changed...

@@ -143,4 +143,27 @@ def test_mortgaging_a_property_belonging_to_another_player():
     assert kings_cross.is_mortgaged is False
 
 
-# TODO: trying to mortgage a property with houses on
+def test_mortgage_property_with_houses():
+    '''
+    You can't mortgage a property with houses on it.
+    '''
+    game = Game()
+    player = game.add_player(PlayerWhoMortgages([Square.Name.BOW_STREET]))
+
+    # We give the player Bow Street and put some houses on it...
+    bow_street = game.give_property_to_player(player, Square.Name.BOW_STREET)
+    bow_street.number_of_houses = 3
+
+    # The player starts on Liverpool Street Station and rolls a 3
+    # to end up on Super Tax. (We need a payment of some kind to
+    # trigger the mortgaging process.)
+    player.state.square = 35
+    game.dice = MockDice([(1, 2)])
+    game.play_one_turn(player)
+
+    # The player should have received nothing and paid £100.
+    # Bow Street should not be mortgaged...
+    assert player.state.cash == 1400
+    assert bow_street.is_mortgaged is False
+
+

@@ -51,6 +51,13 @@ class Property(Square):
         # The player number of the owner...
         self.owner_player_number = Property.NOT_OWNED
 
+    @property
+    def mortgage_value(self):
+        '''
+        The mortgage value
+        '''
+        return int(self.price / 2)
+
     def landed_on(self, game, player):
         '''
         When a property is landed on we manage whether there is rent
