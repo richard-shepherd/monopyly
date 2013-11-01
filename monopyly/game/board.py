@@ -84,7 +84,7 @@ class Board(object):
         street-sets owned by them. For example:
         { 2: {BROWN, PINK}, 4: {YELLOW} }
 
-        Only players which own a whole set are returned.
+        Only players which own a whole unmortgaged set are returned.
         '''
         # (I think this could be done in a slightly horrific dictionary
         # comprehension with a nested set comprehension. But I'm doing it
@@ -92,17 +92,23 @@ class Board(object):
         results = {}
         for street_set, properties in self._set_to_property_map.items():
             # We see if all properties in this set are owned by the
-            # same player...
-            owners = list({p.owner_player_number for p in properties})
-            if(len(owners) == 1 and owners[0] != Property.NOT_OWNED):
+            # same player and are all unmortgaged...
+            owner_infos = list({(p.owner_player_number, p.is_mortgaged) for p in properties})
+            if(len(owner_infos) != 1):
+                # The set has a mixture of owners and/or mortgage states...
+                continue
+
+            # The set is owned by only one player...
+            owner_info = owner_infos[0]
+            player_number = owner_info[0]
+            is_mortgaged = owner_info[1]
+            if(player_number != Property.NOT_OWNED and is_mortgaged is False):
                 # We've found a set owned by a player...
-                player_number = owners[0]
                 if(player_number not in results):
                     results[player_number] = set()
                 results[player_number].add(street_set)
 
         return results
-
 
     def _add_squares_to_board(self):
         '''

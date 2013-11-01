@@ -4,6 +4,7 @@ from .game_state import GameState
 from ..squares import Square
 from .player_ai_base import PlayerAIBase
 from .board import Board
+from ..squares import Property
 
 
 class Game(object):
@@ -81,11 +82,10 @@ class Game(object):
         for player in self.state.players:
             player.ai.start_of_turn(self.state.copy(), current_player.state.player_number)
 
-        # TODO: Before the start of the turn we give the player an
-        # option to perform deals or mortgage properties so that they
-        # can raise money for house-building...
+        # TODO: unmortgage properties
 
-        # TODO: The player can build houses...
+        # The player can build houses...
+        self._build_houses(current_player)
 
         # TODO: If the player is in jail, they can buy themselves out,
         # or play Get Out Of Jail Free.
@@ -173,7 +173,10 @@ class Game(object):
 
         # TODO: We allow the player to make deals...
 
-        # TODO: We allow the player to mortgage properties...
+        # TODO: We allow the player to sell houses...
+
+        # We allow the player to mortgage properties...
+        self._mortgage_properties(player)
 
         # We take the money, and tell the player that it was taken...
         cash_before_money_taken = player.state.cash
@@ -330,4 +333,45 @@ class Game(object):
             else:
                 # The player does not own any sets...
                 player.state.owned_sets.clear()
+
+    def _build_houses(self, current_player):
+        '''
+        We give the current player the option to build houses.
+        '''
+        # TODO: write building houses
+        pass
+
+    def _mortgage_properties(self, current_player):
+        '''
+        We give the current player the option to mortgage properties.
+        '''
+        # We ask the player if they want to mortgage anything...
+        property_names_to_mortgage = current_player.ai.mortgage_properties(
+            self.state.copy(),
+            current_player.state.copy())
+
+        # We mortgage them...
+        for property_name in property_names_to_mortgage:
+            # We check that the square is a property...
+            square = self.state.board.get_square_by_name(property_name)
+            if(isinstance(square, Property) is False):
+                continue
+
+            # We check that the current player owns the property and
+            # that they are not sneakily trying to mortgage someone
+            # else's property...
+            if(square.owner_player_number != current_player.state.player_number):
+                continue
+
+            # We check that the property is not already mortgaged...
+            if(square.is_mortgaged is True):
+                continue
+
+            # We mortgage the property...
+            square.is_mortgaged = True
+            mortgage_value = square.price / 2
+            self.give_money_to_player(current_player, mortgage_value)
+
+        # We update the owned sets, as this may have changed...
+        self._update_sets()
 

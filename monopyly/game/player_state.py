@@ -46,7 +46,7 @@ class PlayerState(object):
         self.in_jail = False
         self.number_of_turns_in_jail = 0
 
-        # The collection of complete sets owned by this player.
+        # The collection of complete unmortgaged sets owned by this player.
         # The items in the collection are Property.Set 'enums'.
         self.owned_sets = set()
 

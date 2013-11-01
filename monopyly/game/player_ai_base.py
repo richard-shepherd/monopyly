@@ -146,8 +146,54 @@ class PlayerAIBase(object):
         '''
         return 0
 
+    def build_houses(self, game_state, player_state):
+        '''
+        Called near the start of the player's turn to give the option of building houses.
 
+        Return a list of tuples indicating which properties you want to build houses
+        on and how many houses to build on each. For example:
+        [(Square.Name.PARK_LANE, 3), (Square.Name.MAYFAIR, 4)]
 
+        Return an empty list if you do not want to build.
 
+        Notes:
+        - You must own a whole set of unmortgaged properties before you can
+          build houses on it.
 
+        - Build five houses on a property to have a "hotel".
+
+        - Sets must end up with 'balanced' housing. No square in a set can
+          have more than one more house than any other.
+
+        - If you do not have (or cannot raise) enough money to build all the
+          houses specified, the whole transaction will be rolled back. Between
+          this function call and money being taken, you will have an opportunity
+          to mortgage properties or make deals.
+
+        The default behaviour is not to build.
+        '''
+        return []
+
+    def mortgage_properties(self, game_state, player_state):
+        '''
+        Gives the player an option to mortgage properties.
+
+        This is called before any debt is paid (house building, rent,
+        tax, fines from cards etc).
+
+        Notes:
+        - You receive half the face value of each property mortgaged.
+
+        - You cannot mortgage properties with houses on them.
+          (The AI will have been given the option to sell houses before this
+          function is called.)
+
+        Return a list of property names to mortgage, for example:
+        [Square.Name.BOW_STREET, Square.Name.LIVERPOOL_STREET_STATION]
+
+        Return an empty list if you do not want to mortgage anything.
+
+        The default behaviour is not to mortgage anything.
+        '''
+        return []
 
