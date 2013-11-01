@@ -37,14 +37,6 @@ class Board(object):
         self.chance_deck = ChanceDeck()
         self.community_chest_deck = CommunityChestDeck()
 
-    def move_player(self, player, number_of_squares):
-        '''
-        Advances the player by the number of squares passed in.
-        '''
-        player.state.square += number_of_squares
-        if(player.state.square >= Board.NUMBER_OF_SQUARES):
-            player.state.square -= Board.NUMBER_OF_SQUARES
-
     def get_index_list(self, square_name):
         '''
         Returns the zero-based indexes (ie, the board positions)

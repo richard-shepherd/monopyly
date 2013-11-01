@@ -3,6 +3,7 @@ from .player import Player
 from .game_state import GameState
 from ..squares import Square
 from .player_ai_base import PlayerAIBase
+from .board import Board
 
 
 class Game(object):
@@ -36,6 +37,7 @@ class Game(object):
         '''
         self.state = GameState()
         self.dice = Dice()
+        self.most_recent_total_dice_roll = 0
 
     def add_player(self, ai):
         '''
@@ -104,6 +106,7 @@ class Game(object):
         '''
         # We roll the dice and move the player...
         roll1, roll2 = self.dice.roll()
+        self.most_recent_total_dice_roll = roll1 + roll2
 
         # We check if doubles was rolled...
         roll_again = Game.Action.DO_NOT_ROLL_AGAIN
@@ -117,10 +120,15 @@ class Game(object):
                 roll_again = Game.Action.ROLL_AGAIN
 
         # We move the player to the new square...
-        # TODO: Get £200 for passing Go.
         # TODO: Player doesn't move if in Jail.
-        total_roll = roll1 + roll2
-        self.state.board.move_player(current_player, total_roll)
+        current_player.state.square += self.most_recent_total_dice_roll
+        if(current_player.state.square >= Board.NUMBER_OF_SQUARES):
+            # The player has passed Go...
+            current_player.state.cash += 200
+            current_player.state.square -= Board.NUMBER_OF_SQUARES
+
+        # We perform any actions appropriate for the new square
+        # the player has landed on...
         self.player_has_changed_square(current_player)
 
         # If the player has ended up in jail, their turn is over
