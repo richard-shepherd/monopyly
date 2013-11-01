@@ -363,8 +363,8 @@ class Board(object):
         properties in the set.
         '''
         for square in self.squares:
-            # Is the square a street?
-            if(isinstance(square, Property) is False):
+            # Is the square a property?
+            if(not isinstance(square, Property)):
                 continue
 
             # We add the property to the list of properties for its set...

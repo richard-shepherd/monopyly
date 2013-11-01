@@ -339,8 +339,48 @@ class Game(object):
         '''
         We give the current player the option to build houses.
         '''
-        # TODO: write building houses
-        pass
+        # We ask the player if he wants to build any houses...
+        build_instructions = current_player.ai.build_houses(
+            self.state.copy(),
+            current_player.state.copy())
+        if(not build_instructions):
+            return
+
+        # We first calculate and take the money. This gives the
+        # player the chance to mortgage properties to make deals.
+        # We can then perform a few checks that the transaction is
+        # valid before doing the building.
+
+        # We calculate the total cost, and also create a new list
+        # including the Street objects to be built on...
+        board = self.state.board
+        build_instructions_with_streets = []
+        total_cost = 0
+        for build_instruction in build_instructions:
+            # We find the Street object to be built on...
+            square_name = build_instruction[0]
+            number_of_houses = build_instruction[1]
+            square = board.get_square_by_name(square_name)
+            if(not isinstance(square, Street)):
+                continue
+
+            build_instructions_with_streets.append((square_name, number_of_houses, square))
+            total_cost += (number_of_houses * square.house_price)
+
+        # We take the money, and check that the player had enough
+        # money for this...
+        self.take_money_from_player(current_player, total_cost)
+        if(current_player.state.cash < 0):
+            # The player did not have enough money, so we roll back...
+            self.give_money_to_player(current_player, total_cost)
+            return
+
+        # We check that each street to built on is part of a set wholly
+        # owned by the player. (Note that this is done after taking the
+        # money, as this may have affected the ownership.)
+        # TODO: finish house buying
+
+
 
     def _mortgage_properties(self, current_player):
         '''
@@ -355,7 +395,7 @@ class Game(object):
         for property_name in property_names_to_mortgage:
             # We check that the square is a property...
             square = self.state.board.get_square_by_name(property_name)
-            if(isinstance(square, Property) is False):
+            if(not isinstance(square, Property)):
                 continue
 
             # We check that the current player owns the property and
