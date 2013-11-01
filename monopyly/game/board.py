@@ -93,13 +93,13 @@ class Board(object):
         for street_set, properties in self._set_to_property_map.items():
             # We see if all properties in this set are owned by the
             # same player and are all unmortgaged...
-            owner_infos = list({(p.owner_player_number, p.is_mortgaged) for p in properties})
+            owner_infos = {(p.owner_player_number, p.is_mortgaged) for p in properties}
             if(len(owner_infos) != 1):
                 # The set has a mixture of owners and/or mortgage states...
                 continue
 
             # The set is owned by only one player...
-            owner_info = owner_infos[0]
+            owner_info = owner_infos.pop()
             player_number = owner_info[0]
             is_mortgaged = owner_info[1]
             if(player_number != Property.NOT_OWNED and is_mortgaged is False):
