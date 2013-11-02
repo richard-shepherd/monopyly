@@ -165,6 +165,11 @@ class PlayerAIBase(object):
 
         - Build five houses on a property to have a "hotel".
 
+        - You specify the _additional_ houses you will be building, not the
+          total after building. For example, if Park Lane already has 3 houses
+          and you specify (Square.Name.PARK_LANE, 2) you will end up with 5
+          houses (ie, a hotel).
+
         - Sets must end up with 'balanced' housing. No square in a set can
           have more than one more house than any other. If you request an
           unbalanced build, the whole transaction will be rolled back, even

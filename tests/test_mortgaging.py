@@ -6,7 +6,8 @@ class PlayerWhoMortgages(DefaultPlayerAI):
     '''
     A player who mortgages a list of properties.
     '''
-    def __init__(self, properties_to_mortgage=[]):
+    def __init__(self, properties_to_mortgage=None):
+        if not properties_to_mortgage: properties_to_mortgage = []
         self.properties_to_mortgage = properties_to_mortgage
 
     def mortgage_properties(self, game_state, player_state):

@@ -1,9 +1,3 @@
-# TODO: unbalanced building
-
-# TODO: player builds on unowned properties
-
-# TODO: player builds on partially mortgaged set
-
 from monopyly import *
 from testing_utils import *
 
@@ -275,3 +269,69 @@ def test_unbalanced_house_building():
     assert old_kent_road.number_of_houses == 0
     assert whitechapel_road.number_of_houses == 0
     assert player.state.cash == 1500
+
+
+def test_building_on_unowned_properties():
+    '''
+    Attempts to build on properties owned by another player.
+    '''
+    game = Game()
+    player = game.add_player(PlayerWhoBuildsHouses([
+        (Square.Name.OLD_KENT_ROAD, 1),
+        (Square.Name.WHITECHAPEL_ROAD, 1)]))
+    owner = game.add_player(DefaultPlayerAI())
+
+    # We give the owner the brown set...
+    old_kent_road = game.give_property_to_player(owner, Square.Name.OLD_KENT_ROAD)
+    whitechapel_road = game.give_property_to_player(owner, Square.Name.WHITECHAPEL_ROAD)
+
+    # We need to play a turn to initiate house building. We play a
+    # neutral turn: Marylebone -> Free parking.
+    player.state.square = 15
+    game.dice = MockDice([(4, 1)])
+    game.play_one_turn(player)
+
+    # The houses should not have been build, and no money taken...
+    assert old_kent_road.number_of_houses == 0
+    assert whitechapel_road.number_of_houses == 0
+    assert player.state.cash == 1500
+
+
+def test_building_on_partially_mortgaged_set():
+    '''
+    Builds two houses on each of the red set and one each on the browns,
+    but Strand is mortgaged.
+    '''
+    game = Game()
+    player = game.add_player(PlayerWhoBuildsHouses([
+        (Square.Name.STRAND, 2),
+        (Square.Name.FLEET_STREET, 2),
+        (Square.Name.TRAFALGAR_SQUARE, 2),
+        (Square.Name.OLD_KENT_ROAD, 1),
+        (Square.Name.WHITECHAPEL_ROAD, 1)]))
+
+    # We give the player the red set and the brown set...
+    strand = game.give_property_to_player(player, Square.Name.STRAND)
+    fleet_street = game.give_property_to_player(player, Square.Name.FLEET_STREET)
+    trafalgar_square = game.give_property_to_player(player, Square.Name.TRAFALGAR_SQUARE)
+    old_kent_road = game.give_property_to_player(player, Square.Name.OLD_KENT_ROAD)
+    whitechapel_road = game.give_property_to_player(player, Square.Name.WHITECHAPEL_ROAD)
+
+    # Strand is mortgaged...
+    strand.is_mortgaged = True
+
+    # We need to play a turn to initiate house building. We play a
+    # neutral turn: Marylebone -> Free parking.
+    player.state.square = 15
+    game.dice = MockDice([(4, 1)])
+    game.play_one_turn(player)
+
+    # The whole building 'transaction' should have failed...
+    assert strand.number_of_houses == 0
+    assert fleet_street.number_of_houses == 0
+    assert trafalgar_square.number_of_houses == 0
+    assert old_kent_road.number_of_houses == 0
+    assert whitechapel_road.number_of_houses == 0
+    assert player.state.cash == 1500
+
+
