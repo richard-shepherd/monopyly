@@ -174,7 +174,8 @@ class Game(object):
 
         # TODO: We allow the player to make deals...
 
-        # TODO: We allow the player to sell houses...
+        # We allow the player to sell houses...
+        self._sell_houses(player)
 
         # We allow the player to mortgage properties...
         self._mortgage_properties(player)
@@ -470,3 +471,11 @@ class Game(object):
         # We update the owned sets, as this may have changed...
         self._update_sets()
 
+    def _sell_houses(self, current_player):
+        '''
+        We offer the player the chance to sell houses.
+        '''
+        # We ask the player which properties they want to sell...
+        sale_instructions = current_player.ai.sell_houses(
+            self.state.copy(),
+            current_player.state.copy())

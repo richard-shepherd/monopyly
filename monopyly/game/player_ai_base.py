@@ -184,6 +184,31 @@ class PlayerAIBase(object):
         '''
         return []
 
+    def sell_houses(self, game_state, player_state):
+        '''
+        Gives the player the option to sell properties.
+
+        This is called when any debt, fine or rent has to be paid. It is
+        called just before mortgage_properties (below).
+
+        Notes:
+        - You cannot mortgage properties with houses on them, so if you
+          plan to mortgage, make sure you sell all the houses first.
+
+        - For each house sold you receive half the price that they were
+          bought for.
+
+        - Houses on a set must end up 'balanced', ie no property can have
+          more than one more house than any other property in the set.
+
+        Return a list of tuples of the streets and number of houses you
+        want to sell. For example:
+        [(Square.Name.OLD_KENT_ROAD, 1), (Square.Name.BOW_STREET, 1)]
+
+        The default is not to sell any houses.
+        '''
+        return []
+
     def mortgage_properties(self, game_state, player_state):
         '''
         Gives the player an option to mortgage properties.

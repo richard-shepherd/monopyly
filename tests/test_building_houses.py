@@ -23,7 +23,7 @@ def test_simple_house_building():
     player = game.add_player(PlayerWhoBuildsHouses([
         (Square.Name.STRAND, 2),
         (Square.Name.FLEET_STREET, 2),
-        (Square.Name.TRAFALGAR_SQUARE, 2),
+        (Square.Name.TRAFALGAR_SQUARE, 3),
         (Square.Name.OLD_KENT_ROAD, 1),
         (Square.Name.WHITECHAPEL_ROAD, 1)]))
 
@@ -43,12 +43,12 @@ def test_simple_house_building():
     # The player should have built houses on the three properties...
     assert strand.number_of_houses == 2
     assert fleet_street.number_of_houses == 2
-    assert trafalgar_square.number_of_houses == 2
+    assert trafalgar_square.number_of_houses == 3
     assert old_kent_road.number_of_houses == 1
     assert whitechapel_road.number_of_houses == 1
 
-    # We check the player paid the right money, 6 * £150 + 2 * £50 = £1000
-    assert player.state.cash == 500
+    # We check the player paid the right money, 7 * £150 + 2 * £50 = £1150
+    assert player.state.cash == 350
 
 
 def test_building_on_incomplete_set():
