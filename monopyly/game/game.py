@@ -356,11 +356,13 @@ class Game(object):
         board = self.state.board
         build_instructions_with_streets = []
         total_cost = 0
-        for build_instruction in build_instructions:
+        for instruction in build_instructions:
             # We find the Street object to be built on...
-            square_name = build_instruction[0]
-            number_of_houses = build_instruction[1]
+            square_name = instruction[0]
+            number_of_houses = instruction[1]
             square = board.get_square_by_name(square_name)
+
+            # We check that it is a Street, and not any other type of square...
             if(not isinstance(square, Street)):
                 continue
 
@@ -378,9 +380,19 @@ class Game(object):
         # We check that each street to built on is part of a set wholly
         # owned by the player. (Note that this is done after taking the
         # money, as this may have affected the ownership.)
-        # TODO: finish house buying
+        for instruction in build_instructions_with_streets:
+            street = instruction[2]
+            if(street.street_set not in current_player.state.owned_sets):
+                # The player does not have the whole unmortgaged set
+                # for this property, so we roll back...
+                self.give_money_to_player(current_player, total_cost)
+                return
 
-
+        # Everything looks OK, so we build the houses...
+        for instruction in build_instructions_with_streets:
+            street = instruction[2]
+            number_of_houses = instruction[1]
+            street.number_of_houses += number_of_houses
 
     def _mortgage_properties(self, current_player):
         '''
