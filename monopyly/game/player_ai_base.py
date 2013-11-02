@@ -160,10 +160,15 @@ class PlayerAIBase(object):
         - You must own a whole set of unmortgaged properties before you can
           build houses on it.
 
+        - You can build on multiple sets in one turn. Just specify all the streets
+          and houses you want to build.
+
         - Build five houses on a property to have a "hotel".
 
         - Sets must end up with 'balanced' housing. No square in a set can
-          have more than one more house than any other.
+          have more than one more house than any other. If you request an
+          unbalanced build, the whole transaction will be rolled back, even
+          if it includes balanced building on other sets as well.
 
         - If you do not have (or cannot raise) enough money to build all the
           houses specified, the whole transaction will be rolled back. Between

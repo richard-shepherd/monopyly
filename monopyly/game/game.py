@@ -339,60 +339,140 @@ class Game(object):
         '''
         We give the current player the option to build houses.
         '''
-        # We ask the player if he wants to build any houses...
+        # We ask the player if he wants to build any houses.
+        # build_instructions is a list of tuples like:
+        # (street_name, number_of_houses)
         build_instructions = current_player.ai.build_houses(
             self.state.copy(),
             current_player.state.copy())
         if(not build_instructions):
             return
 
-        # We first calculate and take the money. This gives the
-        # player the chance to mortgage properties to make deals.
-        # We can then perform a few checks that the transaction is
-        # valid before doing the building.
-
-        # We calculate the total cost, and also create a new list
-        # including the Street objects to be built on...
+        # We convert the square names into Street objects.
+        # Any squares which are not streets will be ignored.
         board = self.state.board
         build_instructions_with_streets = []
-        total_cost = 0
         for instruction in build_instructions:
-            # We find the Street object to be built on...
-            square_name = instruction[0]
-            number_of_houses = instruction[1]
-            square = board.get_square_by_name(square_name)
+            square = board.get_square_by_name(instruction[0])
+            if(isinstance(square, Street)):
+                build_instructions_with_streets.append((instruction[0], instruction[1], square))
 
-            # We check that it is a Street, and not any other type of square...
-            if(not isinstance(square, Street)):
-                continue
+        # There are a number of ways that building can fail. Some are
+        # hard to see without doing the transaction first. So we first do
+        # the building and take the money then check that everything looks
+        # OK. If not, we roll back...
+        self._build_houses_and_take_money(current_player, build_instructions_with_streets)
 
-            build_instructions_with_streets.append((square_name, number_of_houses, square))
-            total_cost += (number_of_houses * square.house_price)
-
-        # We take the money, and check that the player had enough
-        # money for this...
-        self.take_money_from_player(current_player, total_cost)
+        # Did the player have enough money?
         if(current_player.state.cash < 0):
-            # The player did not have enough money, so we roll back...
-            self.give_money_to_player(current_player, total_cost)
+            self._roll_back_house_building(current_player, build_instructions_with_streets)
             return
 
-        # We check that each street to built on is part of a set wholly
-        # owned by the player. (Note that this is done after taking the
-        # money, as this may have affected the ownership.)
+        # We check each street to see if it looks as we expect...
         for instruction in build_instructions_with_streets:
+            number_of_houses = instruction[1]
             street = instruction[2]
-            if(street.street_set not in current_player.state.owned_sets):
-                # The player does not have the whole unmortgaged set
-                # for this property, so we roll back...
-                self.give_money_to_player(current_player, total_cost)
+
+            # Did the player try to build a -ve number of houses?
+            if(number_of_houses < 0):
+                self._roll_back_house_building(current_player, build_instructions_with_streets)
                 return
 
-        # Everything looks OK, so we build the houses...
-        for instruction in build_instructions_with_streets:
+            # Does the street have more than five houses?
+            if(street.number_of_houses > 5):
+                self._roll_back_house_building(current_player, build_instructions_with_streets)
+                return
+
+            # Is the set that this street is a part of wholly owned by
+            # the current player, and unmortgaged?
+            if(street.street_set not in current_player.state.owned_sets):
+                self._roll_back_house_building(current_player, build_instructions_with_streets)
+                return
+
+
+
+
+
+        ## We first calculate and take the money. This gives the
+        ## player the chance to mortgage properties to make deals.
+        ## We can then perform a few checks that the transaction is
+        ## valid before doing the building.
+        #
+        ## We calculate the total cost, and also create a new list
+        ## including the Street objects to be built on...
+        #board = self.state.board
+        #build_instructions_with_streets = []
+        #total_cost = 0
+        #for instruction in build_instructions:
+        #    # We find the Street object to be built on...
+        #    square_name = instruction[0]
+        #    number_of_houses = instruction[1]
+        #    square = board.get_square_by_name(square_name)
+        #
+        #    # We check that it is a Street, and not any other type of square...
+        #    if(not isinstance(square, Street)):
+        #        continue
+        #
+        #    build_instructions_with_streets.append((square_name, number_of_houses, square))
+        #    total_cost += (number_of_houses * square.house_price)
+        #
+        ## We take the money, and check that the player had enough
+        ## money for this...
+        #self.take_money_from_player(current_player, total_cost)
+        #if(current_player.state.cash < 0):
+        #    # The player did not have enough money, so we roll back...
+        #    self.give_money_to_player(current_player, total_cost)
+        #    return
+        #
+        ## We check that each street to built on is part of a set wholly
+        ## owned by the player. (Note that this is done after taking the
+        ## money, as this may have affected the ownership.)
+        #for instruction in build_instructions_with_streets:
+        #    street = instruction[2]
+        #    if(street.street_set not in current_player.state.owned_sets):
+        #        # The player does not have the whole unmortgaged set
+        #        # for this property, so we roll back...
+        #        self.give_money_to_player(current_player, total_cost)
+        #        return
+        #
+        ## Everything looks OK, so we build the houses...
+        #for instruction in build_instructions_with_streets:
+        #    street = instruction[2]
+        #    number_of_houses = instruction[1]
+        #    street.number_of_houses += number_of_houses
+
+    def _build_houses_and_take_money(self, current_player, build_instructions):
+        '''
+        Builds the houses passed in and takes the money from the player.
+
+        build_instructions is a list of tuples like:
+        (square_name, number_of_houses, Street-object)
+        '''
+        # We build the houses...
+        total_cost = 0
+        for instruction in build_instructions:
             street = instruction[2]
             number_of_houses = instruction[1]
             street.number_of_houses += number_of_houses
+            total_cost += (street.house_price * number_of_houses)
+
+        # And take the money...
+        self.take_money_from_player(current_player, total_cost)
+
+    def _roll_back_house_building(self, current_player, build_instructions):
+        '''
+        Removes the houses specified and refunds the money.
+        '''
+        # We remove the houses...
+        total_cost = 0
+        for instruction in build_instructions:
+            street = instruction[2]
+            number_of_houses = instruction[1]
+            street.number_of_houses -= number_of_houses
+            total_cost += (street.house_price * number_of_houses)
+
+        # And refund the money...
+        self.give_money_to_player(current_player, total_cost)
 
     def _mortgage_properties(self, current_player):
         '''
