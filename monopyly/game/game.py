@@ -386,11 +386,20 @@ class Game(object):
 
             # We check if the set that this street is part of has been
             # built in a balanced way...
-            properties_in_set = self.state.board.get_properties_for_set(street.street_set)
-            houses_for_each_property = [p.number_of_houses for p in properties_in_set]
-            if(max(houses_for_each_property) - min(houses_for_each_property) > 1):
+            if(not self._set_has_balanced_houses(street.street_set)):
                 self._roll_back_house_building(current_player, instructions_with_streets)
                 return
+
+    def _set_has_balanced_houses(self, street_set):
+        '''
+        Returns True if the set has balanced housing, False if not.
+        '''
+        properties_in_set = self.state.board.get_properties_for_set(street_set)
+        houses_for_each_property = [p.number_of_houses for p in properties_in_set]
+        if(max(houses_for_each_property) - min(houses_for_each_property) <= 1):
+            return True
+        else:
+            return False
 
     def _build_houses_and_take_money(self, current_player, build_instructions):
         '''
@@ -501,6 +510,11 @@ class Game(object):
 
             # We check that the street belongs to the current player...
             if(street.owner_player_number != current_player.state.player_number):
+                self._replace_houses(instructions_with_streets)
+                return
+
+            # Will the sale result in unbalanced housing?
+            if(not self._set_has_balanced_houses(street.street_set)):
                 self._replace_houses(instructions_with_streets)
                 return
 

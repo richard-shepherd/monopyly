@@ -1,7 +1,6 @@
 from monopyly import *
 from testing_utils import *
 
-# TODO: unbalanced house selling
 
 class PlayerWhoSellsHouses(DefaultPlayerAI):
     '''
@@ -145,6 +144,51 @@ def test_selling_another_players_houses():
     assert pall_mall.number_of_houses == 4
     assert whitehall.number_of_houses == 4
     assert northumberland_avenue.number_of_houses == 4
+    assert player.state.cash == 1300
+
+
+def test_unbalanced_selling():
+    '''
+    Tests selling houses where the sale will result in houses
+    on the set not being balanced.
+
+    The whole transaction should be rolled back, even if includes
+    selling on other sets in a balanced way.
+    '''
+    # The player will sell two houses on Pall Mall and Whitehall, but try to leave
+    # four houses on Northumberland Ave...
+    game = Game()
+    player = game.add_player(PlayerWhoSellsHouses(
+        [(Square.Name.PALL_MALL, 2),
+         (Square.Name.WHITEHALL, 2),
+         (Square.Name.OLD_KENT_ROAD, 1),
+         (Square.Name.WHITECHAPEL_ROAD, 1)]))
+
+    # We give the player the pink set with four houses on each property,
+    # and the brown set with three houses on each...
+    pall_mall = game.give_property_to_player(player, Square.Name.PALL_MALL)
+    whitehall = game.give_property_to_player(player, Square.Name.WHITEHALL)
+    northumberland_avenue = game.give_property_to_player(player, Square.Name.NORTHUMBERLAND_AVENUE)
+    old_ken_road = game.give_property_to_player(player, Square.Name.OLD_KENT_ROAD)
+    whitechapel_road = game.give_property_to_player(player, Square.Name.WHITECHAPEL_ROAD)
+    pall_mall.number_of_houses = 4
+    whitehall.number_of_houses = 4
+    northumberland_avenue.number_of_houses = 4
+    old_ken_road.number_of_houses = 3
+    whitechapel_road.number_of_houses = 3
+
+    # We need to trigger a fine, so we start the player at Go
+    # and move them to Income Tax...
+    player.state.square = 0
+    game.dice = MockDice([(1, 3)])
+    game.play_one_turn(player)
+
+    # No selling should have occurred, and only the tax taken...
+    assert pall_mall.number_of_houses == 4
+    assert whitehall.number_of_houses == 4
+    assert northumberland_avenue.number_of_houses == 4
+    assert old_ken_road.number_of_houses == 3
+    assert whitechapel_road.number_of_houses == 3
     assert player.state.cash == 1300
 
 

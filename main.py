@@ -9,6 +9,7 @@ from monopyly import Board
 # TODO: What do we do if the AI passes back an unexpected type of object?
 # We need to avoid the game blowing up.
 # Look at: https://pypi.python.org/pypi/typecheck
+# OR: maybe this is just caught with the try-catch thing.
 
 
 if(__name__ == "__main__"):
