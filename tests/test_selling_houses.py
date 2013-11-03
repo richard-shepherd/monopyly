@@ -1,8 +1,6 @@
 from monopyly import *
 from testing_utils import *
 
-# TODO: player sells houses he doesn't have
-
 # TODO: player sells another player's houses
 
 # TODO: unbalanced house selling
@@ -53,4 +51,71 @@ def test_simple_selling():
     assert whitehall.number_of_houses == 2
     assert northumberland_avenue.number_of_houses == 3
     assert player.state.cash == 1550
+
+
+def test_sell_negative_number_of_houses():
+    '''
+    Tests that you cannot sell a -ve number of houses as a sneaky way
+    of buying houses cheaply.
+    '''
+    game = Game()
+    player = game.add_player(PlayerWhoSellsHouses(
+        [(Square.Name.PALL_MALL, -5),
+         (Square.Name.WHITEHALL, -5),
+         (Square.Name.NORTHUMBERLAND_AVENUE, -5)]))
+
+    # We give the player the pink set...
+    pall_mall = game.give_property_to_player(player, Square.Name.PALL_MALL)
+    whitehall = game.give_property_to_player(player, Square.Name.WHITEHALL)
+    northumberland_avenue = game.give_property_to_player(player, Square.Name.NORTHUMBERLAND_AVENUE)
+
+    # We need to trigger a fine, so we start the player at Go
+    # and move them to Income Tax...
+    player.state.square = 0
+    game.dice = MockDice([(1, 3)])
+    game.play_one_turn(player)
+
+    # No houses should have been 'sold'...
+    assert pall_mall.number_of_houses == 0
+    assert whitehall.number_of_houses == 0
+    assert northumberland_avenue.number_of_houses == 0
+
+    # Only the tax should have been paid...
+    assert player.state.cash == 1300
+
+
+def test_selling_unowned_houses():
+    '''
+    Players should not be able to sell houses they do not have.
+    '''
+    game = Game()
+    player = game.add_player(PlayerWhoSellsHouses(
+        [(Square.Name.PALL_MALL, 100),
+         (Square.Name.WHITEHALL, 100),
+         (Square.Name.NORTHUMBERLAND_AVENUE, 100)]))
+
+    # We give the player the pink set with four houses on
+    # each property...
+    pall_mall = game.give_property_to_player(player, Square.Name.PALL_MALL)
+    whitehall = game.give_property_to_player(player, Square.Name.WHITEHALL)
+    northumberland_avenue = game.give_property_to_player(player, Square.Name.NORTHUMBERLAND_AVENUE)
+    pall_mall.number_of_houses = 4
+    whitehall.number_of_houses = 4
+    northumberland_avenue.number_of_houses = 4
+
+    # We need to trigger a fine, so we start the player at Go
+    # and move them to Income Tax...
+    player.state.square = 0
+    game.dice = MockDice([(1, 3)])
+    game.play_one_turn(player)
+
+    # Only the tax should have been taken...
+    assert player.state.cash == 1300
+
+    # No sale should have been made...
+    assert pall_mall.number_of_houses == 4
+    assert whitehall.number_of_houses == 4
+    assert northumberland_avenue.number_of_houses == 4
+
+
 

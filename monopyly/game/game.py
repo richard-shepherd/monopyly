@@ -481,14 +481,28 @@ class Game(object):
 
         # We first remove the houses from the board, then check that things
         # look good. We may have to replace them if things don't look OK.
-        sale_value = self._sell_houses_remove_houses(instructions_with_streets)
+        sale_value = self._remove_houses(instructions_with_streets)
 
-        #
+        # A few checks...
+        for instruction in instructions_with_streets:
+
+            # We check that the player isn't trying to sell a negative
+            # number of houses. (As a sneaky way of buying houses cheaply.)
+            number_of_houses = instruction[1]
+            if(number_of_houses < 0):
+                self._replace_houses(instructions_with_streets)
+                return
+
+            # We check that the property has been left with between 0 and 5 houses...
+            street = instruction[2]
+            if(street.number_of_houses < 0 or street.number_of_houses > 5):
+                self._replace_houses(instructions_with_streets)
+                return
 
         # The sale looks good, so we give the player the money...
         self.give_money_to_player(current_player, sale_value)
 
-    def _sell_houses_remove_houses(self, instructions):
+    def _remove_houses(self, instructions):
         '''
         Removes houses from the board when they are being sold.
 
@@ -504,7 +518,7 @@ class Game(object):
 
         return total_sale_value
 
-    def _sell_houses_replace_houses(self, instructions):
+    def _replace_houses(self, instructions):
         '''
         Replaces houses on the board if a sale of them was unsuccessful.
         '''
