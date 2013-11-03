@@ -499,6 +499,11 @@ class Game(object):
                 self._replace_houses(instructions_with_streets)
                 return
 
+            # We check that the street belongs to the current player...
+            if(street.owner_player_number != current_player.state.player_number):
+                self._replace_houses(instructions_with_streets)
+                return
+
         # The sale looks good, so we give the player the money...
         self.give_money_to_player(current_player, sale_value)
 

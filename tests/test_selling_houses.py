@@ -1,8 +1,6 @@
 from monopyly import *
 from testing_utils import *
 
-# TODO: player sells another player's houses
-
 # TODO: unbalanced house selling
 
 class PlayerWhoSellsHouses(DefaultPlayerAI):
@@ -116,6 +114,38 @@ def test_selling_unowned_houses():
     assert pall_mall.number_of_houses == 4
     assert whitehall.number_of_houses == 4
     assert northumberland_avenue.number_of_houses == 4
+
+
+def test_selling_another_players_houses():
+    '''
+    Player tries to sell houses belonging to another player.
+    '''
+    game = Game()
+    owner = game.add_player(DefaultPlayerAI())
+    player = game.add_player(PlayerWhoSellsHouses(
+        [(Square.Name.PALL_MALL, 2),
+         (Square.Name.WHITEHALL, 2),
+         (Square.Name.NORTHUMBERLAND_AVENUE, 2)]))
+
+    # We give the owner the pink set with four houses on each property...
+    pall_mall = game.give_property_to_player(owner, Square.Name.PALL_MALL)
+    whitehall = game.give_property_to_player(owner, Square.Name.WHITEHALL)
+    northumberland_avenue = game.give_property_to_player(owner, Square.Name.NORTHUMBERLAND_AVENUE)
+    pall_mall.number_of_houses = 4
+    whitehall.number_of_houses = 4
+    northumberland_avenue.number_of_houses = 4
+
+    # We need to trigger a fine, so we start the player at Go
+    # and move them to Income Tax...
+    player.state.square = 0
+    game.dice = MockDice([(1, 3)])
+    game.play_one_turn(player)
+
+    # No houses should have been sold, and only the tax paid...
+    assert pall_mall.number_of_houses == 4
+    assert whitehall.number_of_houses == 4
+    assert northumberland_avenue.number_of_houses == 4
+    assert player.state.cash == 1300
 
 
 
