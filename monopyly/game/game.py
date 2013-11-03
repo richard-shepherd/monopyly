@@ -441,6 +441,7 @@ class Game(object):
             current_player.state.copy())
 
         # We mortgage them...
+        total_mortgage_value = 0
         for property_name in property_names_to_mortgage:
             # We check that the square is a property...
             square = self.state.board.get_square_by_name(property_name)
@@ -465,10 +466,11 @@ class Game(object):
 
             # We mortgage the property...
             square.is_mortgaged = True
-            mortgage_value = square.mortgage_value
-            self.give_money_to_player(current_player, mortgage_value)
+            total_mortgage_value += square.mortgage_value
 
-        # We update the owned sets, as this may have changed...
+        # We give the money to the player and update the owned
+        # sets, as they may have changed...
+        self.give_money_to_player(current_player, total_mortgage_value)
         self._update_sets()
 
     def _sell_houses(self, current_player):

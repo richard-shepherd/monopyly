@@ -8,6 +8,7 @@ from monopyly import Board
 
 # TODO: What do we do if the AI passes back an unexpected type of object?
 # We need to avoid the game blowing up.
+# Look at: https://pypi.python.org/pypi/typecheck
 
 # TODO: Avoid giving money and taking money in the same "event" if possible
 # e.g. when buying houses, mortgaging etc.
