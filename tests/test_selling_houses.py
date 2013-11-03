@@ -1,6 +1,11 @@
 from monopyly import *
 from testing_utils import *
 
+# TODO: player sells houses he doesn't have
+
+# TODO: player sells another player's houses
+
+# TODO: unbalanced house selling
 
 class PlayerWhoSellsHouses(DefaultPlayerAI):
     '''
@@ -46,6 +51,6 @@ def test_simple_selling():
     # houses...
     assert pall_mall.number_of_houses == 2
     assert whitehall.number_of_houses == 2
-    assert pall_mall.number_of_houses == 3
+    assert northumberland_avenue.number_of_houses == 3
     assert player.state.cash == 1550
 

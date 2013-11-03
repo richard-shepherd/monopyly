@@ -349,45 +349,39 @@ class Game(object):
         if(not build_instructions):
             return
 
-        # We convert the square names into Street objects.
-        # Any squares which are not streets will be ignored.
-        board = self.state.board
-        build_instructions_with_streets = []
-        for instruction in build_instructions:
-            square = board.get_square_by_name(instruction[0])
-            if(isinstance(square, Street)):
-                build_instructions_with_streets.append((instruction[0], instruction[1], square))
+        # We find the Street objects for the square names provided...
+        instructions_with_streets = self._get_instructions_with_streets(build_instructions)
 
         # There are a number of ways that building can fail. Some are
         # hard to see without doing the transaction first. So we first do
         # the building and take the money then check that everything looks
         # OK. If not, we roll back...
-        self._build_houses_and_take_money(current_player, build_instructions_with_streets)
+        self._build_houses_and_take_money(current_player, instructions_with_streets)
 
         # Did the player have enough money?
         if(current_player.state.cash < 0):
-            self._roll_back_house_building(current_player, build_instructions_with_streets)
+            self._roll_back_house_building(current_player, instructions_with_streets)
             return
 
         # We check each street to see if it looks as we expect...
-        for instruction in build_instructions_with_streets:
+        for instruction in instructions_with_streets:
             number_of_houses = instruction[1]
             street = instruction[2]
 
             # Did the player try to build a -ve number of houses?
             if(number_of_houses < 0):
-                self._roll_back_house_building(current_player, build_instructions_with_streets)
+                self._roll_back_house_building(current_player, instructions_with_streets)
                 return
 
             # Does the street have more than five houses?
             if(street.number_of_houses > 5):
-                self._roll_back_house_building(current_player, build_instructions_with_streets)
+                self._roll_back_house_building(current_player, instructions_with_streets)
                 return
 
             # Is the set that this street is a part of wholly owned by
             # the current player, and unmortgaged?
             if(street.street_set not in current_player.state.owned_sets):
-                self._roll_back_house_building(current_player, build_instructions_with_streets)
+                self._roll_back_house_building(current_player, instructions_with_streets)
                 return
 
             # We check if the set that this street is part of has been
@@ -395,7 +389,7 @@ class Game(object):
             properties_in_set = self.state.board.get_properties_for_set(street.street_set)
             houses_for_each_property = [p.number_of_houses for p in properties_in_set]
             if(max(houses_for_each_property) - min(houses_for_each_property) > 1):
-                self._roll_back_house_building(current_player, build_instructions_with_streets)
+                self._roll_back_house_building(current_player, instructions_with_streets)
                 return
 
     def _build_houses_and_take_money(self, current_player, build_instructions):
@@ -481,3 +475,60 @@ class Game(object):
         sale_instructions = current_player.ai.sell_houses(
             self.state.copy(),
             current_player.state.copy())
+
+        # We convert the street names into Street objects...
+        instructions_with_streets = self._get_instructions_with_streets(sale_instructions)
+
+        # We first remove the houses from the board, then check that things
+        # look good. We may have to replace them if things don't look OK.
+        sale_value = self._sell_houses_remove_houses(instructions_with_streets)
+
+        #
+
+        # The sale looks good, so we give the player the money...
+        self.give_money_to_player(current_player, sale_value)
+
+    def _sell_houses_remove_houses(self, instructions):
+        '''
+        Removes houses from the board when they are being sold.
+
+        Returns the total sale value.
+        '''
+        total_sale_value = 0
+        for instruction in instructions:
+            street = instruction[2]
+            number_of_houses = instruction[1]
+            street.number_of_houses -= number_of_houses
+            sale_price = int(street.house_price / 2)
+            total_sale_value += (number_of_houses * sale_price)
+
+        return total_sale_value
+
+    def _sell_houses_replace_houses(self, instructions):
+        '''
+        Replaces houses on the board if a sale of them was unsuccessful.
+        '''
+        for instruction in instructions:
+            street = instruction[2]
+            number_of_houses = instruction[1]
+            street.number_of_houses += number_of_houses
+
+    def _get_instructions_with_streets(self, instructions):
+        '''
+        Takes a list of house-build or house-sale instructions and
+        converts it to a list including the Street object.
+        In:  [(square_name, number_of_houses), ...]
+        Out: [(square_name, number_of_houses, street_object), ...]
+        '''
+        board = self.state.board
+        instructions_with_streets = []
+
+        # We convert each instruction...
+        for instruction in instructions:
+            square = board.get_square_by_name(instruction[0])
+
+            # We only include the square if it is a Street...
+            if(isinstance(square, Street)):
+                instructions_with_streets.append((instruction[0], instruction[1], square))
+
+        return instructions_with_streets
