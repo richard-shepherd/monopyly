@@ -31,6 +31,9 @@ class PlayerAIBase(object):
         '''
         BUY = 0
         DO_NOT_BUY = 1
+        PAY_TEN_POUND_FINE = 2
+        TAKE_A_CHANCE = 3
+
 
     def start_of_game(self, player_number):
         '''
@@ -120,12 +123,11 @@ class PlayerAIBase(object):
         Called when the player picks up the "Pay a £10 fine or take a Chance" card.
 
         Return either:
-            TenPoundFineOrTakeAChance.Action.PAY_TEN_POUND_FINE
+            PlayerAIBase.Action.PAY_TEN_POUND_FINE
             or
-            TenPoundFineOrTakeAChance.Action.TAKE_A_CHANCE
+            PlayerAIBase.Action.TAKE_A_CHANCE
         '''
-        # TODO: move this action to this class
-        return TenPoundFineOrTakeAChance.Action.PAY_TEN_POUND_FINE
+        return PlayerAIBase.Action.PAY_TEN_POUND_FINE
 
     def property_offered_for_auction(self, game_state, player_state, property_name, face_value):
         '''
