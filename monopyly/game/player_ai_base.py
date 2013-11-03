@@ -1,5 +1,3 @@
-from ..cards.ten_pound_fine_or_take_a_chance import TenPoundFineOrTakeAChance
-
 
 class PlayerAIBase(object):
     '''
@@ -29,11 +27,18 @@ class PlayerAIBase(object):
         '''
         An 'enum' for the various actions an AI can perform.
         '''
+        # Buying houses...
         BUY = 0
         DO_NOT_BUY = 1
+
+        # Pay a £10 or take a Chance...
         PAY_TEN_POUND_FINE = 2
         TAKE_A_CHANCE = 3
 
+        # Getting out of jail...
+        BUY_WAY_OUT_OF_JAIL = 4
+        PLAY_GET_OUT_OF_JAIL_FREE_CARD = 5
+        STAY_IN_JAIL = 6
 
     def start_of_game(self, player_number):
         '''
@@ -234,3 +239,18 @@ class PlayerAIBase(object):
         '''
         return []
 
+    def get_out_of_jail(self, player_state):
+        '''
+        Called in the player's turn, before the dice are rolled, if the player
+        is in jail.
+
+        There are three possible return values:
+        PlayerAIBase.Action.BUY_WAY_OUT_OF_JAIL
+        PlayerAIBase.Action.PLAY_GET_OUT_OF_JAIL_FREE_CARD
+        PlayerAIBase.Action.STAY_IN_JAIL
+
+        Buying your way out of jail will cost £50.
+
+        The default action is STAY_IN_JAIL.
+        '''
+        return PlayerAIBase.Action.STAY_IN_JAIL
