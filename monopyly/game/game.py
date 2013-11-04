@@ -90,6 +90,7 @@ class Game(object):
 
         # TODO: If the player is in jail, they can buy themselves out,
         # or play Get Out Of Jail Free.
+        #if(current_player.state.)
 
         # This while loop manages rolling again if the player
         # rolls doubles...
@@ -138,7 +139,7 @@ class Game(object):
 
         # If the player has ended up in jail, their turn is over
         # (even if doubles were rolled)...
-        if(current_player.state.in_jail is True):
+        if(current_player.state.is_in_jail is True):
             roll_again = Game.Action.DO_NOT_ROLL_AGAIN
 
         return roll_again, number_of_doubles_rolled
@@ -203,7 +204,7 @@ class Game(object):
         '''
         Sends the player to jail.
         '''
-        player.state.in_jail = True
+        player.state.is_in_jail = True
         player.state.number_of_turns_in_jail = 0
         player.state.square = self.state.board.get_index(Square.Name.JAIL)
         self.player_has_changed_square(player)

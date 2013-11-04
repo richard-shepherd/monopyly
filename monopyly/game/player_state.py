@@ -43,7 +43,7 @@ class PlayerState(object):
 
         # Whether the player is in jail, and if so how many turns they
         # have been there...
-        self.in_jail = False
+        self.is_in_jail = False
         self.number_of_turns_in_jail = 0
 
         # The collection of complete unmortgaged sets owned by this player.
