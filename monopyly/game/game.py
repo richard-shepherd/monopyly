@@ -364,10 +364,7 @@ class Game(object):
             return
 
         # We check each street to see if it looks as we expect...
-        for instruction in instructions_with_streets:
-            number_of_houses = instruction[1]
-            street = instruction[2]
-
+        for (square_name, number_of_houses, street) in instructions_with_streets:
             # Did the player try to build a -ve number of houses?
             if(number_of_houses < 0):
                 self._roll_back_house_building(current_player, instructions_with_streets)
@@ -410,9 +407,7 @@ class Game(object):
         '''
         # We build the houses...
         total_cost = 0
-        for instruction in build_instructions:
-            street = instruction[2]
-            number_of_houses = instruction[1]
+        for (square_name, number_of_houses, street) in build_instructions:
             street.number_of_houses += number_of_houses
             total_cost += (street.house_price * number_of_houses)
 
@@ -425,9 +420,7 @@ class Game(object):
         '''
         # We remove the houses...
         total_cost = 0
-        for instruction in build_instructions:
-            street = instruction[2]
-            number_of_houses = instruction[1]
+        for (square_name, number_of_houses, street) in build_instructions:
             street.number_of_houses -= number_of_houses
             total_cost += (street.house_price * number_of_houses)
 
@@ -493,17 +486,15 @@ class Game(object):
         sale_value = self._remove_houses(instructions_with_streets)
 
         # A few checks...
-        for instruction in instructions_with_streets:
+        for (square_name, number_of_houses, street) in instructions_with_streets:
 
             # We check that the player isn't trying to sell a negative
             # number of houses. (As a sneaky way of buying houses cheaply.)
-            number_of_houses = instruction[1]
             if(number_of_houses < 0):
                 self._replace_houses(instructions_with_streets)
                 return
 
             # We check that the property has been left with between 0 and 5 houses...
-            street = instruction[2]
             if(street.number_of_houses < 0 or street.number_of_houses > 5):
                 self._replace_houses(instructions_with_streets)
                 return
@@ -528,9 +519,7 @@ class Game(object):
         Returns the total sale value.
         '''
         total_sale_value = 0
-        for instruction in instructions:
-            street = instruction[2]
-            number_of_houses = instruction[1]
+        for (square_name, number_of_houses, street) in instructions:
             street.number_of_houses -= number_of_houses
             sale_price = int(street.house_price / 2)
             total_sale_value += (number_of_houses * sale_price)
@@ -541,9 +530,7 @@ class Game(object):
         '''
         Replaces houses on the board if a sale of them was unsuccessful.
         '''
-        for instruction in instructions:
-            street = instruction[2]
-            number_of_houses = instruction[1]
+        for (square_name, number_of_houses, street) in instructions:
             street.number_of_houses += number_of_houses
 
     def _get_instructions_with_streets(self, instructions):
@@ -557,11 +544,11 @@ class Game(object):
         instructions_with_streets = []
 
         # We convert each instruction...
-        for instruction in instructions:
-            square = board.get_square_by_name(instruction[0])
+        for (square_name, number_of_houses) in instructions:
+            square = board.get_square_by_name(square_name)
 
             # We only include the square if it is a Street...
             if(isinstance(square, Street)):
-                instructions_with_streets.append((instruction[0], instruction[1], square))
+                instructions_with_streets.append((square_name, number_of_houses, square))
 
         return instructions_with_streets
