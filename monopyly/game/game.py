@@ -87,6 +87,9 @@ class Game(object):
         for player in self.state.players:
             player.ai.start_of_turn(self.state.copy(), current_player.state.player_number)
 
+        # If the player is in jail, they have a chance to buy their way out...
+        self._get_out_of_jail(current_player)
+
         # TODO: unmortgage properties
 
         # The player can build houses...
@@ -570,3 +573,22 @@ class Game(object):
                 instructions_with_streets.append((square_name, number_of_houses, square))
 
         return instructions_with_streets
+
+    def _get_out_of_jail(self, current_player):
+        '''
+        If the player is in jail, they get a chance to buy their way out
+        or to play a Get Out Of Jail Free card.
+        '''
+        if(not current_player.state.is_in_jail):
+            return
+
+        # We ask the player if they want to buy their way out or play a card...
+        action = current_player.ai.get_out_of_jail(current_player.state.copy())
+        if(action == PlayerAIBase.Action.BUY_WAY_OUT_OF_JAIL):
+            self.take_money_from_player(current_player, 50)
+            current_player.state.is_in_jail = False
+            current_player.state.number_of_turns_in_jail = 0
+        elif(action == PlayerAIBase.Action.PLAY_GET_OUT_OF_JAIL_FREE_CARD):
+            pass
+
+
