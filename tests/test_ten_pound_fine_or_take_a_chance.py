@@ -23,9 +23,7 @@ def test_ten_pound_fine_or_take_a_chance():
     player_who_takes_a_chance = game.add_player(PlayerWhoTakesAChance())
 
     # We mock the Chance deck...
-    mock_chance_deck = MockCardDeck()
-    mock_chance_deck.set_next_card(RewardCard(120))
-    game.state.board.chance_deck = mock_chance_deck
+    game.state.board.chance_deck = MockCardDeck(RewardCard(120))
 
     # We play the card on the player who pays the fine...
     card = TenPoundFineOrTakeAChance()

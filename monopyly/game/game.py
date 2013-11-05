@@ -585,10 +585,15 @@ class Game(object):
         # We ask the player if they want to buy their way out or play a card...
         action = current_player.ai.get_out_of_jail(current_player.state.copy())
         if(action == PlayerAIBase.Action.BUY_WAY_OUT_OF_JAIL):
+            # The player is buying their way out...
             self.take_money_from_player(current_player, 50)
             current_player.state.is_in_jail = False
             current_player.state.number_of_turns_in_jail = 0
         elif(action == PlayerAIBase.Action.PLAY_GET_OUT_OF_JAIL_FREE_CARD):
-            pass
+            # The player is playing a Get Out Of Jail Free card...
+            if(current_player.state.number_of_get_out_of_jail_free_cards >= 1):
+                current_player.state.number_of_get_out_of_jail_free_cards -= 1
+                current_player.state.is_in_jail = False
+                current_player.state.number_of_turns_in_jail = 0
 
 

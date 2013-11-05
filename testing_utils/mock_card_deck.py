@@ -7,11 +7,13 @@ class MockCardDeck(Deck):
     control which card is taken next.
     '''
 
-    def __init__(self):
+    def __init__(self, next_card=None):
         '''
         The 'constructor'.
         '''
         super().__init__()
+        if(next_card):
+            self.set_next_card(next_card)
 
     def set_next_card(self, card):
         '''

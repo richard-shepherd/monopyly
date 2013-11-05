@@ -1,9 +1,3 @@
-# TODO: player buys out of jail on turn 1
-
-# TODO: player plays get out of jail free, has two cards
-
-# TODO: player plays GOOJF, but doesn't have the card.
-
 # TODO: player rolls 7 and gets a CommunityChest card to go back to jail
 
 
@@ -114,6 +108,84 @@ def test_buy_way_out():
     game.play_one_turn(player)
     assert player.state.square == 18
     assert player.state.is_in_jail is False
+    assert player.state.number_of_turns_in_jail == 0
+    assert player.state.cash == 1450
+
+
+def test_get_out_of_jail_free():
+    '''
+    The player has two Get Out Of Jail Free cards and plays one of them.
+    '''
+    # We create a game with a player, who we put in jail...
+    game = Game()
+    player = game.add_player(PlayerWhoGetsOutOfJail(PlayerAIBase.Action.PLAY_GET_OUT_OF_JAIL_FREE_CARD))
+    player.state.square = 10
+    player.state.is_in_jail = True
+    player.state.number_of_turns_in_jail = 0
+
+    # The player has two Get Out Of Jail Free cards...
+    player.state.number_of_get_out_of_jail_free_cards = 2
+
+    # The player plays the card then rolls 8...
+    game.dice = MockDice([(3, 5)])
+
+    # The player should have used a card and be on Marlborough Street...
+    game.play_one_turn(player)
+    assert player.state.square == 18
+    assert player.state.is_in_jail is False
+    assert player.state.number_of_turns_in_jail == 0
+    assert player.state.cash == 1500
+    assert player.state.number_of_get_out_of_jail_free_cards == 1
+
+
+def test_get_out_of_jail_free_no_card():
+    '''
+    The player tries to play a Get Out Of Jail Free card, but
+     doesn't actually have one.
+    '''
+    # We create a game with a player, who we put in jail...
+    game = Game()
+    player = game.add_player(PlayerWhoGetsOutOfJail(PlayerAIBase.Action.PLAY_GET_OUT_OF_JAIL_FREE_CARD))
+    player.state.square = 10
+    player.state.is_in_jail = True
+    player.state.number_of_turns_in_jail = 0
+
+    # The player has no Get Out Of Jail Free cards...
+    player.state.number_of_get_out_of_jail_free_cards = 0
+
+    # The player tries to play the card then rolls 8...
+    game.dice = MockDice([(3, 5)])
+
+    # The player should still be in jail...
+    game.play_one_turn(player)
+    assert player.state.square == 10
+    assert player.state.is_in_jail is True
+    assert player.state.number_of_turns_in_jail == 1
+    assert player.state.cash == 1500
+    assert player.state.number_of_get_out_of_jail_free_cards == 0
+
+
+def test_out_jail_and_straight_back_again():
+    '''
+    The player pays their way out, rolls a 7 and picks up a Community
+    Chest Go To Jail card.
+    '''
+    game = Game()
+    player = game.add_player(PlayerWhoGetsOutOfJail(PlayerAIBase.Action.BUY_WAY_OUT_OF_JAIL))
+    player.state.square = 10
+    player.state.is_in_jail = True
+    player.state.number_of_turns_in_jail = 0
+
+    # The player pays their way out then rolls 7 to land on Community Chest...
+    game.dice = MockDice([(3, 4)])
+
+    # The top Community Chest card is Go To Jail...
+    game.state.board.community_chest_deck = MockCardDeck(GoToJailCard())
+
+    # The player should be back in jail after paying £50...
+    game.play_one_turn(player)
+    assert player.state.square == 10
+    assert player.state.is_in_jail is True
     assert player.state.number_of_turns_in_jail == 0
     assert player.state.cash == 1450
 
