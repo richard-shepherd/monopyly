@@ -79,6 +79,10 @@ class Game(object):
         '''
         Plays one turn for one player.
         '''
+        # We keep a count of how many turns the player has been in jail for...
+        if(current_player.state.is_in_jail):
+            current_player.state.number_of_turns_in_jail += 1
+
         # We notify all players that this player's turn is starting...
         for player in self.state.players:
             player.ai.start_of_turn(self.state.copy(), current_player.state.player_number)
@@ -87,10 +91,6 @@ class Game(object):
 
         # The player can build houses...
         self._build_houses(current_player)
-
-        # TODO: If the player is in jail, they can buy themselves out,
-        # or play Get Out Of Jail Free.
-        #if(current_player.state.)
 
         # This while loop manages rolling again if the player
         # rolls doubles...
@@ -109,11 +109,29 @@ class Game(object):
         # We roll the dice and move the player...
         roll1, roll2 = self.dice.roll()
         self.most_recent_total_dice_roll = roll1 + roll2
+        doubles_rolled = (roll1 == roll2)
+
+        # If the player is in jail, we check if they rolled themself out...
+        if(current_player.state.is_in_jail):
+            if(not doubles_rolled and current_player.state.number_of_turns_in_jail < 3):
+                # They have not rolled doubles, so they stay in jail...
+                return Game.Action.DO_NOT_ROLL_AGAIN, 0
+            elif(not doubles_rolled and current_player.state.number_of_turns_in_jail == 3):
+                # It is the third turn in jail, so they must pay their way out...
+                self.take_money_from_player(current_player, 50)
+                current_player.state.is_in_jail = False
+                current_player.state.number_of_turns_in_jail = 0
+            else:
+                # Doubles were rolled, so the player gets out of jail without paying,
+                # but their turn will be over after this move even though doubles
+                # were rolled...
+                doubles_rolled = False # We 'pretend' that doubles weren't rolled.
+                current_player.state.is_in_jail = False
+                current_player.state.number_of_turns_in_jail = 0
 
         # We check if doubles was rolled...
         roll_again = Game.Action.DO_NOT_ROLL_AGAIN
-        if(roll1 == roll2):
-            # Doubles was rolled...
+        if(doubles_rolled):
             number_of_doubles_rolled += 1
             if(number_of_doubles_rolled == 3):
                 self.send_player_to_jail(current_player)
@@ -122,7 +140,6 @@ class Game(object):
                 roll_again = Game.Action.ROLL_AGAIN
 
         # We move the player to the new square...
-        # TODO: Player doesn't move if in Jail.
         current_player.state.square += self.most_recent_total_dice_roll
         if(current_player.state.square >= Board.NUMBER_OF_SQUARES):
             current_player.state.square -= Board.NUMBER_OF_SQUARES

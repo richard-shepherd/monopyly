@@ -1,5 +1,3 @@
-# TODO: player stays in jail: turn 1 and 2 has to pay on turn 3
-
 # TODO: player rolls doubles on third turn.
 
 # TODO: player buys out of jail on turn 1
@@ -9,6 +7,9 @@
 # TODO: player plays get out of jail free, has two cards
 
 # TODO: player plays GOOJF, but doesn't have the card.
+
+# TODO: player rolls 7 and gets a CommunityChest card to go back to jail
+
 from monopyly import *
 from testing_utils import *
 

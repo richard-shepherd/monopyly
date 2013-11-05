@@ -11,6 +11,7 @@ from monopyly import Board
 # Look at: https://pypi.python.org/pypi/typecheck
 # OR: maybe this is just caught with the try-catch thing.
 
+# TODO: graphs of cash and 'net worth'
 
 if(__name__ == "__main__"):
     board = Board()
