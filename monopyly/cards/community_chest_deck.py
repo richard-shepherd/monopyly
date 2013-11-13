@@ -35,7 +35,7 @@ class CommunityChestDeck(Deck):
         self.cards.append(RewardCard(25))
 
         # Get out of Jail Free...
-        self.cards.append(GetOutOfJailFree())
+        self.cards.append(GetOutOfJailFree(self))
 
         # Advance to "Go"...
         self.cards.append(AdvanceTo(Square.Name.GO))

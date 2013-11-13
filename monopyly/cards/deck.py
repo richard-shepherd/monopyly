@@ -34,7 +34,7 @@ class Deck(object):
         if(type(card) == GetOutOfJailFree):
             # The card is Get Out Of Jail Free.
             # We give it to the player...
-            player.state.number_of_get_out_of_jail_free_cards += 1
+            player.state.get_out_of_jail_free_cards.append(card)
             player.ai.got_get_out_of_jail_free_card()
 
             # And remove it from the deck...
@@ -47,3 +47,11 @@ class Deck(object):
             self.index += 1
             if(self.index >= number_of_cards):
                 self.index = 0
+
+    @property
+    def number_of_cards(self):
+        '''
+        Returns the number of cards in the deck.
+        '''
+        return len(self.cards)
+

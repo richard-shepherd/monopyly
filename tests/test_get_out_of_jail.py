@@ -1,6 +1,3 @@
-# TODO: player rolls 7 and gets a CommunityChest card to go back to jail
-
-
 from monopyly import *
 from testing_utils import *
 
@@ -124,7 +121,8 @@ def test_get_out_of_jail_free():
     player.state.number_of_turns_in_jail = 0
 
     # The player has two Get Out Of Jail Free cards...
-    player.state.number_of_get_out_of_jail_free_cards = 2
+    player.state.get_out_of_jail_free_cards.append(GetOutOfJailFree())
+    player.state.get_out_of_jail_free_cards.append(GetOutOfJailFree())
 
     # The player plays the card then rolls 8...
     game.dice = MockDice([(3, 5)])
@@ -149,9 +147,6 @@ def test_get_out_of_jail_free_no_card():
     player.state.square = 10
     player.state.is_in_jail = True
     player.state.number_of_turns_in_jail = 0
-
-    # The player has no Get Out Of Jail Free cards...
-    player.state.number_of_get_out_of_jail_free_cards = 0
 
     # The player tries to play the card then rolls 8...
     game.dice = MockDice([(3, 5)])
@@ -188,5 +183,54 @@ def test_out_jail_and_straight_back_again():
     assert player.state.is_in_jail is True
     assert player.state.number_of_turns_in_jail == 0
     assert player.state.cash == 1450
+
+
+def test_get_out_of_jail_free_card():
+    '''
+    Tests that you get a GOOJF card when you land on Chance or
+    Community Chest and it is the top card.
+
+    Also tests that it is removed from the deck, and replaced when
+    it is played.
+    '''
+    game = Game()
+    player = game.add_player(PlayerWhoGetsOutOfJail(PlayerAIBase.Action.PLAY_GET_OUT_OF_JAIL_FREE_CARD))
+
+    # We set up the chance deck with three cards, GOOJF on top...
+    mock_chance_deck = MockCardDeck()
+    mock_chance_deck.set_next_cards([GetOutOfJailFree(mock_chance_deck), RewardCard(100), FineCard(50)])
+    game.state.board.chance_deck = mock_chance_deck
+
+    # The player starts on Marlborough street and rolls four to land on
+    # Chance, where they pick up a GOOJF card...
+    player.state.square = 18
+    game.dice = MockDice([(1, 3)])
+    game.play_one_turn(player)
+
+    # We check that the player now has a GOOJF card, and that the
+    # Chance deck has one fewer card...
+    assert player.state.number_of_get_out_of_jail_free_cards == 1
+    assert game.state.board.chance_deck.number_of_cards == 2
+
+    # They now roll eight to land on Go To Jail, and in the turn after
+    # that they play the card...
+    game.dice = MockDice([(5, 3), (4, 6)])
+    game.play_one_turn(player)
+
+    # The player should be in jail and have not yet played the card...
+    assert player.state.is_in_jail is True
+    assert player.state.number_of_get_out_of_jail_free_cards == 1
+    assert game.state.board.chance_deck.number_of_cards == 2
+
+    game.play_one_turn(player)
+
+    # The player should be on Free Parking, not have the card and the
+    # card should be back in the deck...
+    assert player.state.is_in_jail is False
+    assert player.state.square == 20
+    assert player.state.number_of_get_out_of_jail_free_cards == 0
+    assert game.state.board.chance_deck.number_of_cards == 3
+
+
 
 

@@ -1,3 +1,6 @@
+from .deal_proposal import DealProposal
+from .deal_response import DealResponse
+
 
 class PlayerAIBase(object):
     '''
@@ -39,6 +42,17 @@ class PlayerAIBase(object):
         BUY_WAY_OUT_OF_JAIL = 4
         PLAY_GET_OUT_OF_JAIL_FREE_CARD = 5
         STAY_IN_JAIL = 6
+
+    class DealInfo(object):
+        '''
+        An 'enum' for the various outcomes from a deal.
+        '''
+        SUCCEEDED = 0
+        INVALID_DEAL_PROPOSED = 1
+        ASKED_FOR_TOO_MUCH_MONEY = 2
+        OFFERED_TOO_LITTLE_MONEY = 3
+        PLAYER_DID_NOT_HAVE_ENOUGH_MONEY = 4
+        DEAL_REJECTED = 5
 
     def start_of_game(self, player_number):
         '''
@@ -254,3 +268,110 @@ class PlayerAIBase(object):
         The default action is STAY_IN_JAIL.
         '''
         return PlayerAIBase.Action.STAY_IN_JAIL
+
+    def unmortgage_properties(self, game_state, player_state):
+        '''
+        Called near the start of the player's turn to give them the
+        opportunity to unmortgage properties.
+
+        Unmortgaging costs half the face value plus 10%. Between deciding
+        to unmortgage and money being taken the player will be given the
+        opportunity to make deals or sell other properties. If after this
+        they do not have enough money, the whole transaction will be aborted,
+        and no properties will be unmortgaged and no money taken.
+
+        Return a list of property names to unmortgage, like:
+        [Square.Name.OLD_KENT_ROAD, Square.Name.BOW_STREET]
+
+        The default is to return an empty list, ie to do nothing.
+        '''
+        return []
+
+    def propose_deals(self, game_state, player_state):
+        '''
+        Called to allow the player to propose a deal.
+
+        You return a DealProposal object.
+
+        If you do not want to make a deal, return a default-constructed
+        object, ie: return DealProposal()
+
+        If you want to make a deal, you provide this information:
+        - The player number of the player you are proposing the deal to
+        - A list of properties offered
+        - A list of properties wanted
+        - Maximum cash offered as part of the deal
+        - Minimum cash wanted as part of the deal.
+
+        Properties offered and properties wanted are passed as lists of
+        property names, for example:
+        [Square.Name.EUSTON_ROAD, Square.Name.WHITEHALL]
+
+        If you offer money as part of the deal, set the cash wanted to zero
+        and vice versa.
+
+        Note that the cash limits will not be shown to the proposed-to player.
+        When the deal is offered to them, they set their own limits for accepting
+        the deal without seeing your limits. If the limits are acceptable to both
+        players, the deal will be done at the halfway point.
+
+        For example, Player1 proposes:
+          Propose to: Player2
+          Properties offered: Mayfair
+          Properties wanted: (none)
+          Maximum cash offered: 0
+          Minimum cash wanted: 500
+
+        Player2 accepts with these limits:
+          Maximum cash offered: 1000
+          Minimum cash wanted: 0
+
+        The deal will be done with Player2 receiving Mayfair and paying £750
+        to Player1.
+
+        The only 'negotiation' is in the managing of cash along with the deal
+        as discussed above. There is no negotiation about which properties are
+        part of the deal. If a deal is rejected because it does not contain the
+        right properties, another deal can be made at another time with different
+        lists of properties.
+
+        Example construction and return of a DealProposal object:
+            return DealProposal(
+                propose_to_player_number=2,
+                properties_offered=[Square.Name.VINE_STREET, Square.Name.BOW_STREET],
+                properties_wanted=[Square.Name.PARK_LANE],
+                maximum_cash_offered=200)
+
+        The default is for no deal to be proposed.
+        '''
+        return DealProposal()
+
+    def deal_proposed(self, game_state, player_state, deal_proposal):
+        '''
+        Called when another player proposes a deal to you.
+
+        See propose_deal (above) for details of the DealProposal object.
+
+        Return a DealResponse object.
+
+        To reject a deal:
+            return DealResponse(DealResponse.Action.REJECT)
+
+        To accept a deal:
+            return DealResponse(DealResponse.Action.ACCEPT, maximum_cash_offered=300)
+            or
+            return DealResponse(DealResponse.Action.ACCEPT, minimum_cash_wanted=800)
+
+        The default is to reject the deal.
+        '''
+        return DealResponse(DealResponse.Action.REJECT)
+
+    def deal_result(self, deal_info):
+        '''
+        Called when a proposed deal has finished.
+
+        deal_info is a PlayerAIBase.DealInfo 'enum' giving indicating
+        whether the deal succeeded, and if not why not.
+
+        No response is required.
+        '''

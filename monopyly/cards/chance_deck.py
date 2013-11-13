@@ -55,7 +55,7 @@ class ChanceDeck(Deck):
         self.cards.append(RewardCard(150))
 
         # Get out of Jail Free...
-        self.cards.append(GetOutOfJailFree())
+        self.cards.append(GetOutOfJailFree(self))
 
         # Advance to Trafalgar Square If you Pass "Go" Collect £200...
         self.cards.append(AdvanceTo(Square.Name.TRAFALGAR_SQUARE))

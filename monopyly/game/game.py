@@ -3,6 +3,7 @@ from .player import Player
 from .game_state import GameState
 from .player_ai_base import PlayerAIBase
 from .board import Board
+from .deal_response import DealResponse
 from ..squares import Square
 from ..squares import Property
 from ..squares import Street
@@ -87,10 +88,14 @@ class Game(object):
         for player in self.state.players:
             player.ai.start_of_turn(self.state.copy(), current_player.state.player_number)
 
+        # The player can mak deals...
+        self._make_deals(current_player)
+
         # If the player is in jail, they have a chance to buy their way out...
         self._get_out_of_jail(current_player)
 
-        # TODO: unmortgage properties
+        # The player can unmortgage properties...
+        self._unmortgage_properties(current_player)
 
         # The player can build houses...
         self._build_houses(current_player)
@@ -128,7 +133,7 @@ class Game(object):
                 # Doubles were rolled, so the player gets out of jail without paying,
                 # but their turn will be over after this move even though doubles
                 # were rolled...
-                doubles_rolled = False # We 'pretend' that doubles weren't rolled.
+                doubles_rolled = False  # We 'pretend' that doubles weren't rolled.
                 current_player.state.is_in_jail = False
                 current_player.state.number_of_turns_in_jail = 0
 
@@ -248,6 +253,23 @@ class Game(object):
         self._update_sets()
 
         return square
+
+    def transfer_property(self, from_player, to_player, square_name):
+        '''
+        Transfers the named property from from_player to to_player.
+        '''
+        # We get the Property object...
+        index = self.state.board.get_index(square_name)
+        square = self.state.board.get_square_by_index(index)
+
+        # We update the owner and the collections managed by each player...
+        square.owner_player_number = to_player.state.player_number
+        to_player.state.property_indexes.add(index)
+        from_player.state.property_indexes.remove(index)
+
+        # We update which sets are owned by which players, as this
+        # may have changed...
+        self._update_sets()
 
     def offer_property_for_sale(self, current_player, square):
         '''
@@ -589,11 +611,129 @@ class Game(object):
             self.take_money_from_player(current_player, 50)
             current_player.state.is_in_jail = False
             current_player.state.number_of_turns_in_jail = 0
+
         elif(action == PlayerAIBase.Action.PLAY_GET_OUT_OF_JAIL_FREE_CARD):
             # The player is playing a Get Out Of Jail Free card...
             if(current_player.state.number_of_get_out_of_jail_free_cards >= 1):
-                current_player.state.number_of_get_out_of_jail_free_cards -= 1
+
+                # We play the card, which puts it back in its deck...
+                card = current_player.state.get_out_of_jail_free_cards[0]
+                card.play(self, current_player)
+
+                # And take it fro the player...
+                del current_player.state.get_out_of_jail_free_cards[0]
+
+                # We remove the player from jail...
                 current_player.state.is_in_jail = False
                 current_player.state.number_of_turns_in_jail = 0
 
+    def _unmortgage_properties(self, current_player):
+        '''
+        We give the player the opportunity to unmortgage properties.
+        '''
+
+        # We ask the player if they want to unmortgage anything...
+        square_names = current_player.ai.unmortgage_properties(self.state.copy(), current_player.state.copy())
+        if(not square_names):
+            return
+
+        # We calculate the cost to unmortgage these properties. This is
+        # 55% of their total face value...
+        unmortgage_cost = 0
+        board = self.state.board
+        squares = [board.get_square_by_name(name) for name in square_names]
+        for square in squares:
+            # Is the square a property?
+            if(not isinstance(square, Property)):
+                continue
+
+            # We check if the property is owned by the current player...
+            if(square.owner_player_number != current_player.state.player_number):
+                return
+
+            unmortgage_cost += int(square.mortgage_value * 1.1)
+
+        # We take the money from the player...
+        self.take_money_from_player(current_player, unmortgage_cost)
+
+        if(current_player.state.cash < 0):
+            # The player did not have enough money, so we refund it and abort the
+            # transaction...
+            self.give_money_to_player(current_player, unmortgage_cost)
+        else:
+            # The player successfully paid, so we unmortgage the properties...
+            for square in squares:
+                square.is_mortgaged = False
+
+    def _make_deals(self, current_player):
+        '''
+        The player can make up to three deals.
+        '''
+
+        for i in range(3):
+            self._make_deal(current_player)
+
+    def _make_deal(self, current_player):
+        '''
+        Lets the player propose a deal.
+        '''
+
+        # We see if the player wants to propose a deal...
+        proposal = current_player.ai.propose_deal(self.state.copy(), current_player.state.copy())
+        if(proposal.deal_proposed is False):
+            return
+
+        # We pass the proposal to the proposee, after redacting the cash offer info...
+        maximum_cash_offered = proposal.maximum_cash_offered
+        minimum_cash_wanted = proposal.minimum_cash_wanted
+        proposal.maximum_cash_offered = 0
+        proposal.minimum_cash_wanted = 0
+
+        proposed_to_player = self.state.players[proposal.propose_to_player_number]
+        response = proposed_to_player.ai.deal_proposed(
+            self.state.copy(),
+            proposed_to_player.state.copy(),
+            proposal)
+
+        if(response.action == DealResponse.Action.REJECT):
+            # The proposee rejected the deal...
+            current_player.ai.deal_result(PlayerAIBase.DealInfo.DEAL_REJECTED)
+            proposed_to_player.ai.deal_result(PlayerAIBase.DealInfo.DEAL_REJECTED)
+            return
+
+        # The deal has been accepted, but is it actually acceptable in
+        # terms of cash exchange to both parties?
+        cash_transfer_from_proposer_to_proposee = 0
+        if(minimum_cash_wanted > 0):
+            # The proposer wants money. Did the proposee offer enough?
+            if(response.maximum_cash_offered < minimum_cash_wanted):
+                current_player.ai.deal_result(PlayerAIBase.DealInfo.ASKED_FOR_TOO_MUCH_MONEY)
+                proposed_to_player.ai.deal_result(PlayerAIBase.DealInfo.OFFERED_TOO_LITTLE_MONEY)
+                return
+            cash_transfer_from_proposer_to_proposee = -1 * (minimum_cash_wanted + response.maximum_cash_offered) / 2
+
+        elif(maximum_cash_offered > 0):
+            # The proposer offered money. Was this enough for the proposee?
+            if(maximum_cash_offered < response.minimum_cash_wanted):
+                current_player.ai.deal_result(PlayerAIBase.DealInfo.OFFERED_TOO_LITTLE_MONEY)
+                proposed_to_player.ai.deal_result(PlayerAIBase.DealInfo.ASKED_FOR_TOO_MUCH_MONEY)
+                return
+            cash_transfer_from_proposer_to_proposee = (maximum_cash_offered + response.minimum_cash_wanted) / 2
+
+        # The deal is acceptable to both parties, so we transfer the money...
+        if(cash_transfer_from_proposer_to_proposee > 0):
+            amount = cash_transfer_from_proposer_to_proposee
+            self.take_money_from_player(current_player, amount)
+            self.give_money_to_player(proposed_to_player, amount)
+        elif(cash_transfer_from_proposer_to_proposee < 0):
+            amount = cash_transfer_from_proposer_to_proposee * -1
+            self.take_money_from_player(proposed_to_player, amount)
+            self.give_money_to_player(current_player, amount)
+
+        # We transfer the properties...
+        for property_name in proposal.properties_offered:
+            self.transfer_property(current_player, proposed_to_player, property_name)
+
+        for property_name in proposal.properties_wanted:
+            self.transfer_property(proposed_to_player, current_player, property_name)
 

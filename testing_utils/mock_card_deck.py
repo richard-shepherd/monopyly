@@ -21,3 +21,10 @@ class MockCardDeck(Deck):
         '''
         self.cards = [card]
         self.index = 0
+
+    def set_next_cards(self, cards):
+        '''
+        Sets a list of the next cards to play.
+        '''
+        self.cards = cards
+        self.index = 0

@@ -29,8 +29,8 @@ class PlayerState(object):
         # mortgages and so on...
         self.property_indexes = set()
 
-        # How many Get Out Of Jail Free cards the player is holding...
-        self.number_of_get_out_of_jail_free_cards = 0
+        # Get Out Of Jail Free cards the player is holding...
+        self.get_out_of_jail_free_cards = []
 
         # The player number. Each player is assigned a number when the
         # game starts, and this is reported to the player AI. This can help
@@ -77,6 +77,12 @@ class PlayerState(object):
 
         return number_of_houses, number_of_hotels
 
+    @property
+    def number_of_get_out_of_jail_free_cards(self):
+        '''
+        The number of GOOJF cards the player has.
+        '''
+        return len(self.get_out_of_jail_free_cards)
 
 
 
