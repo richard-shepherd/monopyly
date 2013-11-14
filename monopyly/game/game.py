@@ -683,13 +683,31 @@ class Game(object):
         if(proposal.deal_proposed is False):
             return
 
+        # We find the player the deal is being proposed to...
+        proposed_to_player = self.state.players[proposal.propose_to_player_number]
+
+        # We check that the players own the properties specified...
+        board = self.state.board
+        for square_name in proposal.properties_offered:
+            square = board.get_square_by_name(square_name)
+            if(square.owner_player_number != current_player.state.player_number):
+                current_player.ai.deal_result(PlayerAIBase.DealInfo.INVALID_DEAL_PROPOSED)
+                proposed_to_player.ai.deal_result(PlayerAIBase.DealInfo.INVALID_DEAL_PROPOSED)
+                return
+
+        for square_name in proposal.properties_wanted:
+            square = board.get_square_by_name(square_name)
+            if(square.owner_player_number != proposed_to_player.state.player_number):
+                current_player.ai.deal_result(PlayerAIBase.DealInfo.INVALID_DEAL_PROPOSED)
+                proposed_to_player.ai.deal_result(PlayerAIBase.DealInfo.INVALID_DEAL_PROPOSED)
+                return
+
         # We pass the proposal to the proposee, after redacting the cash offer info...
         maximum_cash_offered = proposal.maximum_cash_offered
         minimum_cash_wanted = proposal.minimum_cash_wanted
         proposal.maximum_cash_offered = 0
         proposal.minimum_cash_wanted = 0
 
-        proposed_to_player = self.state.players[proposal.propose_to_player_number]
         response = proposed_to_player.ai.deal_proposed(
             self.state.copy(),
             proposed_to_player.state.copy(),
@@ -737,3 +755,6 @@ class Game(object):
         for property_name in proposal.properties_wanted:
             self.transfer_property(proposed_to_player, current_player, property_name)
 
+        # We tell the players that the deal succeeded...
+        current_player.ai.deal_result(PlayerAIBase.DealInfo.SUCCEEDED)
+        proposed_to_player.ai.deal_result(PlayerAIBase.DealInfo.SUCCEEDED)

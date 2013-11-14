@@ -287,7 +287,7 @@ class PlayerAIBase(object):
         '''
         return []
 
-    def propose_deals(self, game_state, player_state):
+    def propose_deal(self, game_state, player_state):
         '''
         Called to allow the player to propose a deal.
 
