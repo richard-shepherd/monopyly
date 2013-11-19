@@ -13,6 +13,11 @@ from monopyly import Board
 
 # TODO: graphs of cash and 'net worth'
 
+# Notes on transferring money between players
+# - transfer_cash(from_player, to_player, action_if_too_little_cash)
+# Actions inlcude: ROLLBACK_ON_INSUFFICIENT_CASH, PAY_AS_MUCH_AS_POSSIBLE
+# Returns: succeeded, failed
+
 if(__name__ == "__main__"):
     board = Board()
     a = 99

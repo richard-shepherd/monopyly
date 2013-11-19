@@ -85,14 +85,15 @@ class Property(Square):
         The player has landed on a square owned by another player
         and must pay rent.
         '''
+        from ..game import Game
+
         # We find the amount to pay...
         rent = self.calculate_rent(game, player)
 
         # We take the rent from the player, and give it to the
         # player who owns the square...
-        amount_taken = game.take_money_from_player(player, rent)
         owner = game.state.players[self.owner_player_number]
-        game.give_money_to_player(owner, amount_taken)
+        game.transfer_cash(player, owner, rent, Game.Action.PAY_AS_MUCH_AS_POSSIBLE)
 
     def calculate_rent(self, game, player):
         '''

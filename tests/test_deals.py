@@ -8,6 +8,8 @@ from testing_utils import *
 
 # TODO: deal including a non-property
 
+# TODO: confirm that players receive the correct notifications
+
 
 class DealProposer(PlayerAIBase):
     '''
@@ -175,4 +177,45 @@ def test_sell_mayfair_but_player_does_not_own_it():
     # We check that the players were notified correctly...
     assert player0.ai.deal_info == PlayerAIBase.DealInfo.INVALID_DEAL_PROPOSED
     assert player1.ai.deal_info == PlayerAIBase.DealInfo.INVALID_DEAL_PROPOSED
+
+
+def test_buy_mayfair_player_doesnt_have_enough_money():
+    '''
+    player0 proposes to buy Mayfair from player1, who accepts. But player0
+    does not have enough money for the deal value.
+    '''
+    game = Game()
+    player0 = game.add_player(DealProposer(
+        DealProposal(
+            propose_to_player_number=1,
+            properties_wanted=[Square.Name.MAYFAIR],
+            maximum_cash_offered=1000)))
+
+    player1 = game.add_player(DealResponder(
+        DealResponse(
+            DealResponse.Action.ACCEPT,
+            minimum_cash_wanted=600)))
+
+    # We give Mayfair to player1...
+    mayfair = game.give_property_to_player(player1, Square.Name.MAYFAIR)
+
+    # Player 0 has £700 which is not enough for the deal which
+    # gets agreed at £800
+    player0.state.cash = 700
+
+    # Player 0 takes a turn during which the deal should be done...
+    player0.state.square = 0
+    game.dice = MockDice([(4, 6)])
+    game.play_one_turn(player0)
+
+    # Mayfair should still belong to player 1 and no
+    # money should have changed hands...
+    assert mayfair.owner_player_number == 1
+    assert player0.state.cash == 700
+    assert player1.state.cash == 1500
+
+    # We check that the players were notified correctly...
+    assert player0.ai.deal_info == PlayerAIBase.DealInfo.PLAYER_DID_NOT_HAVE_ENOUGH_MONEY
+    assert player1.ai.deal_info == PlayerAIBase.DealInfo.PLAYER_DID_NOT_HAVE_ENOUGH_MONEY
+
 

@@ -8,6 +8,8 @@ from ..squares import Square
 from ..squares import Property
 from ..squares import Street
 
+# TODO: implement turn limit (and write tests for it)
+
 
 class Game(object):
     '''
@@ -29,10 +31,20 @@ class Game(object):
         '''
         An 'enum' for actions that can happen during the game.
         '''
+
+        # Dice...
         ROLL_AGAIN = 1
         DO_NOT_ROLL_AGAIN = 2
+
+        # Buying and selling properties...
         PROPERTY_BOUGHT = 3
         PROPERTY_NOT_BOUGHT = 4
+
+        # Transferring money between players...
+        ROLLBACK_ON_INSUFFICIENT_CASH = 5
+        PAY_AS_MUCH_AS_POSSIBLE = 6
+        TRANSFER_SUCCEEDED = 7
+        TRANSFER_FAILED = 8
 
     def __init__(self):
         '''
@@ -224,6 +236,40 @@ class Game(object):
         # We give the money to the player and tell them about it...
         player.state.cash += amount
         player.ai.money_given(player.state.copy(), amount)
+
+    def transfer_cash(self, from_player, to_player, amount, action):
+        '''
+        Transfers money between the two players.
+
+        Actions (enums of type Game.Action):
+        - ROLLBACK_ON_INSUFFICIENT_CASH
+        - PAY_AS_MUCH_AS_POSSIBLE
+
+        Returns (enums of type Game.Action):
+        - TRANSFER_SUCCEEDED
+        - TRANSFER_FAILED
+        '''
+
+        # We try taking the money from the player (they have a chance to make
+        # deals or sell property when this happens)...
+        amount_taken = self.take_money_from_player(from_player, amount)
+        if(from_player.state.cash >= 0):
+            # They had enough money so we give it to the to_player...
+            self.give_money_to_player(to_player, amount)
+            return Game.Action.TRANSFER_SUCCEEDED
+
+        # The player did not have enough money. What we do depends on the action
+        # passed in...
+        if(action == Game.Action.PAY_AS_MUCH_AS_POSSIBLE):
+            # We pay the to-player as much as possible. This still
+            # leaves the from_player with a negative amount of cash
+            # as if the whole amount had been taken...
+            self.give_money_to_player(to_player, amount_taken)
+        elif(action == Game.Action.ROLLBACK_ON_INSUFFICIENT_CASH):
+            # We roll back the transfer...
+            self.give_money_to_player(from_player, amount)
+
+        return Game.Action.TRANSFER_FAILED
 
     def send_player_to_jail(self, player):
         '''
@@ -740,15 +786,26 @@ class Game(object):
 
         # The deal is acceptable to both parties, so we transfer the money...
         if(cash_transfer_from_proposer_to_proposee > 0):
-            amount = cash_transfer_from_proposer_to_proposee
-            self.take_money_from_player(current_player, amount)
-            self.give_money_to_player(proposed_to_player, amount)
+            # We transfer cash from the proposer to the proposee...
+            result = self.transfer_cash(
+                current_player,
+                proposed_to_player,
+                cash_transfer_from_proposer_to_proposee,
+                Game.Action.ROLLBACK_ON_INSUFFICIENT_CASH)
         elif(cash_transfer_from_proposer_to_proposee < 0):
-            amount = cash_transfer_from_proposer_to_proposee * -1
-            self.take_money_from_player(proposed_to_player, amount)
-            self.give_money_to_player(current_player, amount)
+            # We transfer cash from the proposee to the proposer...
+            result = self.transfer_cash(
+                proposed_to_player,
+                current_player,
+                cash_transfer_from_proposer_to_proposee * -1,
+                Game.Action.ROLLBACK_ON_INSUFFICIENT_CASH)
 
-        # We transfer the properties...
+        if(result == Game.Action.TRANSFER_FAILED):
+            current_player.ai.deal_result(PlayerAIBase.DealInfo.PLAYER_DID_NOT_HAVE_ENOUGH_MONEY)
+            proposed_to_player.ai.deal_result(PlayerAIBase.DealInfo.PLAYER_DID_NOT_HAVE_ENOUGH_MONEY)
+            return
+
+        # The cash transfer worked, so we transfer the properties...
         for property_name in proposal.properties_offered:
             self.transfer_property(current_player, proposed_to_player, property_name)
 
@@ -758,3 +815,6 @@ class Game(object):
         # We tell the players that the deal succeeded...
         current_player.ai.deal_result(PlayerAIBase.DealInfo.SUCCEEDED)
         proposed_to_player.ai.deal_result(PlayerAIBase.DealInfo.SUCCEEDED)
+
+
+
