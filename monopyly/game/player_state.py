@@ -85,4 +85,3 @@ class PlayerState(object):
         return len(self.get_out_of_jail_free_cards)
 
 
-

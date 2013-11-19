@@ -2,14 +2,6 @@ from monopyly import *
 from monopyly.game import deal_response
 from testing_utils import *
 
-# TODO: propose to an invalid player number
-
-# TODO: paying player does not have enough money (test with both players)
-
-# TODO: deal including a non-property
-
-# TODO: confirm that players receive the correct notifications
-
 
 class DealProposer(PlayerAIBase):
     '''
@@ -143,7 +135,6 @@ def test_buy_mayfair_but_player_does_not_own_it():
 
     # We check that the players were notified correctly...
     assert player0.ai.deal_info == PlayerAIBase.DealInfo.INVALID_DEAL_PROPOSED
-    assert player1.ai.deal_info == PlayerAIBase.DealInfo.INVALID_DEAL_PROPOSED
 
 
 def test_sell_mayfair_but_player_does_not_own_it():
@@ -176,7 +167,6 @@ def test_sell_mayfair_but_player_does_not_own_it():
 
     # We check that the players were notified correctly...
     assert player0.ai.deal_info == PlayerAIBase.DealInfo.INVALID_DEAL_PROPOSED
-    assert player1.ai.deal_info == PlayerAIBase.DealInfo.INVALID_DEAL_PROPOSED
 
 
 def test_buy_mayfair_player_doesnt_have_enough_money():
@@ -257,5 +247,59 @@ def test_sell_mayfair_player_doesnt_have_enough_money():
     # We check that the players were notified correctly...
     assert player0.ai.deal_info == PlayerAIBase.DealInfo.PLAYER_DID_NOT_HAVE_ENOUGH_MONEY
     assert player1.ai.deal_info == PlayerAIBase.DealInfo.PLAYER_DID_NOT_HAVE_ENOUGH_MONEY
+
+
+def test_invalid_player():
+    '''
+    player0 proposes to buy Mayfair from player3, who does not exist.
+    '''
+    game = Game()
+    player0 = game.add_player(DealProposer(
+        DealProposal(
+            propose_to_player_number=3,
+            properties_wanted=[Square.Name.MAYFAIR],
+            maximum_cash_offered=1000)))
+
+    # Player 0 takes a turn during which the deal is attempted to be done...
+    player0.state.square = 0
+    game.dice = MockDice([(4, 6)])
+    game.play_one_turn(player0)
+
+    # No deal should have been made...
+    mayfair = game.state.board.get_square_by_name(Square.Name.MAYFAIR)
+    assert mayfair.owner_player_number == Property.NOT_OWNED
+    assert player0.state.cash == 1500
+
+    # We check that the players were notified correctly...
+    assert player0.ai.deal_info == PlayerAIBase.DealInfo.INVALID_DEAL_PROPOSED
+
+
+def test_buy_free_parking():
+    '''
+    player0 proposes to buy Free Parking from player1, who accepts.
+    '''
+    game = Game()
+    player0 = game.add_player(DealProposer(
+        DealProposal(
+            propose_to_player_number=1,
+            properties_wanted=[Square.Name.FREE_PARKING],
+            maximum_cash_offered=1000)))
+
+    player1 = game.add_player(DealResponder(
+        DealResponse(
+            DealResponse.Action.ACCEPT,
+            minimum_cash_wanted=500)))
+
+    # Player 0 takes a turn during which the deal should be done...
+    player0.state.square = 0
+    game.dice = MockDice([(4, 6)])
+    game.play_one_turn(player0)
+
+    # The deal should have been rejected...
+    assert player0.state.cash == 1500
+    assert player1.state.cash == 1500
+
+    # We check that the players were notified correctly...
+    assert player0.ai.deal_info == PlayerAIBase.DealInfo.INVALID_DEAL_PROPOSED
 
 
