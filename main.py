@@ -2,7 +2,7 @@ from monopyly import Board
 
 # TODO: build a logging mechanism so that we can see all the events.
 
-# TODO: test that events are raised to the AIs
+# TODO: test that events are raised to the AIs, e.g. start of turn etc
 
 # TODO: All calls to the AI should be surrounded with try...catch
 
@@ -13,10 +13,6 @@ from monopyly import Board
 
 # TODO: graphs of cash and 'net worth'
 
-# Notes on transferring money between players
-# - transfer_cash(from_player, to_player, action_if_too_little_cash)
-# Actions inlcude: ROLLBACK_ON_INSUFFICIENT_CASH, PAY_AS_MUCH_AS_POSSIBLE
-# Returns: succeeded, failed
 
 if(__name__ == "__main__"):
     board = Board()

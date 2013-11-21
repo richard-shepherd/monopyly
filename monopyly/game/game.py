@@ -10,6 +10,9 @@ from ..squares import Street
 
 # TODO: implement turn limit (and write tests for it)
 
+# TODO: test that only solvent players play rounds. ie, that bankrupt players get knocked out.
+
+# TODO: test that bankrupt players return all properties to the bank (or for auction)
 
 class Game(object):
     '''
@@ -46,6 +49,12 @@ class Game(object):
         TRANSFER_SUCCEEDED = 7
         TRANSFER_FAILED = 8
 
+        # Winning and losing...
+        GAME_OVER = 9
+
+    # The maximum number of rounds in a game...
+    _MAXIMUM_ROUNDS = 500
+
     def __init__(self):
         '''
         The 'constructor'.
@@ -75,7 +84,11 @@ class Game(object):
         for player in self.state.players:
             player.ai.start_of_game(player.number)
 
-        # TODO: Play the game!
+        # We play a game with a maximum number of rounds...
+        for i in range(Game._MAXIMUM_ROUNDS):
+            result = self.play_one_round()
+            if(result == Game.Action.GAME_OVER):
+                break
 
     def play_one_round(self):
         '''
@@ -84,9 +97,13 @@ class Game(object):
 
         The round can come to an end before all players' turns
         are finished if one of the players wins.
+
+        Returns
         '''
         for player in self.state.players:
-            self.play_one_turn(player)
+            # We check that the player is still in the game...
+            if(player.state.cash >= 0):
+                self.play_one_turn(player)
 
     def play_one_turn(self, current_player):
         '''
@@ -210,7 +227,8 @@ class Game(object):
         # We tell the player that we need money from them...
         player.ai.money_will_be_taken(player.state.copy(), amount)
 
-        # TODO: We allow the player to make deals...
+        # We allow the player to make deals...
+        self._make_deals(player)
 
         # We allow the player to sell houses...
         self._sell_houses(player)
