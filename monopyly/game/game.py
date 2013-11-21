@@ -51,6 +51,9 @@ class Game(object):
 
         # Winning and losing...
         GAME_OVER = 9
+        GAME_NOT_OVER = 10
+        PLAYER_WENT_BANKRUPT = 11
+        PLAYER_STILL_IN_GAME = 12
 
     # The maximum number of rounds in a game...
     _MAXIMUM_ROUNDS = 500
@@ -98,12 +101,15 @@ class Game(object):
         The round can come to an end before all players' turns
         are finished if one of the players wins.
 
-        Returns
+        Returns a Game.Action enum.
         '''
         for player in self.state.players:
-            # We check that the player is still in the game...
             if(player.state.cash >= 0):
+                # The player is still in the game (ie, still has
+                # some money) so they take a turn...
                 self.play_one_turn(player)
+
+        return Game.Action.GAME_NOT_OVER
 
     def play_one_turn(self, current_player):
         '''
@@ -129,12 +135,17 @@ class Game(object):
         # The player can build houses...
         self._build_houses(current_player)
 
-        # This while loop manages rolling again if the player
-        # rolls doubles...
+        # This while loop manages rolling again if the player rolls doubles...
         roll_again = Game.Action.ROLL_AGAIN
         number_of_doubles_rolled = 0
         while roll_again == Game.Action.ROLL_AGAIN:
             roll_again, number_of_doubles_rolled = self.roll_and_move(current_player, number_of_doubles_rolled)
+
+            # We check if the player has gone bankrupt at the end of each move...
+            if(current_player.state.cash < 0):
+                return Game.Action.PLAYER_WENT_BANKRUPT
+
+        return Game.Action.PLAYER_STILL_IN_GAME
 
     def roll_and_move(self, current_player, number_of_doubles_rolled):
         '''
