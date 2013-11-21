@@ -13,9 +13,12 @@ class DealProposer(PlayerAIBase):
         self.deal_info = -1
 
     def propose_deal(self, game_state, player_state):
-        proposal = self.deal_proposals[self.index]
-        self.index += 1
-        return proposal
+        if(self.index >= len(self.deal_proposals)):
+            return DealProposal()
+        else:
+            proposal = self.deal_proposals[self.index]
+            self.index += 1
+            return proposal
 
     def deal_result(self, deal_info):
         self.deal_info = deal_info

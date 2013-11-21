@@ -117,7 +117,7 @@ class Game(object):
         for player in self.state.players:
             player.ai.start_of_turn(self.state.copy(), current_player.state.player_number)
 
-        # The player can mak deals...
+        # The player can make deals...
         self._make_deals(current_player)
 
         # If the player is in jail, they have a chance to buy their way out...
@@ -733,7 +733,6 @@ class Game(object):
         '''
         The player can make up to three deals.
         '''
-
         for i in range(3):
             self._make_deal(current_player)
 
