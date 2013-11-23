@@ -14,6 +14,9 @@ from ..squares import Street
 
 # TODO: test that bankrupt players return all properties to the bank (or for auction)
 
+# TODO: check if a player goes bankrupt even during another player's turn
+# e.g. from the result of a card
+
 class Game(object):
     '''
     Manages one game of monopoly.
@@ -52,8 +55,6 @@ class Game(object):
         # Winning and losing...
         GAME_OVER = 9
         GAME_NOT_OVER = 10
-        PLAYER_WENT_BANKRUPT = 11
-        PLAYER_STILL_IN_GAME = 12
 
     # The maximum number of rounds in a game...
     _MAXIMUM_ROUNDS = 500
@@ -65,6 +66,8 @@ class Game(object):
         self.state = GameState()
         self.dice = Dice()
         self.most_recent_total_dice_roll = 0
+        self.status = Game.Action.GAME_NOT_OVER
+        self.winner = None  # The winning player
 
     def add_player(self, ai):
         '''
@@ -89,9 +92,13 @@ class Game(object):
 
         # We play a game with a maximum number of rounds...
         for i in range(Game._MAXIMUM_ROUNDS):
-            result = self.play_one_round()
-            if(result == Game.Action.GAME_OVER):
+            self.play_one_round()
+            self._check_game_status()
+            if(self.status == Game.Action.GAME_OVER):
                 break
+
+        # TODO: check if the game is over. If not, the winner is
+        # the player with the most net worth.
 
     def play_one_round(self):
         '''
@@ -103,13 +110,20 @@ class Game(object):
 
         Returns a Game.Action enum.
         '''
-        for player in self.state.players:
-            if(player.state.cash >= 0):
-                # The player is still in the game (ie, still has
-                # some money) so they take a turn...
-                self.play_one_turn(player)
 
-        return Game.Action.GAME_NOT_OVER
+        # We play a turn for each player in the game.
+        # Note that we iterate over a copy of the list of players, as
+        # players can be removed from the game if they go bankrupt.
+        for player in list(self.state.players):
+            if(player.state.cash < 0):
+                # The player is out...
+                continue
+
+            # The player takes a turn...
+            self.play_one_turn(player)
+
+            # We check if any players went bankrupt during this turn...
+            self._check_for_bankrupt_players()
 
     def play_one_turn(self, current_player):
         '''
@@ -143,9 +157,7 @@ class Game(object):
 
             # We check if the player has gone bankrupt at the end of each move...
             if(current_player.state.cash < 0):
-                return Game.Action.PLAYER_WENT_BANKRUPT
-
-        return Game.Action.PLAYER_STILL_IN_GAME
+                return
 
     def roll_and_move(self, current_player, number_of_doubles_rolled):
         '''
@@ -842,3 +854,43 @@ class Game(object):
         current_player.ai.deal_result(PlayerAIBase.DealInfo.SUCCEEDED)
         proposed_to_player.ai.deal_result(PlayerAIBase.DealInfo.SUCCEEDED)
 
+    def _check_game_status(self):
+        '''
+        Checks if the game has a winner.
+        '''
+        # We see how many players still have money...
+        solvent_players = {player for player in self.state.players if player.state.cash >= 0}
+        number_of_solvent_players = len(solvent_players)
+        if(number_of_solvent_players > 1):
+            self.status = Game.Action.GAME_NOT_OVER
+        elif(number_of_solvent_players == 1):
+            self.status = Game.Action.GAME_OVER
+            self.winner = solvent_players.pop()
+        else:
+            self.status = Game.Action.GAME_OVER
+
+    def _check_for_bankrupt_players(self):
+        '''
+        Checks if any players have gone bankrupt.
+        Any player can go bankrupt in any turn, even not their own,
+        for example as the result of a "Collect X from player" card.
+        '''
+        # TODO: Check for bankrupt players.
+        pass
+
+    def _player_went_bankrupt(self, player):
+        '''
+        Called when a player has gone bankrupt.
+        '''
+        # We return properties to the bank...
+        board = self.state.board
+        for property_index in player.state.property_indexes:
+            property = board.get_square_by_index(property_index)
+
+
+        # TODO: Notify player that they are bankrupt
+
+        # TODO: return properties to the bank
+        # TODO: return GOOJF cards
+
+        pass
