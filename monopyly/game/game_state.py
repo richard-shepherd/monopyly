@@ -22,6 +22,9 @@ class GameState(object):
         # The collection of players (Player objects) playing the game...
         self.players = []
 
+        # The collection of players who have gone bankrupt...
+        self.bankrupt_players = []
+
     def copy(self):  # TODO: test speed of copy by just returning self
         '''
         Returns a copy of the game state.

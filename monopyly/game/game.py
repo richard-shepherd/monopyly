@@ -138,6 +138,9 @@ class Game(object):
             # We check if any players went bankrupt during this turn...
             self._check_for_bankrupt_players()
 
+            # TODO: we should check for game-over here.
+            # Otherwise we could get a draw if all players go bankrupt in the same turn
+
     def play_one_turn(self, current_player):
         '''
         Plays one turn for one player.
