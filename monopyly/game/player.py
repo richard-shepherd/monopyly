@@ -31,3 +31,11 @@ class Player(object):
             if(square.owner_player_number != self.state.player_number):
                 return False
         return True
+
+    @property
+    def net_worth(self):
+        '''
+        Returns the player's net worth, which includes their
+        cash, properties and houses.
+        '''
+        return self.state.cash

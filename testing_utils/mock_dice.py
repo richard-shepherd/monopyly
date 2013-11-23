@@ -5,13 +5,14 @@ class MockDice(object):
 
     You can control what the dice will return for the next set of rolls.
     '''
-    def __init__(self, roll_results = []):
+    def __init__(self, roll_results=[], repeat=False):
         '''
         The 'constructor'
 
         You can optionally pass an initial set of roll results.
         '''
         self._roll_results = roll_results
+        self._repeat = repeat
         self._next_roll_index = 0
 
     def set_roll_results(self, roll_results):
@@ -27,6 +28,10 @@ class MockDice(object):
         '''
         Returns the next rolls from the results.
         '''
+        # We may be repeating the dice rolls...
+        if(self._next_roll_index >= len(self._roll_results) and self._repeat is True):
+            self._next_roll_index = 0
+
         # We check if we have results to return...
         if(self._next_roll_index >= len(self._roll_results)):
             raise Exception("next_roll_index out of range")

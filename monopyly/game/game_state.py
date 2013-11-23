@@ -22,7 +22,7 @@ class GameState(object):
         # The collection of players (Player objects) playing the game...
         self.players = []
 
-    def copy(self):
+    def copy(self):  # TODO: test speed of copy by just returning self
         '''
         Returns a copy of the game state.
         '''

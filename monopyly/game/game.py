@@ -17,6 +17,7 @@ from ..squares import Street
 # TODO: check if a player goes bankrupt even during another player's turn
 # e.g. from the result of a card
 
+
 class Game(object):
     '''
     Manages one game of monopoly.
@@ -56,9 +57,6 @@ class Game(object):
         GAME_OVER = 9
         GAME_NOT_OVER = 10
 
-    # The maximum number of rounds in a game...
-    _MAXIMUM_ROUNDS = 500
-
     def __init__(self):
         '''
         The 'constructor'.
@@ -67,7 +65,13 @@ class Game(object):
         self.dice = Dice()
         self.most_recent_total_dice_roll = 0
         self.status = Game.Action.GAME_NOT_OVER
-        self.winner = None  # The winning player
+
+        # The winning player...
+        self.winner = None
+
+        # Rounds in the game...
+        self.maximum_rounds = 500
+        self.number_of_rounds_played = 0
 
     def add_player(self, ai):
         '''
@@ -88,17 +92,26 @@ class Game(object):
         # We tell the players that the game is starting, and which
         # player-number they are...
         for player in self.state.players:
-            player.ai.start_of_game(player.number)
+            player.ai.start_of_game(player.state.player_number)
 
         # We play a game with a maximum number of rounds...
-        for i in range(Game._MAXIMUM_ROUNDS):
+        for i in range(self.maximum_rounds):
+            # We play a round...
             self.play_one_round()
+            self.number_of_rounds_played += 1
+
+            # We check if the game is over (ie, only one non-bankrupt
+            # player left)...
             self._check_game_status()
             if(self.status == Game.Action.GAME_OVER):
                 break
 
-        # TODO: check if the game is over. If not, the winner is
-        # the player with the most net worth.
+        # There may be no outright winner if the maximum number
+        # of turns has been played. In this case, the winner is
+        # the player with the highest 'net worth'...
+        if(self.status != Game.Action.GAME_OVER):
+            self.status = Game.Action.GAME_OVER
+            self.winner = max(self.state.players, key=lambda player: player.net_worth)
 
     def play_one_round(self):
         '''

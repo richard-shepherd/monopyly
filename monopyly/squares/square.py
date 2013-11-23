@@ -65,4 +65,5 @@ class Square(object):
         Can be overridden in derived classes, if necessary, to
         provide more efficient copying.
         '''
+        # TODO: Don't think this is ever invoked. Are we copying the board correctly?
         return copy.deepcopy(self)

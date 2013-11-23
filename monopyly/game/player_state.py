@@ -50,7 +50,7 @@ class PlayerState(object):
         # The items in the collection are Property.Set 'enums'.
         self.owned_sets = set()
 
-    def copy(self):
+    def copy(self):  # TODO: test speed of copy by just returning self
         '''
         Returns a copy of the player state.
         '''
