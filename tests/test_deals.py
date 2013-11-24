@@ -2,6 +2,8 @@ from monopyly import *
 from monopyly.game import deal_response
 from testing_utils import *
 
+# TODO: a deal where no money changes hands (commented out line in Game::_make_deal())
+
 
 class DealProposer(PlayerAIBase):
     '''

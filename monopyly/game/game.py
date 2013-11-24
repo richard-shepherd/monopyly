@@ -839,6 +839,7 @@ class Game(object):
             cash_transfer_from_proposer_to_proposee = (maximum_cash_offered + response.minimum_cash_wanted) / 2
 
         # The deal is acceptable to both parties, so we transfer the money...
+        #result = Game.Action.TRANSFER_SUCCEEDED
         if(cash_transfer_from_proposer_to_proposee > 0):
             # We transfer cash from the proposer to the proposee...
             result = self.transfer_cash(
@@ -891,22 +892,30 @@ class Game(object):
         Any player can go bankrupt in any turn, even not their own,
         for example as the result of a "Collect X from player" card.
         '''
-        # TODO: Check for bankrupt players.
-        pass
+        # We check each player to see if they are bankrupt.
+        # Note that we iterate through a copy of the list of players, as
+        # we may remove players from the list...
+        for player in list(self.state.players):
+            if(player.state.cash < 0):
+                self._player_went_bankrupt(player)
 
-    def _player_went_bankrupt(self, player):
+    def _player_went_bankrupt(self, current_player):
         '''
         Called when a player has gone bankrupt.
         '''
         # We return properties to the bank...
         board = self.state.board
-        for property_index in player.state.property_indexes:
+        for property_index in current_player.state.property_indexes:
             property = board.get_square_by_index(property_index)
+            property.owner_player_number = Property.NOT_OWNED
+            property.number_of_houses = 0
 
+        # We notify all players that this player went bankrupt...
+        current_player_number = current_player.state.player_number
+        for player in self.state.players:
+            player.ai.player_went_bankrupt(current_player_number)
 
-        # TODO: Notify player that they are bankrupt
+        # We move the player to the bankrupt list...
+        self.state.players.remove(current_player)
+        self.state.bankrupt_players.append(current_player)
 
-        # TODO: return properties to the bank
-        # TODO: return GOOJF cards
-
-        pass

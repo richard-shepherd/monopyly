@@ -375,3 +375,13 @@ class PlayerAIBase(object):
 
         No response is required.
         '''
+        pass
+
+    def player_went_bankrupt(self, player_number):
+        '''
+        Called when a player goes bankrupt. All non-bankrupt players
+        receive this notification.
+
+        No response is required.
+        '''
+        pass

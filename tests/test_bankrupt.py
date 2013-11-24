@@ -1,6 +1,7 @@
 from monopyly import *
 from testing_utils import *
 
+# TODO: test return of GOOJF cards
 
 def test_player_goes_bankrupt():
     '''
