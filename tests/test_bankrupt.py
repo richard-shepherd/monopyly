@@ -64,6 +64,38 @@ def test_player_goes_bankrupt():
     assert player2.state.square == 20
 
 
+def test_goojf_cards_returned():
+    '''
+    Tests that get Out Of Jail Free cards are returned to the
+    decks when a player goes bankrupt.
+    '''
+    game = Game()
+    player0 = game.add_player(DefaultPlayerAI())
+    player1 = game.add_player(DefaultPlayerAI())
+    player2 = game.add_player(DefaultPlayerAI())
+
+    # We set up Community Chest with two cards...
+    mock_deck = MockCardDeck()
+    mock_deck.set_next_cards([GetOutOfJailFree(mock_deck), FineCard(100)])
+    game.state.board.community_chest_deck = mock_deck
+
+    # Player 1 will land on Community Chest and get a GOOJF card.
+    # The other players do not move...
+    player1.state.square = 29
+    game.dice = MockDice([(6, 4), (1, 3), (6, 4)])
+    game.play_one_round()
+
+    assert player1.state.number_of_get_out_of_jail_free_cards == 1
+    assert mock_deck.number_of_cards == 1
+
+    # Player 1 lands on Super Tax and goes bankrupt...
+    player1.state.cash = 50
+    game.dice = MockDice([(6, 4), (2, 3), (6, 4)])
+    game.play_one_round()
+
+    assert mock_deck.number_of_cards == 2
+    assert player1 not in game.state.players
+    assert player1 in game.state.bankrupt_players
 
 
 

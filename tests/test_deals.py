@@ -2,8 +2,6 @@ from monopyly import *
 from monopyly.game import deal_response
 from testing_utils import *
 
-# TODO: a deal where no money changes hands (commented out line in Game::_make_deal())
-
 
 class DealProposer(PlayerAIBase):
     '''
@@ -307,4 +305,79 @@ def test_buy_free_parking():
     # We check that the players were notified correctly...
     assert player0.ai.deal_info == PlayerAIBase.DealInfo.INVALID_DEAL_PROPOSED
 
+
+def test_exchange_properties_plus_cash():
+    '''
+    An exchange of properties, with some cash to sweeten the deal.
+    '''
+    game = Game()
+    player0 = game.add_player(DealProposer(
+        DealProposal(
+            propose_to_player_number=1,
+            properties_wanted=[Square.Name.MAYFAIR],
+            properties_offered=[Square.Name.VINE_STREET],
+            maximum_cash_offered=400)))
+
+    player1 = game.add_player(DealResponder(
+        DealResponse(
+            DealResponse.Action.ACCEPT,
+            minimum_cash_wanted=200)))
+
+    # We give Vine Street to player0 and Mayfair to player1...
+    vine_street = game.give_property_to_player(player0, Square.Name.VINE_STREET)
+    mayfair = game.give_property_to_player(player1, Square.Name.MAYFAIR)
+
+    # Player 0 takes a turn during which the deal should be done...
+    player0.state.square = 0
+    game.dice = MockDice([(4, 6)])
+    game.play_one_turn(player0)
+
+    # The properties should be owned by the other players, and
+    # £300 should have changed hands...
+    assert mayfair.owner_player_number == 0
+    assert vine_street.owner_player_number == 1
+    assert player0.state.cash == 1200
+    assert player1.state.cash == 1800
+
+    # We check that the players were notified correctly...
+    assert player0.ai.deal_info == PlayerAIBase.DealInfo.SUCCEEDED
+    assert player1.ai.deal_info == PlayerAIBase.DealInfo.SUCCEEDED
+
+
+def test_exchange_properties_no_cash():
+    '''
+    An exchange of properties, with no additional cash.
+    '''
+    game = Game()
+    player0 = game.add_player(DealProposer(
+        DealProposal(
+            propose_to_player_number=1,
+            properties_wanted=[Square.Name.MAYFAIR],
+            properties_offered=[Square.Name.VINE_STREET],
+            maximum_cash_offered=0)))
+
+    player1 = game.add_player(DealResponder(
+        DealResponse(
+            DealResponse.Action.ACCEPT,
+            minimum_cash_wanted=0)))
+
+    # We give Vine Street to player0 and Mayfair to player1...
+    vine_street = game.give_property_to_player(player0, Square.Name.VINE_STREET)
+    mayfair = game.give_property_to_player(player1, Square.Name.MAYFAIR)
+
+    # Player 0 takes a turn during which the deal should be done...
+    player0.state.square = 0
+    game.dice = MockDice([(4, 6)])
+    game.play_one_turn(player0)
+
+    # The properties should be owned by the other players, and
+    # £300 should have changed hands...
+    assert mayfair.owner_player_number == 0
+    assert vine_street.owner_player_number == 1
+    assert player0.state.cash == 1500
+    assert player1.state.cash == 1500
+
+    # We check that the players were notified correctly...
+    assert player0.ai.deal_info == PlayerAIBase.DealInfo.SUCCEEDED
+    assert player1.ai.deal_info == PlayerAIBase.DealInfo.SUCCEEDED
 

@@ -719,9 +719,9 @@ class Game(object):
             # The player is playing a Get Out Of Jail Free card...
             if(current_player.state.number_of_get_out_of_jail_free_cards >= 1):
 
-                # We play the card, which puts it back in its deck...
+                # We put it back in its deck...
                 card = current_player.state.get_out_of_jail_free_cards[0]
-                card.play(self, current_player)
+                card.put_back_in_deck()
 
                 # And take it fro the player...
                 del current_player.state.get_out_of_jail_free_cards[0]
@@ -839,7 +839,7 @@ class Game(object):
             cash_transfer_from_proposer_to_proposee = (maximum_cash_offered + response.minimum_cash_wanted) / 2
 
         # The deal is acceptable to both parties, so we transfer the money...
-        #result = Game.Action.TRANSFER_SUCCEEDED
+        result = Game.Action.TRANSFER_SUCCEEDED
         if(cash_transfer_from_proposer_to_proposee > 0):
             # We transfer cash from the proposer to the proposee...
             result = self.transfer_cash(
@@ -914,6 +914,10 @@ class Game(object):
         current_player_number = current_player.state.player_number
         for player in self.state.players:
             player.ai.player_went_bankrupt(current_player_number)
+
+        # We return any Get Out Of Jail Free cards to their decks...
+        for card in current_player.state.get_out_of_jail_free_cards:
+            card.put_back_in_deck()
 
         # We move the player to the bankrupt list...
         self.state.players.remove(current_player)
