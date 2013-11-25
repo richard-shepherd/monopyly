@@ -25,9 +25,9 @@ class Utility(Property):
         owned_utilities = set.intersection(self._utility_indexes, owner.state.property_indexes)
         number_of_owned_stations = len(owned_utilities)
 
-        if(number_of_owned_stations == 1):
+        if number_of_owned_stations == 1:
             return 4 * game.most_recent_total_dice_roll
-        elif(number_of_owned_stations == 2):
+        elif number_of_owned_stations == 2:
             return 10 * game.most_recent_total_dice_roll
 
         return 0
@@ -36,7 +36,7 @@ class Utility(Property):
         '''
         Finds the set of board-indexes for the utilities.
         '''
-        if(len(self._utility_indexes) != 0):
+        if len(self._utility_indexes) != 0:
             return
         self._utility_indexes.add(board.get_index(Square.Name.ELECTRIC_COMPANY))
         self._utility_indexes.add(board.get_index(Square.Name.WATER_WORKS))

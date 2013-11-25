@@ -66,10 +66,10 @@ class PlayerState(object):
             # We find the square for this index and check if
             # it is a street (ie, not a station or utility)...
             square = board.get_square_by_index(index)
-            if(type(square) != Street):
+            if type(square) != Street:
                 continue
 
-            if(square.number_of_houses == 5):
+            if square.number_of_houses == 5:
                 # Five houses is a hotel...
                 number_of_hotels += 1
             else:

@@ -26,10 +26,10 @@ class Player(object):
             square = self.board.get_square_by_name(property_name)
 
             # We check that the square is a property...
-            if(not isinstance(square, Property)):
+            if not isinstance(square, Property):
                 return False
 
-            if(square.owner_player_number != self.state.player_number):
+            if square.owner_player_number != self.state.player_number:
                 return False
         return True
 
@@ -48,7 +48,7 @@ class Player(object):
             total += property.mortgage_value
 
             # We add the resale value of houses...
-            if(type(property) == Street):
+            if type(property) == Street:
                 total += (property.house_price/2 * property.number_of_houses)
 
         return total

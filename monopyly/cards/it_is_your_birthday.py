@@ -14,12 +14,12 @@ class ItIsYourBirthday(Card):
 
         # We get £10 from each player...
         for player in game.state.players:
-            if(player is current_player):
+            if player is current_player:
                 continue
 
             # We see if the player says "Happy Birthday!"...
             message = player.ai.players_birthday()
-            if(message == "Happy Birthday!"):
+            if message == "Happy Birthday!":
                 amount = 10
             else:
                 amount = 100

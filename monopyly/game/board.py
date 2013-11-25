@@ -94,7 +94,7 @@ class Board(object):
             # We see if all properties in this set are owned by the
             # same player and are all unmortgaged...
             owner_infos = {(p.owner_player_number, p.is_mortgaged) for p in properties}
-            if(len(owner_infos) != 1):
+            if len(owner_infos) != 1:
                 # The set has a mixture of owners and/or mortgage states...
                 continue
 
@@ -102,9 +102,9 @@ class Board(object):
             owner_info = owner_infos.pop()
             player_number = owner_info[0]
             is_mortgaged = owner_info[1]
-            if(player_number != Property.NOT_OWNED and is_mortgaged is False):
+            if player_number != Property.NOT_OWNED and is_mortgaged is False:
                 # We've found a set owned by a player...
-                if(player_number not in results):
+                if player_number not in results:
                     results[player_number] = set()
                 results[player_number].add(street_set)
 
@@ -353,7 +353,7 @@ class Board(object):
         '''
         for index in range(len(self.squares)):
             name = self.squares[index].name
-            if(name not in self._name_to_index_map):
+            if name not in self._name_to_index_map:
                 self._name_to_index_map[name] = []
             self._name_to_index_map[name].append(index)
 
@@ -364,12 +364,12 @@ class Board(object):
         '''
         for square in self.squares:
             # Is the square a property?
-            if(not isinstance(square, Property)):
+            if not isinstance(square, Property):
                 continue
 
             # We add the property to the list of properties for its set...
             street_set = square.street_set
-            if(street_set not in self._set_to_property_map):
+            if street_set not in self._set_to_property_map:
                 self._set_to_property_map[street_set] = []
             self._set_to_property_map[street_set].append(square)
 

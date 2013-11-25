@@ -15,7 +15,7 @@ class TenPoundFineOrTakeAChance(Card):
         from ..game import PlayerAIBase
 
         action = current_player.ai.pay_ten_pounds_or_take_a_chance()
-        if(action == PlayerAIBase.Action.PAY_TEN_POUND_FINE):
+        if action == PlayerAIBase.Action.PAY_TEN_POUND_FINE:
             game.take_money_from_player(current_player, 10)
         else:
             game.state.board.chance_deck.take_card(game, current_player)

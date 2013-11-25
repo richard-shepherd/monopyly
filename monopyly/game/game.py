@@ -95,13 +95,13 @@ class Game(object):
             # We check if the game is over (ie, only one non-bankrupt
             # player left)...
             self._check_game_status()
-            if(self.status == Game.Action.GAME_OVER):
+            if self.status == Game.Action.GAME_OVER:
                 break
 
         # There may be no outright winner if the maximum number
         # of turns has been played. In this case, the winner is
         # the player with the highest 'net worth'...
-        if(self.status != Game.Action.GAME_OVER):
+        if self.status != Game.Action.GAME_OVER:
             self.status = Game.Action.GAME_OVER
             self.winner = max(self.state.players, key=lambda player: player.net_worth)
 
@@ -120,7 +120,7 @@ class Game(object):
         # Note that we iterate over a copy of the list of players, as
         # players can be removed from the game if they go bankrupt.
         for player in list(self.state.players):
-            if(player.state.cash < 0):
+            if player.state.cash < 0:
                 # The player is out...
                 continue
 
@@ -138,7 +138,7 @@ class Game(object):
         Plays one turn for one player.
         '''
         # We keep a count of how many turns the player has been in jail for...
-        if(current_player.state.is_in_jail):
+        if current_player.state.is_in_jail:
             current_player.state.number_of_turns_in_jail += 1
 
         # We notify all players that this player's turn is starting...
@@ -164,7 +164,7 @@ class Game(object):
             roll_again, number_of_doubles_rolled = self.roll_and_move(current_player, number_of_doubles_rolled)
 
             # We check if the player has gone bankrupt at the end of each move...
-            if(current_player.state.cash < 0):
+            if current_player.state.cash < 0:
                 return
 
     def roll_and_move(self, current_player, number_of_doubles_rolled):
@@ -180,11 +180,11 @@ class Game(object):
         doubles_rolled = (roll1 == roll2)
 
         # If the player is in jail, we check if they rolled themself out...
-        if(current_player.state.is_in_jail):
-            if(not doubles_rolled and current_player.state.number_of_turns_in_jail < 3):
+        if current_player.state.is_in_jail :
+            if not doubles_rolled and current_player.state.number_of_turns_in_jail < 3:
                 # They have not rolled doubles, so they stay in jail...
                 return Game.Action.DO_NOT_ROLL_AGAIN, 0
-            elif(not doubles_rolled and current_player.state.number_of_turns_in_jail == 3):
+            elif not doubles_rolled and current_player.state.number_of_turns_in_jail == 3:
                 # It is the third turn in jail, so they must pay their way out...
                 self.take_money_from_player(current_player, 50)
                 current_player.state.is_in_jail = False
@@ -199,9 +199,9 @@ class Game(object):
 
         # We check if doubles was rolled...
         roll_again = Game.Action.DO_NOT_ROLL_AGAIN
-        if(doubles_rolled):
+        if doubles_rolled:
             number_of_doubles_rolled += 1
-            if(number_of_doubles_rolled == 3):
+            if number_of_doubles_rolled == 3:
                 self.send_player_to_jail(current_player)
                 return Game.Action.DO_NOT_ROLL_AGAIN, number_of_doubles_rolled
             else:
@@ -209,13 +209,13 @@ class Game(object):
 
         # We move the player to the new square...
         current_player.state.square += self.most_recent_total_dice_roll
-        if(current_player.state.square >= Board.NUMBER_OF_SQUARES):
+        if current_player.state.square >= Board.NUMBER_OF_SQUARES:
             current_player.state.square -= Board.NUMBER_OF_SQUARES
 
             # If the player has passed Go, they get £200.
             # Note that we don't give £200 for landing on Go, as the
             # square itself does this...
-            if(current_player.state.square != 0):
+            if current_player.state.square != 0:
                 current_player.state.cash += 200
 
         # We perform any actions appropriate for the new square
@@ -224,7 +224,7 @@ class Game(object):
 
         # If the player has ended up in jail, their turn is over
         # (even if doubles were rolled)...
-        if(current_player.state.is_in_jail is True):
+        if current_player.state.is_in_jail is True:
             roll_again = Game.Action.DO_NOT_ROLL_AGAIN
 
         return roll_again, number_of_doubles_rolled
@@ -273,7 +273,7 @@ class Game(object):
         player.ai.money_taken(player.state.copy(), amount)
 
         # We return the amount taken...
-        if(player.state.cash >= 0):
+        if player.state.cash >= 0:
             return amount
         else:
             return cash_before_money_taken
@@ -302,19 +302,19 @@ class Game(object):
         # We try taking the money from the player (they have a chance to make
         # deals or sell property when this happens)...
         amount_taken = self.take_money_from_player(from_player, amount)
-        if(from_player.state.cash >= 0):
+        if from_player.state.cash >= 0:
             # They had enough money so we give it to the to_player...
             self.give_money_to_player(to_player, amount)
             return Game.Action.TRANSFER_SUCCEEDED
 
         # The player did not have enough money. What we do depends on the action
         # passed in...
-        if(action == Game.Action.PAY_AS_MUCH_AS_POSSIBLE):
+        if action == Game.Action.PAY_AS_MUCH_AS_POSSIBLE:
             # We pay the to-player as much as possible. This still
             # leaves the from_player with a negative amount of cash
             # as if the whole amount had been taken...
             self.give_money_to_player(to_player, amount_taken)
-        elif(action == Game.Action.ROLLBACK_ON_INSUFFICIENT_CASH):
+        elif action == Game.Action.ROLLBACK_ON_INSUFFICIENT_CASH:
             # We roll back the transfer...
             self.give_money_to_player(from_player, amount)
 
@@ -374,7 +374,7 @@ class Game(object):
         '''
         # We first offer the property to the current player...
         action = self._offer_property_to_current_player(current_player, square)
-        if(action == Game.Action.PROPERTY_BOUGHT):
+        if action == Game.Action.PROPERTY_BOUGHT:
             return
 
         # The current player did not buy the property, so we put it
@@ -401,7 +401,7 @@ class Game(object):
             bid = int(bid)
 
             # A bid of zero is not a bid...
-            if(bid != 0):
+            if bid != 0:
                 bids.append((player, bid))
 
         # We sort the bids from high to low...
@@ -413,7 +413,7 @@ class Game(object):
             player = bids[i][0]
 
             # We find the next highest bid...
-            if(i+1 < number_of_bids):
+            if i+1 < number_of_bids:
                 next_highest_bid = bids[i+1][1]
             else:
                 next_highest_bid = 0
@@ -421,7 +421,7 @@ class Game(object):
 
             # We sell it to the player...
             self.take_money_from_player(player, selling_price)
-            if(player.state.cash < 0):
+            if player.state.cash < 0:
                 # The player did not have enough money, so we refund what we
                 # took and sell the property to the next highest bidder...
                 self.give_money_to_player(player, selling_price)
@@ -442,13 +442,13 @@ class Game(object):
             player.state.copy(),
             square.name,
             square.price)
-        if(action == PlayerAIBase.Action.DO_NOT_BUY):
+        if action == PlayerAIBase.Action.DO_NOT_BUY:
             return Game.Action.PROPERTY_NOT_BOUGHT
 
         # The player wants to buy the property, so we take the money...
         self.take_money_from_player(player, square.price)
 
-        if(player.state.cash < 0):
+        if player.state.cash < 0:
             # The player did not have enough money, so we revert the transaction...
             self.give_money_to_player(player, square.price)
             return Game.Action.PROPERTY_NOT_BOUGHT
@@ -468,7 +468,7 @@ class Game(object):
         player_number_to_owned_sets_map = self.state.board.get_owned_sets()
         for player in self.state.players:
             player_number = player.state.player_number
-            if(player_number in player_number_to_owned_sets_map):
+            if player_number in player_number_to_owned_sets_map:
                 player.state.owned_sets = player_number_to_owned_sets_map[player_number]
             else:
                 # The player does not own any sets...
@@ -484,7 +484,7 @@ class Game(object):
         build_instructions = current_player.ai.build_houses(
             self.state.copy(),
             current_player.state.copy())
-        if(not build_instructions):
+        if not build_instructions:
             return
 
         # We find the Street objects for the square names provided...
@@ -497,31 +497,31 @@ class Game(object):
         self._build_houses_and_take_money(current_player, instructions_with_streets)
 
         # Did the player have enough money?
-        if(current_player.state.cash < 0):
+        if current_player.state.cash < 0:
             self._roll_back_house_building(current_player, instructions_with_streets)
             return
 
         # We check each street to see if it looks as we expect...
         for (square_name, number_of_houses, street) in instructions_with_streets:
             # Did the player try to build a -ve number of houses?
-            if(number_of_houses < 0):
+            if number_of_houses < 0:
                 self._roll_back_house_building(current_player, instructions_with_streets)
                 return
 
             # Does the street have more than five houses?
-            if(street.number_of_houses > 5):
+            if street.number_of_houses > 5:
                 self._roll_back_house_building(current_player, instructions_with_streets)
                 return
 
             # Is the set that this street is a part of wholly owned by
             # the current player, and unmortgaged?
-            if(street.street_set not in current_player.state.owned_sets):
+            if street.street_set not in current_player.state.owned_sets:
                 self._roll_back_house_building(current_player, instructions_with_streets)
                 return
 
             # We check if the set that this street is part of has been
             # built in a balanced way...
-            if(not self._set_has_balanced_houses(street.street_set)):
+            if not self._set_has_balanced_houses(street.street_set):
                 self._roll_back_house_building(current_player, instructions_with_streets)
                 return
 
@@ -531,7 +531,7 @@ class Game(object):
         '''
         properties_in_set = self.state.board.get_properties_for_set(street_set)
         houses_for_each_property = [p.number_of_houses for p in properties_in_set]
-        if(max(houses_for_each_property) - min(houses_for_each_property) <= 1):
+        if max(houses_for_each_property) - min(houses_for_each_property) <= 1:
             return True
         else:
             return False
@@ -579,23 +579,23 @@ class Game(object):
         for property_name in property_names_to_mortgage:
             # We check that the square is a property...
             square = self.state.board.get_square_by_name(property_name)
-            if(not isinstance(square, Property)):
+            if not isinstance(square, Property):
                 continue
 
             # We check that the current player owns the property and
             # that they are not sneakily trying to mortgage someone
             # else's property...
-            if(square.owner_player_number != current_player.state.player_number):
+            if square.owner_player_number != current_player.state.player_number:
                 continue
 
             # We check that the property is not already mortgaged...
-            if(square.is_mortgaged is True):
+            if square.is_mortgaged is True:
                 continue
 
             # We check that there are no houses on the property.
             # (You can't mortgage if a property has houses.)
-            if(isinstance(square, Street)):
-                if(square.number_of_houses != 0):
+            if isinstance(square, Street):
+                if square.number_of_houses != 0:
                     continue
 
             # We mortgage the property...
@@ -628,22 +628,22 @@ class Game(object):
 
             # We check that the player isn't trying to sell a negative
             # number of houses. (As a sneaky way of buying houses cheaply.)
-            if(number_of_houses < 0):
+            if number_of_houses < 0:
                 self._replace_houses(instructions_with_streets)
                 return
 
             # We check that the property has been left with between 0 and 5 houses...
-            if(street.number_of_houses < 0 or street.number_of_houses > 5):
+            if street.number_of_houses < 0 or street.number_of_houses > 5:
                 self._replace_houses(instructions_with_streets)
                 return
 
             # We check that the street belongs to the current player...
-            if(street.owner_player_number != current_player.state.player_number):
+            if street.owner_player_number != current_player.state.player_number:
                 self._replace_houses(instructions_with_streets)
                 return
 
             # Will the sale result in unbalanced housing?
-            if(not self._set_has_balanced_houses(street.street_set)):
+            if not self._set_has_balanced_houses(street.street_set):
                 self._replace_houses(instructions_with_streets)
                 return
 
@@ -686,7 +686,7 @@ class Game(object):
             square = board.get_square_by_name(square_name)
 
             # We only include the square if it is a Street...
-            if(isinstance(square, Street)):
+            if isinstance(square, Street):
                 instructions_with_streets.append((square_name, number_of_houses, square))
 
         return instructions_with_streets
@@ -696,20 +696,20 @@ class Game(object):
         If the player is in jail, they get a chance to buy their way out
         or to play a Get Out Of Jail Free card.
         '''
-        if(not current_player.state.is_in_jail):
+        if not current_player.state.is_in_jail:
             return
 
         # We ask the player if they want to buy their way out or play a card...
         action = current_player.ai.get_out_of_jail(current_player.state.copy())
-        if(action == PlayerAIBase.Action.BUY_WAY_OUT_OF_JAIL):
+        if action == PlayerAIBase.Action.BUY_WAY_OUT_OF_JAIL:
             # The player is buying their way out...
             self.take_money_from_player(current_player, 50)
             current_player.state.is_in_jail = False
             current_player.state.number_of_turns_in_jail = 0
 
-        elif(action == PlayerAIBase.Action.PLAY_GET_OUT_OF_JAIL_FREE_CARD):
+        elif action == PlayerAIBase.Action.PLAY_GET_OUT_OF_JAIL_FREE_CARD:
             # The player is playing a Get Out Of Jail Free card...
-            if(current_player.state.number_of_get_out_of_jail_free_cards >= 1):
+            if current_player.state.number_of_get_out_of_jail_free_cards >= 1:
 
                 # We put it back in its deck...
                 card = current_player.state.get_out_of_jail_free_cards[0]
@@ -729,7 +729,7 @@ class Game(object):
 
         # We ask the player if they want to unmortgage anything...
         square_names = current_player.ai.unmortgage_properties(self.state.copy(), current_player.state.copy())
-        if(not square_names):
+        if not square_names:
             return
 
         # We calculate the cost to unmortgage these properties. This is
@@ -739,11 +739,11 @@ class Game(object):
         squares = [board.get_square_by_name(name) for name in square_names]
         for square in squares:
             # Is the square a property?
-            if(not isinstance(square, Property)):
+            if not isinstance(square, Property):
                 continue
 
             # We check if the property is owned by the current player...
-            if(square.owner_player_number != current_player.state.player_number):
+            if square.owner_player_number != current_player.state.player_number:
                 return
 
             unmortgage_cost += int(square.mortgage_value * 1.1)
@@ -751,7 +751,7 @@ class Game(object):
         # We take the money from the player...
         self.take_money_from_player(current_player, unmortgage_cost)
 
-        if(current_player.state.cash < 0):
+        if current_player.state.cash < 0:
             # The player did not have enough money, so we refund it and abort the
             # transaction...
             self.give_money_to_player(current_player, unmortgage_cost)
@@ -774,23 +774,22 @@ class Game(object):
 
         # We see if the player wants to propose a deal...
         proposal = current_player.ai.propose_deal(self.state.copy(), current_player.state.copy())
-        if(proposal.deal_proposed is False):
+        if proposal.deal_proposed is False:
             return
 
-        # We find the player the deal is being proposed to...
-        if(proposal.propose_to_player_number < 0
-           or
-           proposal.propose_to_player_number >= self.state.number_of_players):
+        # We find the player the deal is being proposed to (checking that the
+        # player is valid first)...
+        if proposal.propose_to_player_number < 0 or proposal.propose_to_player_number >= self.state.number_of_players:
             current_player.ai.deal_result(PlayerAIBase.DealInfo.INVALID_DEAL_PROPOSED)
             return
         proposed_to_player = self.state.players[proposal.propose_to_player_number]
 
         # We check that the players own the properties specified...
         board = self.state.board
-        if(current_player.owns_properties(proposal.properties_offered) is False):
+        if current_player.owns_properties(proposal.properties_offered) is False:
             current_player.ai.deal_result(PlayerAIBase.DealInfo.INVALID_DEAL_PROPOSED)
             return
-        if(proposed_to_player.owns_properties(proposal.properties_wanted) is False):
+        if proposed_to_player.owns_properties(proposal.properties_wanted) is False:
             current_player.ai.deal_result(PlayerAIBase.DealInfo.INVALID_DEAL_PROPOSED)
             return
 
@@ -805,7 +804,7 @@ class Game(object):
             proposed_to_player.state.copy(),
             proposal)
 
-        if(response.action == DealResponse.Action.REJECT):
+        if response.action == DealResponse.Action.REJECT:
             # The proposee rejected the deal...
             current_player.ai.deal_result(PlayerAIBase.DealInfo.DEAL_REJECTED)
             proposed_to_player.ai.deal_result(PlayerAIBase.DealInfo.DEAL_REJECTED)
@@ -814,40 +813,42 @@ class Game(object):
         # The deal has been accepted, but is it actually acceptable in
         # terms of cash exchange to both parties?
         cash_transfer_from_proposer_to_proposee = 0
-        if(minimum_cash_wanted > 0):
+        if minimum_cash_wanted > 0:
             # The proposer wants money. Did the proposee offer enough?
-            if(response.maximum_cash_offered < minimum_cash_wanted):
+            if response.maximum_cash_offered < minimum_cash_wanted:
                 current_player.ai.deal_result(PlayerAIBase.DealInfo.ASKED_FOR_TOO_MUCH_MONEY)
                 proposed_to_player.ai.deal_result(PlayerAIBase.DealInfo.OFFERED_TOO_LITTLE_MONEY)
                 return
             cash_transfer_from_proposer_to_proposee = -1 * (minimum_cash_wanted + response.maximum_cash_offered) / 2
 
-        elif(maximum_cash_offered > 0):
+        elif maximum_cash_offered > 0:
             # The proposer offered money. Was this enough for the proposee?
-            if(maximum_cash_offered < response.minimum_cash_wanted):
+            if maximum_cash_offered < response.minimum_cash_wanted:
                 current_player.ai.deal_result(PlayerAIBase.DealInfo.OFFERED_TOO_LITTLE_MONEY)
                 proposed_to_player.ai.deal_result(PlayerAIBase.DealInfo.ASKED_FOR_TOO_MUCH_MONEY)
                 return
             cash_transfer_from_proposer_to_proposee = (maximum_cash_offered + response.minimum_cash_wanted) / 2
 
         # The deal is acceptable to both parties, so we transfer the money...
-        result = Game.Action.TRANSFER_SUCCEEDED
-        if(cash_transfer_from_proposer_to_proposee > 0):
+        if cash_transfer_from_proposer_to_proposee > 0:
             # We transfer cash from the proposer to the proposee...
             result = self.transfer_cash(
                 current_player,
                 proposed_to_player,
                 cash_transfer_from_proposer_to_proposee,
                 Game.Action.ROLLBACK_ON_INSUFFICIENT_CASH)
-        elif(cash_transfer_from_proposer_to_proposee < 0):
+        elif cash_transfer_from_proposer_to_proposee < 0:
             # We transfer cash from the proposee to the proposer...
             result = self.transfer_cash(
                 proposed_to_player,
                 current_player,
                 cash_transfer_from_proposer_to_proposee * -1,
                 Game.Action.ROLLBACK_ON_INSUFFICIENT_CASH)
+        else:
+            # No money is changing hands, so the case (non) transfer 'succeeds'...
+            result = Game.Action.TRANSFER_SUCCEEDED
 
-        if(result == Game.Action.TRANSFER_FAILED):
+        if result == Game.Action.TRANSFER_FAILED:
             current_player.ai.deal_result(PlayerAIBase.DealInfo.PLAYER_DID_NOT_HAVE_ENOUGH_MONEY)
             proposed_to_player.ai.deal_result(PlayerAIBase.DealInfo.PLAYER_DID_NOT_HAVE_ENOUGH_MONEY)
             return
@@ -870,9 +871,9 @@ class Game(object):
         # We see how many players still have money...
         solvent_players = {player for player in self.state.players if player.state.cash >= 0}
         number_of_solvent_players = len(solvent_players)
-        if(number_of_solvent_players > 1):
+        if number_of_solvent_players > 1:
             self.status = Game.Action.GAME_NOT_OVER
-        elif(number_of_solvent_players == 1):
+        elif number_of_solvent_players == 1:
             self.status = Game.Action.GAME_OVER
             self.winner = solvent_players.pop()
         else:
@@ -888,7 +889,7 @@ class Game(object):
         # Note that we iterate through a copy of the list of players, as
         # we may remove players from the list...
         for player in list(self.state.players):
-            if(player.state.cash < 0):
+            if player.state.cash < 0:
                 self._player_went_bankrupt(player)
 
     def _player_went_bankrupt(self, current_player):

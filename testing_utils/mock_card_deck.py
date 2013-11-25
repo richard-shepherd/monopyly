@@ -12,7 +12,7 @@ class MockCardDeck(Deck):
         The 'constructor'.
         '''
         super().__init__()
-        if(next_card):
+        if next_card:
             self.set_next_card(next_card)
 
     def set_next_card(self, card):

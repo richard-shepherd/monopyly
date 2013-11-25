@@ -22,7 +22,7 @@ class GetOutOfJailFree(Card):
         (in the Game class), so all we need to do here is to put the card
         back in the deck.
         '''
-        if(self.deck):
+        if self.deck:
             self.deck.cards.append(self)
 
 

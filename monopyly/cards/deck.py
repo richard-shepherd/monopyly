@@ -24,14 +24,14 @@ class Deck(object):
 
         # Are there any cards in the deck?
         number_of_cards = len(self.cards)
-        if(number_of_cards == 0):
+        if number_of_cards == 0:
             return
 
         # We find the card for the current index...
         card = self.cards[self.index]
 
         # We play the card...
-        if(type(card) == GetOutOfJailFree):
+        if type(card) == GetOutOfJailFree:
             # The card is Get Out Of Jail Free.
             # We give it to the player...
             player.state.get_out_of_jail_free_cards.append(card)
@@ -45,7 +45,7 @@ class Deck(object):
 
             # We 'put the card to the bottom of the deck'...
             self.index += 1
-            if(self.index >= number_of_cards):
+            if self.index >= number_of_cards:
                 self.index = 0
 
     @property

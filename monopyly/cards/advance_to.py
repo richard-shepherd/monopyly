@@ -25,7 +25,7 @@ class AdvanceTo(Card):
         go_square_position = game.state.board.get_index(Square.Name.GO)
         destination_square_position = game.state.board.get_index(self.destination_square_name)
         player_position = current_player.state.square
-        if((player_position > destination_square_position) and (destination_square_position != go_square_position)):
+        if (player_position > destination_square_position) and (destination_square_position != go_square_position):
             # The player has to pass Go to get to the destination...
             game.give_money_to_player(current_player, 200)
 

@@ -13,8 +13,6 @@ from monopyly import Board
 
 # TODO: graphs of cash and 'net worth'
 
-# TODO: change if(x): to if x:
-
-if(__name__ == "__main__"):
+if __name__ == "__main__":
     board = Board()
     a = 99

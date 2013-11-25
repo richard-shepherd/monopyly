@@ -25,13 +25,13 @@ class Station(Property):
         owned_stations = set.intersection(self._station_indexes, owner.state.property_indexes)
         number_of_owned_stations = len(owned_stations)
 
-        if(number_of_owned_stations == 1):
+        if number_of_owned_stations == 1:
             return 25
-        elif(number_of_owned_stations == 2):
+        elif number_of_owned_stations == 2:
             return 50
-        elif(number_of_owned_stations == 3):
+        elif number_of_owned_stations == 3:
             return 100
-        elif(number_of_owned_stations == 4):
+        elif number_of_owned_stations == 4:
             return 200
 
         return 0
@@ -40,7 +40,7 @@ class Station(Property):
         '''
         Finds the set of board-indexes for the stations.
         '''
-        if(len(self._station_indexes) != 0):
+        if len(self._station_indexes) != 0:
             return
         self._station_indexes.add(board.get_index(Square.Name.KINGS_CROSS_STATION))
         self._station_indexes.add(board.get_index(Square.Name.MARYLEBONE_STATION))

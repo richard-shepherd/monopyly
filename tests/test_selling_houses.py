@@ -7,7 +7,7 @@ class PlayerWhoSellsHouses(DefaultPlayerAI):
     A player who sells houses.
     '''
     def __init__(self, houses_to_sell=None):
-        if(not houses_to_sell):
+        if not houses_to_sell:
             houses_to_sell = []
         self.houses_to_sell = houses_to_sell
 
