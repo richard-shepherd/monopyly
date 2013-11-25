@@ -1,5 +1,5 @@
 from .player_state import PlayerState
-from ..squares import Property
+from ..squares import Property, Street
 
 
 class Player(object):
@@ -8,21 +8,22 @@ class Player(object):
     derived from PlayerAIBase).
     '''
 
-    def __init__(self, ai, player_number):
+    def __init__(self, ai, player_number, board):
         '''
         The 'constructor'.
         '''
         self.state = PlayerState(player_number)
         self.ai = ai
+        self.board = board
 
-    def owns_properties(self, property_names, board):
+    def owns_properties(self, property_names):
         '''
         Returns True if this player owns all the properties passed in,
         False if not (or if any of the squares passed in are no properties).
         '''
         # We check each property...
         for property_name in property_names:
-            square = board.get_square_by_name(property_name)
+            square = self.board.get_square_by_name(property_name)
 
             # We check that the square is a property...
             if(not isinstance(square, Property)):
@@ -38,4 +39,16 @@ class Player(object):
         Returns the player's net worth, which includes their
         cash, properties and houses.
         '''
-        return self.state.cash
+        # Net worth includes cash...
+        total = self.state.cash
+
+        for property_index in self.state.property_indexes:
+            # We add the mortgage value of properties...
+            property = self.board.get_square_by_index(property_index)
+            total += property.mortgage_value
+
+            # We add the resale value of houses...
+            if(type(property) == Street):
+                total += (property.house_price/2 * property.number_of_houses)
+
+        return total

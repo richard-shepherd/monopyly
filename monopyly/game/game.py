@@ -4,15 +4,7 @@ from .game_state import GameState
 from .player_ai_base import PlayerAIBase
 from .board import Board
 from .deal_response import DealResponse
-from ..squares import Square
-from ..squares import Property
-from ..squares import Street
-
-# TODO: implement turn limit (and write tests for it)
-
-# TODO: test that only solvent players play rounds. ie, that bankrupt players get knocked out.
-
-# TODO: test that bankrupt players return all properties to the bank (or for auction)
+from ..squares import Square, Property, Street
 
 # TODO: check if a player goes bankrupt even during another player's turn
 # e.g. from the result of a card
@@ -81,7 +73,7 @@ class Game(object):
         '''
         # We wrap the AI up into a Player object...
         player_number = len(self.state.players)
-        player = Player(ai, player_number)
+        player = Player(ai, player_number, self.state.board)
         self.state.players.append(player)
         return player
 
@@ -795,10 +787,10 @@ class Game(object):
 
         # We check that the players own the properties specified...
         board = self.state.board
-        if(current_player.owns_properties(proposal.properties_offered, board) is False):
+        if(current_player.owns_properties(proposal.properties_offered) is False):
             current_player.ai.deal_result(PlayerAIBase.DealInfo.INVALID_DEAL_PROPOSED)
             return
-        if(proposed_to_player.owns_properties(proposal.properties_wanted, board) is False):
+        if(proposed_to_player.owns_properties(proposal.properties_wanted) is False):
             current_player.ai.deal_result(PlayerAIBase.DealInfo.INVALID_DEAL_PROPOSED)
             return
 
