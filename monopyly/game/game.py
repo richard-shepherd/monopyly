@@ -98,12 +98,9 @@ class Game(object):
             if self.status == Game.Action.GAME_OVER:
                 break
 
-        # There may be no outright winner if the maximum number
-        # of turns has been played. In this case, the winner is
-        # the player with the highest 'net worth'...
-        if self.status != Game.Action.GAME_OVER:
-            self.status = Game.Action.GAME_OVER
-            self.winner = max(self.state.players, key=lambda player: player.net_worth)
+        # The game is over, so we work out which player has won...
+        self.status = Game.Action.GAME_OVER
+        self._find_winner()
 
     def play_one_round(self):
         '''
@@ -915,4 +912,23 @@ class Game(object):
         # We move the player to the bankrupt list...
         self.state.players.remove(current_player)
         self.state.bankrupt_players.append(current_player)
+
+    def _find_winner(self):
+        '''
+        The winner is the player with the highest net worth.
+        If the game is over because only one player remains, then they
+        automatically have the highest net worth. If the game went to the
+        maximum number of rounds, we choose between the remaining players.
+        '''
+        # We find the maximum net worth and the collection of players
+        # with this net worth...
+        max_net_worth = max(player.net_worth for player in self.state.players)
+        winning_players = [player for player in self.state.players if player.net_worth == max_net_worth]
+
+        # If there is only one player, then they have won...
+        if(len(winning_players) == 1):
+            self.winner = winning_players[0]
+        else:
+            self.winner = None
+
 

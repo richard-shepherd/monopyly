@@ -116,4 +116,30 @@ def test_maximum_rounds_net_worth_properties_and_houses():
     assert game.winner == player0
 
 
+def test_maximum_rounds_equal_worth():
+    '''
+    Maximum rounds are played, and it's a draw.
+    '''
+    game = Game()
+    player0 = game.add_player(DefaultPlayerAI())
+    player1 = game.add_player(DefaultPlayerAI())
+
+    # We put both players on Free Parking and ensure that all dice
+    # are zeros. Player1 has more money, so after the maximum number
+    # of rounds, they should win...
+    player0.state.square = 20
+    player1.state.square = 20
+    player0.state.cash = 1200
+    player1.state.cash = 1200
+
+    # We play the game...
+    game.dice = MockDice(roll_results=[(0, 0)], repeat=True)
+    game.maximum_rounds = 20
+    game.play_game()
+
+    # We check the winner and the turns played...
+    assert game.number_of_rounds_played == game.maximum_rounds
+    assert game.winner is None
+
+
 
