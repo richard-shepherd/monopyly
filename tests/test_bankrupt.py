@@ -97,5 +97,35 @@ def test_goojf_cards_returned():
     assert player1 in game.state.bankrupt_players
 
 
+def test_player_goes_bankrupt_in_other_players_turn():
+    '''
+    A player goes bankrupt because another player lands on
+    'It is your birthday...'
+    '''
+    game = Game()
+    player0 = game.add_player(DefaultPlayerAI())
+    player1 = game.add_player(DefaultPlayerAI())
+    player2 = game.add_player(DefaultPlayerAI())
+
+    # The Chance deck has an It is Your Birthday card
+    # at the top...
+    board = game.state.board
+    board.chance_deck = MockCardDeck(ItIsYourBirthday())
+
+    # player1 does not have enough money to give player0
+    # a birthday present...
+    player1.state.cash = 5
+
+    # player0 rolls 7 and lands on Chance.
+    # player1 should then be out of hte game, and player2 then rolls 10.
+    game.dice = MockDice([(2, 5), (4, 6)])
+    game.play_one_round()
+
+    assert player0 in game.state.players
+    assert player1 not in game.state.players
+    assert player2 in game.state.players
+    assert player1 in game.state.bankrupt_players
+    assert player2.state.square == 10
+
 
 

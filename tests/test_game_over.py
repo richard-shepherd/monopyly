@@ -1,9 +1,6 @@
 from monopyly import *
 from testing_utils import *
 
-# TODO: max rounds, net worth (not just cash)
-
-# TODO: maximum rounds, equal net worth
 
 def test_maximum_rounds():
     '''
@@ -142,4 +139,12 @@ def test_maximum_rounds_equal_worth():
     assert game.winner is None
 
 
+def test_all_players_bankrupt_in_same_round():
+    '''
+    All players go bankrupt in the same round (or at least, they would
+    if the game played the whole round).
+
+    We check that the last remaining player wins.
+    '''
+    assert False
 

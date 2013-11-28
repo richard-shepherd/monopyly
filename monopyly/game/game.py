@@ -6,9 +6,6 @@ from .board import Board
 from .deal_response import DealResponse
 from ..squares import Square, Property, Street
 
-# TODO: check if a player goes bankrupt even during another player's turn
-# e.g. from the result of a card
-
 
 class Game(object):
     '''
