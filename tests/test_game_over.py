@@ -146,5 +146,31 @@ def test_all_players_bankrupt_in_same_round():
 
     We check that the last remaining player wins.
     '''
-    assert False
+    game = Game()
+    player0 = game.add_player(DefaultPlayerAI())
+    player1 = game.add_player(DefaultPlayerAI())
+    player2 = game.add_player(DefaultPlayerAI())
 
+    # All players are on Liverpool Street station, and all roll
+    # three to land on Super Tax...
+    player0.state.square = 35
+    player1.state.square = 35
+    player2.state.square = 35
+
+    # None of them have enough money to pay the tax...
+    player0.state.cash = 20
+    player1.state.cash = 20
+    player2.state.cash = 20
+
+    # We play a round...
+    game.dice = MockDice([(1, 2), (1, 2), (1, 2)])
+    game.play_game()
+
+    # Players 0 and 1 should be bankrupt, and player2
+    # should be the winner...
+    assert player0 not in game.state.players
+    assert player1 not in game.state.players
+    assert player2 in game.state.players
+    assert player0 in game.state.bankrupt_players
+    assert player1 in game.state.bankrupt_players
+    assert game.winner == player2
