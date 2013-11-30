@@ -124,8 +124,9 @@ class Game(object):
             # We check if any players went bankrupt during this turn...
             self._check_for_bankrupt_players()
 
-            # TODO: we should check for game-over here.
-            # Otherwise we could get a draw if all players go bankrupt in the same turn
+            # If there is only one player left, the game is over...
+            if len(self.state.players) == 1:
+                break
 
     def play_one_turn(self, current_player):
         '''
@@ -919,6 +920,10 @@ class Game(object):
         '''
         # We find the maximum net worth and the collection of players
         # with this net worth...
+        if len(self.state.players) == 0:
+            self.winner = None
+            return
+
         max_net_worth = max(player.net_worth for player in self.state.players)
         winning_players = [player for player in self.state.players if player.net_worth == max_net_worth]
 
