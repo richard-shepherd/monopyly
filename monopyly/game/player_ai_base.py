@@ -1,6 +1,7 @@
 from .deal_proposal import DealProposal
 from .deal_response import DealResponse
 
+# TODO: add error notification callback, e.g. if params are wrong
 
 class PlayerAIBase(object):
     '''
@@ -381,6 +382,15 @@ class PlayerAIBase(object):
         '''
         Called when a player goes bankrupt. All non-bankrupt players
         receive this notification.
+
+        No response is required.
+        '''
+        pass
+
+    def ai_error(self, message):
+        '''
+        Called if the return value from any of the Player AI functions
+        was invalid. for example, if it was not of the expected type.
 
         No response is required.
         '''

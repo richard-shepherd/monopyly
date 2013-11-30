@@ -1,3 +1,4 @@
+from .utils import validate_type
 from .dice import Dice
 from .player import Player
 from .game_state import GameState
@@ -393,10 +394,11 @@ class Game(object):
                 player.state.copy(),
                 square.name,
                 square.price)
-            bid = int(bid)
+            if not self.validate(player, "property_offered_for_auction", bid, int):
+                continue
 
-            # A bid of zero is not a bid...
-            if bid != 0:
+            # A bid of zero (or below) is not a bid...
+            if bid > 0:
                 bids.append((player, bid))
 
         # We sort the bids from high to low...
@@ -437,6 +439,9 @@ class Game(object):
             player.state.copy(),
             square.name,
             square.price)
+        if not self.validate(player, "landed_on_unowned_property", action, int):
+            return Game.Action.PROPERTY_NOT_BOUGHT
+
         if action == PlayerAIBase.Action.DO_NOT_BUY:
             return Game.Action.PROPERTY_NOT_BOUGHT
 
@@ -932,5 +937,19 @@ class Game(object):
             self.winner = winning_players[0]
         else:
             self.winner = None
+
+    def validate(self, player, function, return_value, expected_type):
+        '''
+        Checks that an AI return value is of the expected type.
+        See utils.validate_type for the acceptable values for type_or_prototype.
+        '''
+        if validate_type(return_value, expected_type):
+            # The return type was of the right type...
+            return True
+
+        # The return type was not of the right type...
+        message = "Invalid return type from {0}. Expected {1}, got {2}".format(function, expected_type, return_value)
+        player.ai.ai_error(message)
+        return False
 
 

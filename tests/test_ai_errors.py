@@ -1,0 +1,44 @@
+from monopyly import *
+from testing_utils import *
+
+
+class AIErrorRecorder(PlayerAIBase):
+    '''
+    Player who records the ai error messages.
+    '''
+    def __init__(self):
+        self.message = ""
+
+    def ai_error(self, message):
+        self.message = message
+
+
+def test_player_buys_property():
+    '''
+    The player returns the wrong type from the landed_on_unowned_property method.
+    '''
+    class TestPlayer(AIErrorRecorder):
+        def landed_on_unowned_property(self, game_state, player_state, property_name, price):
+            return "BUY"
+
+    game = Game()
+    player = game.add_player(TestPlayer())
+    game.dice = MockDice([(2, 4)])
+    game.play_one_turn(player)
+    assert "Invalid return type" in player.ai.message
+
+
+def test_player_bids_in_auction():
+    '''
+    The player returns the wrong type from the property_offered_for_auction method.
+    '''
+    class TestPlayer(AIErrorRecorder):
+        def property_offered_for_auction(self, game_state, player_state, property_name, face_value):
+            return "45.6"
+
+    game = Game()
+    player = game.add_player(TestPlayer())
+    game.dice = MockDice([(2, 4)])
+    game.play_one_turn(player)
+    assert "Invalid return type" in player.ai.message
+
