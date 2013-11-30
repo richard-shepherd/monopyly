@@ -1,6 +1,15 @@
 from monopyly import *
 from testing_utils import *
 
+# TODO: build houses
+# TODO: sell houses
+# TODO: build houses invalid property names "VIME STREET"
+# TODO: sell houses invalid property names "VIME STREET"
+# TODO: mortgage properties invalid property names "VIME STREET"
+# TODO: unmortgage properties invalid property names "VIME STREET"
+# TODO: get out of jail
+# TODO: propose deal
+# TODO: deal proposed
 
 class AIErrorRecorder(PlayerAIBase):
     '''
