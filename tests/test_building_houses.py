@@ -319,6 +319,7 @@ def test_building_on_partially_mortgaged_set():
 
     # Strand is mortgaged...
     strand.is_mortgaged = True
+    game._update_sets()
 
     # We need to play a turn to initiate house building. We play a
     # neutral turn: Marylebone -> Free parking.
