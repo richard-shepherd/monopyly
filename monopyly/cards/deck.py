@@ -28,6 +28,8 @@ class Deck(object):
             return
 
         # We find the card for the current index...
+        if self.index >= number_of_cards:
+            self.index = 0
         card = self.cards[self.index]
 
         # We play the card...
@@ -45,8 +47,6 @@ class Deck(object):
 
             # We 'put the card to the bottom of the deck'...
             self.index += 1
-            if self.index >= number_of_cards:
-                self.index = 0
 
     @property
     def number_of_cards(self):

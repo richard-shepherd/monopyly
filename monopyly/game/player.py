@@ -49,6 +49,13 @@ class Player(object):
 
             # We add the resale value of houses...
             if type(property) == Street:
-                total += (property.house_price/2 * property.number_of_houses)
+                total += int(property.house_price/2 * property.number_of_houses)
 
         return total
+
+    @property
+    def name(self):
+        '''
+        Returns the player name.
+        '''
+        return self.ai.get_name()

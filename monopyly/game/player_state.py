@@ -54,7 +54,8 @@ class PlayerState(object):
         '''
         Returns a copy of the player state.
         '''
-        return copy.deepcopy(self)
+        return self
+        #return copy.deepcopy(self)
 
     def get_number_of_houses_and_hotels(self, board):
         '''

@@ -29,12 +29,13 @@ class GameState(object):
         '''
         Returns a copy of the game state.
         '''
-        # We create a deep copy of the game...
-        game_copy = copy.deepcopy(self)
-
-        # Then we 'redact' some information...
-        for player in game_copy.players:
-            player._ai = None
+        return self
+        ## We create a deep copy of the game...
+        #game_copy = copy.deepcopy(self)
+        #
+        ## Then we 'redact' some information...
+        #for player in game_copy.players:
+        #    player._ai = None
 
     @property
     def number_of_players(self):

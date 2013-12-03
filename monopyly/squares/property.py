@@ -1,4 +1,5 @@
 from .square import Square
+from ..utility import Logger
 
 
 class Property(Square):
@@ -66,10 +67,12 @@ class Property(Square):
         # If the property is already owned by this player, then there
         # is nothing to do...
         if self.owner_player_number == player.state.player_number:
+            Logger.log("{0} already owns this property".format(player.name))
             return
 
         # If the property is mortgaged, then there is nothing to do...
         if self.is_mortgaged:
+            Logger.log("Property is mortgaged")
             return
 
         if self.owner_player_number == Property.NOT_OWNED:
@@ -93,6 +96,7 @@ class Property(Square):
         # We take the rent from the player, and give it to the
         # player who owns the square...
         owner = game.state.players[self.owner_player_number]
+        Logger.log("{0} must pay rent of £{1} to {2}".format(player.name, rent, owner.name))
         game.transfer_cash(player, owner, rent, Game.Action.PAY_AS_MUCH_AS_POSSIBLE)
 
     def calculate_rent(self, game, player):

@@ -1,6 +1,4 @@
-from monopyly import Board
-
-# TODO: build a logging mechanism so that we can see all the events.
+from monopyly import *
 
 # TODO: test that events are raised to the AIs, e.g. start of turn etc
 
@@ -17,6 +15,11 @@ from monopyly import Board
 
 # TODO: auto-discovery of AIs
 
-if __name__ == "__main__":
-    board = Board()
-    a = 99
+# We set up the logger...
+Logger.add_handler(ConsoleLogHandler(Logger.INFO))
+
+# We play a game with some sample AIs...
+game = Game()
+game.add_player(SophieAI())
+game.add_player(DaddyAI())
+game.play_game()

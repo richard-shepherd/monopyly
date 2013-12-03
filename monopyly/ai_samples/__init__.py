@@ -1,1 +1,2 @@
-__author__ = 'richard'
+from .sophie import SophieAI
+from .daddy import DaddyAI

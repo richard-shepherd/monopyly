@@ -5,7 +5,7 @@ from .player_ai_base import PlayerAIBase
 from .board import Board
 from .deal_response import DealResponse
 from ..squares import Square, Property, Street
-from ..utility import typecheck
+from ..utility import typecheck, Logger
 
 
 class Game(object):
@@ -81,11 +81,15 @@ class Game(object):
         '''
         # We tell the players that the game is starting, and which
         # player-number they are...
+        Logger.log("Start of game. Players:")
+        Logger.indent()
         for player in self.state.players:
             player.ai.start_of_game(player.state.player_number)
+            Logger.log(player.name)
+        Logger.dedent()
 
-        # We play a game with a maximum number of rounds...
-        for i in range(self.maximum_rounds):
+        # We play a game...
+        while True:
             # We play a round...
             self.play_one_round()
             self.number_of_rounds_played += 1
@@ -94,6 +98,10 @@ class Game(object):
             # player left)...
             self._check_game_status()
             if self.status == Game.Action.GAME_OVER:
+                break
+
+            if self.number_of_rounds_played == self.maximum_rounds:
+                Logger.log("Maximum rounds played")
                 break
 
         # The game is over, so we work out which player has won...
@@ -133,6 +141,12 @@ class Game(object):
         '''
         Plays one turn for one player.
         '''
+        # Some logging...
+        Logger.log("")
+        Logger.log("Start of turn for {0}".format(current_player.name))
+        Logger.indent()
+        Logger.log("Cash=£{0}, Net Worth=£{1}".format(current_player.state.cash, current_player.net_worth))
+
         # We keep a count of how many turns the player has been in jail for...
         if current_player.state.is_in_jail:
             current_player.state.number_of_turns_in_jail += 1
@@ -161,7 +175,10 @@ class Game(object):
 
             # We check if the player has gone bankrupt at the end of each move...
             if current_player.state.cash < 0:
+                Logger.dedent()
                 return
+
+        Logger.dedent()
 
     def roll_and_move(self, current_player, number_of_doubles_rolled):
         '''
@@ -174,6 +191,9 @@ class Game(object):
         roll1, roll2 = self.dice.roll()
         self.most_recent_total_dice_roll = roll1 + roll2
         doubles_rolled = (roll1 == roll2)
+
+        # We log the dice roll...
+        Logger.log("Rolled ({0}, {1})".format(roll1, roll2))
 
         # If the player is in jail, we check if they rolled themself out...
         if current_player.state.is_in_jail :
@@ -232,6 +252,7 @@ class Game(object):
         We take whatever action is appropriate for the square landed on.
         '''
         square = self.state.board.squares[current_player.state.square]
+        Logger.log("Moved to {0}".format(square.name))
 
         # We notify all players that the player has landed
         # on this square...
@@ -268,6 +289,9 @@ class Game(object):
         player.state.cash -= amount
         player.ai.money_taken(player.state.copy(), amount)
 
+        # And log it...
+        Logger.log("{0} pays £{1}".format(player.name, amount))
+
         # We return the amount taken...
         if player.state.cash >= 0:
             return amount
@@ -281,6 +305,9 @@ class Game(object):
         # We give the money to the player and tell them about it...
         player.state.cash += amount
         player.ai.money_given(player.state.copy(), amount)
+
+        # And log it...
+        Logger.log("{0} gets £{1}".format(player.name, amount))
 
     def transfer_cash(self, from_player, to_player, amount, action):
         '''
@@ -455,6 +482,7 @@ class Game(object):
         else:
             # The purchase was successful...
             self.give_property_to_player(player, square.name)
+            Logger.log("{0} buys {1}".format(player.name, square.name))
             return Game.Action.PROPERTY_BOUGHT
 
     def _update_sets(self):
@@ -573,6 +601,8 @@ class Game(object):
         property_names_to_mortgage = current_player.ai.mortgage_properties(
             self.state.copy(),
             current_player.state.copy())
+        if not property_names_to_mortgage:
+            return
 
         # We mortgage them...
         total_mortgage_value = 0
@@ -615,6 +645,8 @@ class Game(object):
         sale_instructions = current_player.ai.sell_houses(
             self.state.copy(),
             current_player.state.copy())
+        if not sale_instructions:
+            return
 
         # We convert the street names into Street objects...
         instructions_with_streets = self._get_instructions_with_streets(sale_instructions)
@@ -935,8 +967,10 @@ class Game(object):
         # If there is only one player, then they have won...
         if(len(winning_players) == 1):
             self.winner = winning_players[0]
+            Logger.log("Game over. Winner is: {0}".format(self.winner.ai.get_name()))
         else:
             self.winner = None
+            Logger.log("Game over. Draw.")
 
     def typecheck(self, player, function, return_value, expected_type):
         '''

@@ -55,6 +55,12 @@ class PlayerAIBase(object):
         PLAYER_DID_NOT_HAVE_ENOUGH_MONEY = 4
         DEAL_REJECTED = 5
 
+    def get_name(self):
+        '''
+        Returns the name of this AI player.
+        '''
+        return "I need a better name"
+
     def start_of_game(self, player_number):
         '''
         Called at the start of the game to tell each AI
