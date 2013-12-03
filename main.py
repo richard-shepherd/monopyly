@@ -13,6 +13,10 @@ from monopyly import Board
 
 # TODO: graphs of cash and 'net worth'
 
+# TODO: code tournaments
+
+# TODO: auto-discovery of AIs
+
 if __name__ == "__main__":
     board = Board()
     a = 99

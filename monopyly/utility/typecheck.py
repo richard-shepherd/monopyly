@@ -10,7 +10,7 @@ def is_iterable(object):
         return True
 
 
-def validate_type(object, type_or_prototype):
+def typecheck(object, type_or_prototype):
     '''
     Returns True if the object is of the type passed in.
 
@@ -69,4 +69,5 @@ def validate_type(object, type_or_prototype):
         raise Exception("Can not validate this object")
 
     return True
+
 

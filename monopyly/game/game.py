@@ -1,4 +1,3 @@
-from .utils import validate_type
 from .dice import Dice
 from .player import Player
 from .game_state import GameState
@@ -6,6 +5,7 @@ from .player_ai_base import PlayerAIBase
 from .board import Board
 from .deal_response import DealResponse
 from ..squares import Square, Property, Street
+from ..utility import typecheck
 
 
 class Game(object):
@@ -394,7 +394,7 @@ class Game(object):
                 player.state.copy(),
                 square.name,
                 square.price)
-            if not self.validate(player, "property_offered_for_auction", bid, int):
+            if not self.typecheck(player, "property_offered_for_auction", bid, int):
                 continue
 
             # A bid of zero (or below) is not a bid...
@@ -439,7 +439,7 @@ class Game(object):
             player.state.copy(),
             square.name,
             square.price)
-        if not self.validate(player, "landed_on_unowned_property", action, int):
+        if not self.typecheck(player, "landed_on_unowned_property", action, int):
             return Game.Action.PROPERTY_NOT_BOUGHT
 
         if action == PlayerAIBase.Action.DO_NOT_BUY:
@@ -938,12 +938,12 @@ class Game(object):
         else:
             self.winner = None
 
-    def validate(self, player, function, return_value, expected_type):
+    def typecheck(self, player, function, return_value, expected_type):
         '''
         Checks that an AI return value is of the expected type.
         See utils.validate_type for the acceptable values for type_or_prototype.
         '''
-        if validate_type(return_value, expected_type):
+        if typecheck(return_value, expected_type):
             # The return type was of the right type...
             return True
 
