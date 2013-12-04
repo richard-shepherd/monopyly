@@ -7,6 +7,8 @@ from .deal_response import DealResponse
 from ..squares import Square, Property, Street
 from ..utility import typecheck, Logger
 
+# TODO: Only offer players to buy houses if they have a set
+
 
 class Game(object):
     '''
