@@ -1,2 +1,2 @@
 from .sophie import SophieAI
-from .daddy import DaddyAI
+from .generous_daddy import GenerousDaddyAI

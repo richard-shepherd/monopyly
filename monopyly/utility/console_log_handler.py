@@ -21,7 +21,10 @@ class ConsoleLogHandler(object):
         # We want to log the message.
 
         # We show indent as a sequence of dashes...
-        indent = "- " * indent_level
+        if indent_level > 0:
+            indent = "  " * (indent_level-1) + "- "
+        else:
+            indent = ""
 
         # We may show the log level as a prefix...
         if level[0] >= Logger.WARNING[0]:

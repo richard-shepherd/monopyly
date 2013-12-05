@@ -65,6 +65,9 @@ class Game(object):
         self.maximum_rounds = 500
         self.number_of_rounds_played = 0
 
+        # True if we are in the make-deals phase...
+        self._in_make_deals = False
+
     def add_player(self, ai):
         '''
         Adds a player AI.
@@ -277,8 +280,10 @@ class Game(object):
         # We tell the player that we need money from them...
         player.ai.money_will_be_taken(player.state.copy(), amount)
 
-        # We allow the player to make deals...
-        self._make_deals(player)
+        # We allow the player to make deals (if this money-taking was
+        # not itself the result of making a deal)...
+        if not self._in_make_deals:
+            self._make_deals(player)
 
         # We allow the player to sell houses...
         self._sell_houses(player)
@@ -360,6 +365,8 @@ class Game(object):
 
         Returns the property square.
         '''
+        Logger.log("{0} gets {1}".format(player.name, square_name))
+
         # The square on the board is given the player number of its owner,
         # and the player is given the index of the square on the board.
         # So they both know about each other...
@@ -378,6 +385,9 @@ class Game(object):
         '''
         Transfers the named property from from_player to to_player.
         '''
+        Logger.log("{0} transfered from {1} to {2}".format(
+            square_name, from_player.name, to_player.name))
+
         # We get the Property object...
         index = self.state.board.get_index(square_name)
         square = self.state.board.get_square_by_index(index)
@@ -484,7 +494,6 @@ class Game(object):
         else:
             # The purchase was successful...
             self.give_property_to_player(player, square.name)
-            Logger.log("{0} buys {1}".format(player.name, square.name))
             return Game.Action.PROPERTY_BOUGHT
 
     def _update_sets(self):
@@ -798,8 +807,10 @@ class Game(object):
         '''
         The player can make up to three deals.
         '''
+        self._in_make_deals = True
         for i in range(3):
             self._make_deal(current_player)
+        self._in_make_deals = False
 
     def _make_deal(self, current_player):
         '''
@@ -818,13 +829,18 @@ class Game(object):
             return
         proposed_to_player = self.state.players[proposal.propose_to_player_number]
 
+        Logger.log("{0} proposed deal to {1}: {2}".format(current_player.name, proposed_to_player.name, proposal))
+        Logger.indent()
+
         # We check that the players own the properties specified...
         board = self.state.board
         if current_player.owns_properties(proposal.properties_offered) is False:
             current_player.ai.deal_result(PlayerAIBase.DealInfo.INVALID_DEAL_PROPOSED)
+            Logger.dedent()
             return
         if proposed_to_player.owns_properties(proposal.properties_wanted) is False:
             current_player.ai.deal_result(PlayerAIBase.DealInfo.INVALID_DEAL_PROPOSED)
+            Logger.dedent()
             return
 
         # We pass the proposal to the proposee, after redacting the cash offer info...
@@ -842,6 +858,8 @@ class Game(object):
             # The proposee rejected the deal...
             current_player.ai.deal_result(PlayerAIBase.DealInfo.DEAL_REJECTED)
             proposed_to_player.ai.deal_result(PlayerAIBase.DealInfo.DEAL_REJECTED)
+            Logger.log("{0} rejected the deal".format(proposed_to_player.name))
+            Logger.dedent()
             return
 
         # The deal has been accepted, but is it actually acceptable in
@@ -852,6 +870,9 @@ class Game(object):
             if response.maximum_cash_offered < minimum_cash_wanted:
                 current_player.ai.deal_result(PlayerAIBase.DealInfo.ASKED_FOR_TOO_MUCH_MONEY)
                 proposed_to_player.ai.deal_result(PlayerAIBase.DealInfo.OFFERED_TOO_LITTLE_MONEY)
+                Logger.log("Deal rejected: {0} asked for more than {1} was willing to pay".format(
+                    current_player.name, proposed_to_player.name))
+                Logger.dedent()
                 return
             cash_transfer_from_proposer_to_proposee = -1 * (minimum_cash_wanted + response.maximum_cash_offered) / 2
 
@@ -860,10 +881,14 @@ class Game(object):
             if maximum_cash_offered < response.minimum_cash_wanted:
                 current_player.ai.deal_result(PlayerAIBase.DealInfo.OFFERED_TOO_LITTLE_MONEY)
                 proposed_to_player.ai.deal_result(PlayerAIBase.DealInfo.ASKED_FOR_TOO_MUCH_MONEY)
+                Logger.log("Deal rejected: {0} offered less than {1} was willing to accept".format(
+                    current_player.name, proposed_to_player.name))
+                Logger.dedent()
                 return
             cash_transfer_from_proposer_to_proposee = (maximum_cash_offered + response.minimum_cash_wanted) / 2
 
         # The deal is acceptable to both parties, so we transfer the money...
+        cash_transfer_from_proposer_to_proposee = int(cash_transfer_from_proposer_to_proposee)
         if cash_transfer_from_proposer_to_proposee > 0:
             # We transfer cash from the proposer to the proposee...
             result = self.transfer_cash(
@@ -885,9 +910,12 @@ class Game(object):
         if result == Game.Action.TRANSFER_FAILED:
             current_player.ai.deal_result(PlayerAIBase.DealInfo.PLAYER_DID_NOT_HAVE_ENOUGH_MONEY)
             proposed_to_player.ai.deal_result(PlayerAIBase.DealInfo.PLAYER_DID_NOT_HAVE_ENOUGH_MONEY)
+            Logger.log("Deal accepted, but player did not have enough money")
+            Logger.dedent()
             return
 
         # The cash transfer worked, so we transfer the properties...
+        Logger.log("Deal successful")
         for property_name in proposal.properties_offered:
             self.transfer_property(current_player, proposed_to_player, property_name)
 
@@ -897,6 +925,8 @@ class Game(object):
         # We tell the players that the deal succeeded...
         current_player.ai.deal_result(PlayerAIBase.DealInfo.SUCCEEDED)
         proposed_to_player.ai.deal_result(PlayerAIBase.DealInfo.SUCCEEDED)
+
+        Logger.dedent()
 
     def _check_game_status(self):
         '''

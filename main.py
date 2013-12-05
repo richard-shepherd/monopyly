@@ -21,5 +21,5 @@ Logger.add_handler(ConsoleLogHandler(Logger.INFO))
 # We play a game with some sample AIs...
 game = Game()
 game.add_player(SophieAI())
-game.add_player(DaddyAI())
+game.add_player(GenerousDaddyAI())
 game.play_game()

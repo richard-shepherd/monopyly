@@ -31,7 +31,12 @@ class DealProposal(object):
         self.properties_wanted = properties_wanted
         self.maximum_cash_offered = maximum_cash_offered
         self.minimum_cash_wanted = minimum_cash_wanted
-        self.proposed_by_player_number = -1
+
+    def __str__(self):
+        '''
+        Renders the proposal as a string.
+        '''
+        return "Offered: {0}. Wanted: {1}".format(self.properties_offered, self.properties_wanted)
 
     @property
     def deal_proposed(self):

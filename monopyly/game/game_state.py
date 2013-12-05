@@ -43,3 +43,4 @@ class GameState(object):
         The number of players.
         '''
         return len(self.players)
+
