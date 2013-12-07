@@ -19,11 +19,12 @@ class GameState(object):
         # The board...
         self.board = Board()
 
-        # The collection of players (Player objects) playing the game...
-        self.players = []
+        # The collection of players (Player objects) playing the game keyed
+        # byt player-number...
+        self.players = dict()
 
         # The collection of players who have gone bankrupt...
-        self.bankrupt_players = []
+        self.bankrupt_players = dict()
 
     def copy(self):  # TODO: test speed of copy by just returning self
         '''

@@ -77,7 +77,7 @@ class Game(object):
         # We wrap the AI up into a Player object...
         player_number = len(self.state.players)
         player = Player(ai, player_number, self.state.board)
-        self.state.players.append(player)
+        self.state.players[player_number] = player
         return player
 
     def play_game(self):
@@ -88,7 +88,7 @@ class Game(object):
         # player-number they are...
         Logger.log("Start of game. Players:")
         Logger.indent()
-        for player in self.state.players:
+        for player in self.state.players.values():
             player.ai.start_of_game(player.state.player_number)
             Logger.log(player.name)
         Logger.dedent()
@@ -127,7 +127,8 @@ class Game(object):
         # We play a turn for each player in the game.
         # Note that we iterate over a copy of the list of players, as
         # players can be removed from the game if they go bankrupt.
-        for player in list(self.state.players):
+        list_players = list(self.state.players.values())
+        for player in list_players:
             if player.state.cash < 0:
                 # The player is out...
                 continue
@@ -157,7 +158,7 @@ class Game(object):
             current_player.state.number_of_turns_in_jail += 1
 
         # We notify all players that this player's turn is starting...
-        for player in self.state.players:
+        for player in self.state.players.values():
             player.ai.start_of_turn(self.state.copy(), current_player.state.player_number)
 
         # The player can make deals...
@@ -261,7 +262,7 @@ class Game(object):
 
         # We notify all players that the player has landed
         # on this square...
-        for player in self.state.players:
+        for player in self.state.players.values():
             player.ai.player_landed_on_square(self.state.copy(), square.name, player.state.player_number)
 
         # We perform the square's landed-on action...
@@ -425,7 +426,7 @@ class Game(object):
         # We get bids from each player and store them in a list of
         # tuples of (player, bid)...
         bids = []
-        for player in self.state.players:
+        for player in self.state.players.values():
             # We get a bid from the player and make sure that
             # it's an integer amount...
             bid = player.ai.property_offered_for_auction(
@@ -505,7 +506,7 @@ class Game(object):
         # We find which players own sets, and put this info
         # into the Player objects...
         player_number_to_owned_sets_map = self.state.board.get_owned_sets()
-        for player in self.state.players:
+        for player in self.state.players.values():
             player_number = player.state.player_number
             if player_number in player_number_to_owned_sets_map:
                 player.state.owned_sets = player_number_to_owned_sets_map[player_number]
@@ -933,7 +934,7 @@ class Game(object):
         Checks if the game has a winner.
         '''
         # We see how many players still have money...
-        solvent_players = {player for player in self.state.players if player.state.cash >= 0}
+        solvent_players = {player for player in self.state.players.values() if player.state.cash >= 0}
         number_of_solvent_players = len(solvent_players)
         if number_of_solvent_players > 1:
             self.status = Game.Action.GAME_NOT_OVER
@@ -950,9 +951,10 @@ class Game(object):
         for example as the result of a "Collect X from player" card.
         '''
         # We check each player to see if they are bankrupt.
-        # Note that we iterate through a copy of the list of players, as
+        # Note that we iterate through a copy of the collection of players, as
         # we may remove players from the list...
-        for player in list(self.state.players):
+        list_players = list(self.state.players.values())
+        for player in list_players:
             if player.state.cash < 0:
                 self._player_went_bankrupt(player)
 
@@ -969,7 +971,7 @@ class Game(object):
 
         # We notify all players that this player went bankrupt...
         current_player_number = current_player.state.player_number
-        for player in self.state.players:
+        for player in self.state.players.values():
             player.ai.player_went_bankrupt(current_player_number)
 
         # We return any Get Out Of Jail Free cards to their decks...
@@ -977,8 +979,8 @@ class Game(object):
             card.put_back_in_deck()
 
         # We move the player to the bankrupt list...
-        self.state.players.remove(current_player)
-        self.state.bankrupt_players.append(current_player)
+        del self.state.players[current_player_number]
+        self.state.bankrupt_players[current_player_number] = current_player
 
     def _find_winner(self):
         '''
@@ -993,8 +995,8 @@ class Game(object):
             self.winner = None
             return
 
-        max_net_worth = max(player.net_worth for player in self.state.players)
-        winning_players = [player for player in self.state.players if player.net_worth == max_net_worth]
+        max_net_worth = max(player.net_worth for player in self.state.players.values())
+        winning_players = [player for player in self.state.players.values() if player.net_worth == max_net_worth]
 
         # If there is only one player, then they have won...
         if(len(winning_players) == 1):

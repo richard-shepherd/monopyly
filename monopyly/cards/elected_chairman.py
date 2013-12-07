@@ -14,7 +14,7 @@ class ElectedChairman(Card):
             return
 
         # And give 50 to each player (if the current-player had enough cash)...
-        for player in game.state.players:
+        for player in game.state.players.values():
             if player is not current_player:
                 game.give_money_to_player(player, 50)
 

@@ -1,6 +1,8 @@
 from monopyly import *
 from testing_utils import *
 
+# TODO: What happens if two players bid the same amount?
+
 
 class PlayerWhoBidsInAuctions(PlayerAIBase):
     '''
