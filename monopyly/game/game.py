@@ -8,6 +8,8 @@ from ..squares import Square, Property, Street
 from ..utility import typecheck, Logger
 
 # TODO: Only offer players to buy houses if they have a set
+# TODO: Do we need a cleanup, to unhook all objects?
+# Otherwise, do objects leak in "bubbles"?
 
 
 class Game(object):
