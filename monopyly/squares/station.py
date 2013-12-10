@@ -12,7 +12,7 @@ class Station(Property):
         '''
         The 'constructor'.
         '''
-        super().__init__(name=name, street_set=Street.Set.STATION, price=200)
+        super().__init__(name=name, property_set=Street.Set.STATION, price=200)
         self._station_indexes = set()
 
     def calculate_rent(self, game, player):

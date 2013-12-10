@@ -9,14 +9,14 @@ class Street(Property):
     Manages rents, house-building and so on.
     '''
 
-    def __init__(self, name, street_set, price, house_price, rents):
+    def __init__(self, name, property_set, price, house_price, rents):
         '''
         The 'constructor'.
 
         rents: passed in as a list: [base, one_house, two_houses, three_houses, four_houses, hotel]
         '''
         # The base class holds the values applicable to all properties...
-        super().__init__(name, street_set, price)
+        super().__init__(name, property_set, price)
 
         # The price of one house on this street...
         self.house_price = house_price
@@ -38,7 +38,7 @@ class Street(Property):
         if self.number_of_houses == 0:
             rent = self.rents[0]
             owner = game.state.players[self.owner_player_number]
-            if self.street_set in owner.state.owned_sets:
+            if self.property_set in owner.state.owned_sets:
                 # The player owns the whole set, so the rent is doubled...
                 rent *= 2
         else:

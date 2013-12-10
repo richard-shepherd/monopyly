@@ -13,34 +13,14 @@ class Property(Square):
     Derived classes are: Street, Station, Utility.
     '''
 
-    # A constant for an invalid player number, used to indicate
-    # that the property is not owned...
-    NOT_OWNED = -1
-
-    class Set(object):
-        '''
-        An 'enum' for the different property sets.
-        '''
-        INVALID = 0
-        BROWN = 1
-        LIGHT_BLUE = 2
-        PURPLE = 3
-        ORANGE = 4
-        RED = 5
-        YELLOW = 6
-        GREEN = 7
-        DARK_BLUE = 8
-        STATION = 9
-        UTILITY = 10
-
-    def __init__(self, name, street_set, price):
+    def __init__(self, name, property_set, price):
         '''
         The 'constructor'.
         '''
         super().__init__(name)
 
-        # The set (BROWN, ORANGE etc)...
-        self.street_set = street_set
+        # The set (BROWN, ORANGE etc, a PropertySet object)...
+        self.property_set = property_set
 
         # The full price of the property.
         # The mortgage price is half of this price.
@@ -49,8 +29,8 @@ class Property(Square):
         # True if the property is mortgaged...
         self.is_mortgaged = False
 
-        # The player number of the owner...
-        self.owner_player_number = Property.NOT_OWNED
+        # The owner (a Player object)...
+        self.owner = None
 
     @property
     def mortgage_value(self):
@@ -66,7 +46,7 @@ class Property(Square):
         '''
         # If the property is already owned by this player, then there
         # is nothing to do...
-        if self.owner_player_number == player.state.player_number:
+        if self.owner is player:
             Logger.log("{0} already owns this property".format(player.name))
             return
 
@@ -75,7 +55,7 @@ class Property(Square):
             Logger.log("Property is mortgaged")
             return
 
-        if self.owner_player_number == Property.NOT_OWNED:
+        if self.owner is None:
             # The property is not owned, so we offer it for sale...
             game.offer_property_for_sale(player, self)
         else:
@@ -95,9 +75,8 @@ class Property(Square):
 
         # We take the rent from the player, and give it to the
         # player who owns the square...
-        owner = game.state.players[self.owner_player_number]
-        Logger.log("{0} must pay rent of £{1} to {2}".format(player.name, rent, owner.name))
-        game.transfer_cash(player, owner, rent, Game.Action.PAY_AS_MUCH_AS_POSSIBLE)
+        Logger.log("{0} must pay rent of £{1} to {2}".format(player.name, rent, self.owner.name))
+        game.transfer_cash(player, self.owner, rent, Game.Action.PAY_AS_MUCH_AS_POSSIBLE)
 
     def calculate_rent(self, game, player):
         '''

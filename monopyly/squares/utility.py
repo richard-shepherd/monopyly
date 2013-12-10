@@ -11,7 +11,7 @@ class Utility(Property):
         '''
         The 'constructor'
         '''
-        super().__init__(name=name, street_set=Property.Set.UTILITY, price=150)
+        super().__init__(name=name, property_set=Property.Set.UTILITY, price=150)
         self._utility_indexes = set()
 
     def calculate_rent(self, game, player):

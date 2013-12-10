@@ -18,6 +18,10 @@ class Board(object):
         '''
         The 'constructor'.
         '''
+        # We map the street sets to the collections of properties in them...
+        self._property_set_map = dict()
+        self._setup_property_sets()
+
         # We add the collection of squares to the board.
         # This is a list of objects derived from the Square base class.
         # Indexes are: Go = 0, Mayfair = 39 etc.
@@ -27,10 +31,6 @@ class Board(object):
         # We map the square names to their positions on the board...
         self._name_to_index_map = {}
         self._map_names_to_indexes()
-
-        # We map the street sets to the collections of properties in them...
-        self._set_to_property_map = {}
-        self._map_sets_to_properties()
 
         # The cards...
         # TODO: redact the decks on copy (otherwise the players can peek at them!)
@@ -57,11 +57,18 @@ class Board(object):
         '''
         return self._name_to_index_map[square_name][0]
 
-    def get_properties_for_set(self, street_set):
+    def get_properties_for_set(self, set_enum):
         '''
         Returns the list of properties in the set passed in.
         '''
-        return self._set_to_property_map[street_set]
+        return self.get_property_set(set_enum).properties
+
+    def get_property_set(self, set_enum):
+        '''
+        Return the PropertySet for the set enum (PropertySet.BROWN, PropertySet.PURPLE etc)
+        passed in.
+        '''
+        return self._property_set_map[set_enum]
 
     def get_square_by_index(self, index):
         '''
@@ -120,7 +127,7 @@ class Board(object):
         # Old Kent Road...
         self.squares.append(
             Street(name=Square.Name.OLD_KENT_ROAD,
-                   street_set=Property.Set.BROWN,
+                   property_set=self.get_property_set(PropertySet.BROWN),
                    price=60,
                    house_price=50,
                    rents=[2, 10, 30, 90, 160, 250]))
@@ -131,7 +138,7 @@ class Board(object):
         # Whitechapel Road...
         self.squares.append(
             Street(name=Square.Name.WHITECHAPEL_ROAD,
-                   street_set=Property.Set.BROWN,
+                   property_set=self.get_property_set(PropertySet.BROWN),
                    price=60,
                    house_price=50,
                    rents=[4, 20, 60, 180, 320, 450]))
@@ -140,12 +147,14 @@ class Board(object):
         self.squares.append(Tax(name=Square.Name.INCOME_TAX, tax=200))
 
         # Kings Cross...
-        self.squares.append(Station(name=Square.Name.KINGS_CROSS_STATION))
+        self.squares.append(
+            Station(name=Square.Name.KINGS_CROSS_STATION,
+                    property_set=self.get_property_set(PropertySet.STATION)))
 
         # The Angel Islington...
         self.squares.append(
             Street(name=Square.Name.THE_ANGEL_ISLINGTON,
-                   street_set=Property.Set.LIGHT_BLUE,
+                   property_set=self.get_property_set(PropertySet.LIGHT_BLUE),
                    price=100,
                    house_price=50,
                    rents=[6, 30, 90, 270, 400, 550]))
@@ -156,7 +165,7 @@ class Board(object):
         # Euston Road
         self.squares.append(
             Street(name=Square.Name.EUSTON_ROAD,
-                   street_set=Property.Set.LIGHT_BLUE,
+                   property_set=self.get_property_set(PropertySet.LIGHT_BLUE),
                    price=100,
                    house_price=50,
                    rents=[6, 30, 90, 270, 400, 550]))
@@ -164,7 +173,7 @@ class Board(object):
         # Pentonville Road...
         self.squares.append(
             Street(name=Square.Name.PENTONVILLE_ROAD,
-                   street_set=Property.Set.LIGHT_BLUE,
+                   property_set=self.get_property_set(PropertySet.LIGHT_BLUE),
                    price=120,
                    house_price=50,
                    rents=[8, 40, 100, 300, 450, 600]))
@@ -175,18 +184,20 @@ class Board(object):
         # Pall Mall...
         self.squares.append(
             Street(name=Square.Name.PALL_MALL,
-                   street_set=Property.Set.PURPLE,
+                   property_set=self.get_property_set(PropertySet.PURPLE),
                    price=140,
                    house_price=100,
                    rents=[10, 50, 150, 450, 625, 750]))
 
         # Electric Company...
-        self.squares.append(Utility(Square.Name.ELECTRIC_COMPANY))
+        self.squares.append(
+            Utility(name=Square.Name.ELECTRIC_COMPANY,
+                    property_set=self.get_property_set(PropertySet.UTILITY)))
 
         # Whitehall...
         self.squares.append(
             Street(name=Square.Name.WHITEHALL,
-                   street_set=Property.Set.PURPLE,
+                   property_set=self.get_property_set(PropertySet.PURPLE),
                    price=140,
                    house_price=100,
                    rents=[10, 50, 150, 450, 625, 750]))
@@ -194,18 +205,20 @@ class Board(object):
         # Northumberland Avenue...
         self.squares.append(
             Street(name=Square.Name.NORTHUMBERLAND_AVENUE,
-                   street_set=Property.Set.PURPLE,
+                   property_set=self.get_property_set(PropertySet.PURPLE),
                    price=160,
                    house_price=100,
                    rents=[12, 60, 180, 500, 700, 900]))
 
         # Marylebone Station...
-        self.squares.append(Station(name=Square.Name.MARYLEBONE_STATION))
+        self.squares.append(
+            Station(name=Square.Name.MARYLEBONE_STATION,
+                    property_set=self.get_property_set(PropertySet.STATION)))
 
         # Bow Street...
         self.squares.append(
             Street(name=Square.Name.BOW_STREET,
-                   street_set=Property.Set.ORANGE,
+                   property_set=self.get_property_set(PropertySet.ORANGE),
                    price=180,
                    house_price=100,
                    rents=[14, 70, 200, 550, 750, 950]))
@@ -216,7 +229,7 @@ class Board(object):
         # Marlborough Street...
         self.squares.append(
             Street(name=Square.Name.MARLBOROUGH_STREET,
-                   street_set=Property.Set.ORANGE,
+                   property_set=self.get_property_set(PropertySet.ORANGE),
                    price=180,
                    house_price=100,
                    rents=[14, 70, 200, 550, 750, 950]))
@@ -224,7 +237,7 @@ class Board(object):
         # Vine Street...
         self.squares.append(
             Street(name=Square.Name.VINE_STREET,
-                   street_set=Property.Set.ORANGE,
+                   property_set=self.get_property_set(PropertySet.ORANGE),
                    price=200,
                    house_price=100,
                    rents=[16, 80, 220, 600, 800, 1000]))
@@ -235,7 +248,7 @@ class Board(object):
         # Strand...
         self.squares.append(
             Street(name=Square.Name.STRAND,
-                   street_set=Property.Set.RED,
+                   property_set=self.get_property_set(PropertySet.RED),
                    price=220,
                    house_price=150,
                    rents=[18, 90, 250, 700, 875, 1050]))
@@ -246,7 +259,7 @@ class Board(object):
         # Fleet Street...
         self.squares.append(
             Street(name=Square.Name.FLEET_STREET,
-                   street_set=Property.Set.RED,
+                   property_set=self.get_property_set(PropertySet.RED),
                    price=220,
                    house_price=150,
                    rents=[18, 90, 250, 700, 875, 1050]))
@@ -254,18 +267,20 @@ class Board(object):
         # Trafalgar Square...
         self.squares.append(
             Street(name=Square.Name.TRAFALGAR_SQUARE,
-                   street_set=Property.Set.RED,
+                   property_set=self.get_property_set(PropertySet.RED),
                    price=240,
                    house_price=150,
                    rents=[20, 100, 300, 750, 925, 1100]))
 
         # Fenchurch Street Station...
-        self.squares.append(Station(name=Square.Name.FENCHURCH_STREET_STATION))
+        self.squares.append(
+            Station(name=Square.Name.FENCHURCH_STREET_STATION,
+                    property_set=self.get_property_set(PropertySet.STATION)))
 
         # Leicester Square...
         self.squares.append(
             Street(name=Square.Name.LEICESTER_SQUARE,
-                   street_set=Property.Set.YELLOW,
+                   property_set=self.get_property_set(PropertySet.YELLOW),
                    price=260,
                    house_price=150,
                    rents=[22, 110, 330, 800, 975, 1150]))
@@ -273,18 +288,20 @@ class Board(object):
         # Coventry Street...
         self.squares.append(
             Street(name=Square.Name.COVENTRY_STREET,
-                   street_set=Property.Set.YELLOW,
+                   property_set=self.get_property_set(PropertySet.YELLOW),
                    price=260,
                    house_price=150,
                    rents=[22, 110, 330, 800, 975, 1150]))
 
         # Water Works...
-        self.squares.append(Utility(Square.Name.WATER_WORKS))
+        self.squares.append(
+            Utility(name=Square.Name.WATER_WORKS,
+                    property_set=self.get_property_set(PropertySet.UTILITY)))
 
         # Piccadilly...
         self.squares.append(
             Street(name=Square.Name.PICCADILLY,
-                   street_set=Property.Set.YELLOW,
+                   property_set=self.get_property_set(PropertySet.YELLOW),
                    price=280,
                    house_price=150,
                    rents=[22, 120, 360, 850, 1025, 1200]))
@@ -295,7 +312,7 @@ class Board(object):
         # Regent Street...
         self.squares.append(
             Street(name=Square.Name.REGENT_STREET,
-                   street_set=Property.Set.GREEN,
+                   property_set=self.get_property_set(PropertySet.GREEN),
                    price=300,
                    house_price=200,
                    rents=[26, 130, 390, 900, 1100, 1275]))
@@ -303,7 +320,7 @@ class Board(object):
         # Oxford Street...
         self.squares.append(
             Street(name=Square.Name.OXFORD_STREET,
-                   street_set=Property.Set.GREEN,
+                   property_set=self.get_property_set(PropertySet.GREEN),
                    price=300,
                    house_price=200,
                    rents=[26, 130, 390, 900, 1100, 1275]))
@@ -314,13 +331,15 @@ class Board(object):
         # Bond Street...
         self.squares.append(
             Street(name=Square.Name.BOND_STREET,
-                   street_set=Property.Set.GREEN,
+                   property_set=self.get_property_set(PropertySet.GREEN),
                    price=320,
                    house_price=200,
                    rents=[28, 150, 450, 1000, 1200, 1400]))
 
         # Liverpool Street Station...
-        self.squares.append(Station(Square.Name.LIVERPOOL_STREET_STATION))
+        self.squares.append(
+            Station(name=Square.Name.LIVERPOOL_STREET_STATION,
+                    property_set=self.get_property_set(PropertySet.STATION)))
 
         # Chance...
         self.squares.append(Chance())
@@ -328,7 +347,7 @@ class Board(object):
         # Park Lane...
         self.squares.append(
             Street(name=Square.Name.PARK_LANE,
-                   street_set=Property.Set.DARK_BLUE,
+                   property_set=self.get_property_set(PropertySet.DARK_BLUE),
                    price=350,
                    house_price=200,
                    rents=[35, 175, 500, 1100, 1300, 1500]))
@@ -339,7 +358,7 @@ class Board(object):
         # Mayfair...
         self.squares.append(
             Street(name=Square.Name.MAYFAIR,
-                   street_set=Property.Set.DARK_BLUE,
+                   property_set=self.get_property_set(PropertySet.DARK_BLUE),
                    price=400,
                    house_price=200,
                    rents=[50, 200, 600, 1400, 1700, 2000]))
@@ -357,21 +376,21 @@ class Board(object):
                 self._name_to_index_map[name] = []
             self._name_to_index_map[name].append(index)
 
-    def _map_sets_to_properties(self):
+    def _setup_property_sets(self):
         '''
-        Maps each street set (Browns, Blues etc) to the list of
-        properties in the set.
+        Creates a property set for each set, and maps them to
+        the set ID.
         '''
-        for square in self.squares:
-            # Is the square a property?
-            if not isinstance(square, Property):
-                continue
-
-            # We add the property to the list of properties for its set...
-            street_set = square.street_set
-            if street_set not in self._set_to_property_map:
-                self._set_to_property_map[street_set] = []
-            self._set_to_property_map[street_set].append(square)
+        self._property_set_map[PropertySet.BROWN] = PropertySet()
+        self._property_set_map[PropertySet.LIGHT_BLUE] = PropertySet()
+        self._property_set_map[PropertySet.PURPLE] = PropertySet()
+        self._property_set_map[PropertySet.ORANGE] = PropertySet()
+        self._property_set_map[PropertySet.RED] = PropertySet()
+        self._property_set_map[PropertySet.YELLOW] = PropertySet()
+        self._property_set_map[PropertySet.GREEN] = PropertySet()
+        self._property_set_map[PropertySet.DARK_BLUE] = PropertySet()
+        self._property_set_map[PropertySet.STATION] = PropertySet()
+        self._property_set_map[PropertySet.UTILITY] = PropertySet()
 
 
 
