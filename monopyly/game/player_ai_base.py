@@ -61,16 +61,15 @@ class PlayerAIBase(object):
         '''
         return "I need a better name"
 
-    def start_of_game(self, player_number):
+    def start_of_game(self):
         '''
-        Called at the start of the game to tell each AI
-        which player-number it is.
+        Called at the start of the game.
 
         No response is required.
         '''
         pass
 
-    def start_of_turn(self, game_state, player_number):
+    def start_of_turn(self, game_state, player):
         '''
         Called when an AI's turn starts. All AIs receive this notification.
 
@@ -78,13 +77,13 @@ class PlayerAIBase(object):
         '''
         pass
 
-    def player_landed_on_square(self, game_state, square_name, player_number):
+    def player_landed_on_square(self, game_state, square, player):
         '''
         Called when a player lands on a square. All AIs receive this notification.
         '''
         pass
 
-    def landed_on_unowned_property(self, game_state, player_state, property_name, price):
+    def landed_on_unowned_property(self, game_state, player, property):
         '''
         Called when the AI lands on an unowned property. Only the active
         player receives this notification.
@@ -96,7 +95,7 @@ class PlayerAIBase(object):
         '''
         return PlayerAIBase.Action.DO_NOT_BUY
 
-    def money_will_be_taken(self, player_state, amount):
+    def money_will_be_taken(self, player, amount):
         '''
         Called shortly before money will be taken from the player.
 
@@ -108,7 +107,7 @@ class PlayerAIBase(object):
         '''
         pass
 
-    def money_taken(self, player_state, amount):
+    def money_taken(self, player, amount):
         '''
         Called when money has been taken from the player.
 
@@ -116,7 +115,7 @@ class PlayerAIBase(object):
         '''
         pass
 
-    def money_given(self, player_state, amount):
+    def money_given(self, player, amount):
         '''
         Called when money has been given to the player.
 
@@ -155,7 +154,7 @@ class PlayerAIBase(object):
         '''
         return PlayerAIBase.Action.PAY_TEN_POUND_FINE
 
-    def property_offered_for_auction(self, game_state, player_state, property_name, face_value):
+    def property_offered_for_auction(self, game_state, player, property):
         '''
         Called when a property is put up for auction.
 
@@ -174,7 +173,7 @@ class PlayerAIBase(object):
         '''
         return 0
 
-    def build_houses(self, game_state, player_state):
+    def build_houses(self, game_state, player):
         '''
         Called near the start of the player's turn to give the option of building houses.
 
@@ -212,7 +211,7 @@ class PlayerAIBase(object):
         '''
         return []
 
-    def sell_houses(self, game_state, player_state):
+    def sell_houses(self, game_state, player):
         '''
         Gives the player the option to sell properties.
 
@@ -237,7 +236,7 @@ class PlayerAIBase(object):
         '''
         return []
 
-    def mortgage_properties(self, game_state, player_state):
+    def mortgage_properties(self, game_state, player):
         '''
         Gives the player an option to mortgage properties.
 
@@ -260,7 +259,7 @@ class PlayerAIBase(object):
         '''
         return []
 
-    def get_out_of_jail(self, player_state):
+    def get_out_of_jail(self, player):
         '''
         Called in the player's turn, before the dice are rolled, if the player
         is in jail.
@@ -276,7 +275,7 @@ class PlayerAIBase(object):
         '''
         return PlayerAIBase.Action.STAY_IN_JAIL
 
-    def unmortgage_properties(self, game_state, player_state):
+    def unmortgage_properties(self, game_state, player):
         '''
         Called near the start of the player's turn to give them the
         opportunity to unmortgage properties.
@@ -294,7 +293,7 @@ class PlayerAIBase(object):
         '''
         return []
 
-    def propose_deal(self, game_state, player_state):
+    def propose_deal(self, game_state, player):
         '''
         Called to allow the player to propose a deal.
 
@@ -384,7 +383,7 @@ class PlayerAIBase(object):
         '''
         pass
 
-    def player_went_bankrupt(self, player_number):
+    def player_went_bankrupt(self, player):
         '''
         Called when a player goes bankrupt. All non-bankrupt players
         receive this notification.

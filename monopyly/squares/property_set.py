@@ -24,6 +24,12 @@ class PropertySet(object):
         self.properties = []
         self.set_enum = set_enum
 
+    def add_property(self, property):
+        '''
+        Adds a property to the set.
+        '''
+        self.properties.append(property)
+
     @property
     def number_of_properties(self):
         '''
@@ -46,7 +52,7 @@ class PropertySet(object):
         is no overall owner.
         '''
         owners = self.owners
-        if len(owners) == 1:
+        if len(owners) == 1 and owners[0][1] == self.number_of_properties:
             return owners[0][0]
         else:
             return None
@@ -55,12 +61,27 @@ class PropertySet(object):
     def owners(self):
         '''
         Returns the collection of owners of the properties in the
-        set, along with the fraction of the set they own.
+        set, along with the number of properties and the fraction
+        of the set they own.
 
         Returned as a list of tuples, like:
-        [(player1, 0.333), (player2, 0.666)]
+        [(player1, 1, 0.333), (player2, 2, 0.666)]
         '''
         owners = {p.owner for p in self.properties if p.owner is not None}
-        return [(o, sum(1 for p in self.properties if p.owner is o)/self.number_of_properties)
-                for o in owners]
+        owner_info = []
+        for owner in owners:
+            properties_owned = sum(1 for p in self.properties if p.owner is owner)
+            owner_info.append((owner, properties_owned, properties_owned/self.number_of_properties))
+        return owner_info
+
+    @property
+    def all_properties_are_unmortgaged(self):
+        '''
+        Returns True if all the properties in the set are unmortgaged,
+        False if at least one is mortgaged.
+        '''
+        for property in self.properties:
+            if property.is_mortgaged:
+                return False
+        return True
 

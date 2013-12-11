@@ -19,8 +19,10 @@ class Property(Square):
         '''
         super().__init__(name)
 
-        # The set (BROWN, ORANGE etc, a PropertySet object)...
+        # We store the set (BROWN, ORANGE etc, a PropertySet object), and add
+        # this property to the set...
         self.property_set = property_set
+        self.property_set.add_property(self)
 
         # The full price of the property.
         # The mortgage price is half of this price.

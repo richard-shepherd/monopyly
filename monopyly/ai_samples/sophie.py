@@ -26,7 +26,7 @@ class SophieAI(PlayerAIBase):
         '''
         return "Sophie"
 
-    def landed_on_unowned_property(self, game_state, player_state, property_name, price):
+    def landed_on_unowned_property(self, game_state, player, property):
         '''
         Called when we land on an unowned property.
 

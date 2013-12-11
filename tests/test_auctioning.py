@@ -11,7 +11,7 @@ class PlayerWhoBidsInAuctions(PlayerAIBase):
     def __init__(self, next_bid=0):
         self.next_bid = next_bid
 
-    def property_offered_for_auction(self, game_state, player_state, property_name, face_value):
+    def property_offered_for_auction(self, game_state, player, property):
         return self.next_bid
 
 

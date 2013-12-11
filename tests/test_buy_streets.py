@@ -6,7 +6,7 @@ class PlayerWhoBuysEverything(DefaultPlayerAI):
     '''
     A player who buys everything.
     '''
-    def landed_on_unowned_property(self, game_state, player_state, property_name, price):
+    def landed_on_unowned_property(self, game_state, player, property):
         return PlayerAIBase.Action.BUY
 
 

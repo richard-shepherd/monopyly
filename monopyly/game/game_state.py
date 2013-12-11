@@ -19,24 +19,11 @@ class GameState(object):
         # The board...
         self.board = Board()
 
-        # The collection of players (Player objects) playing the game keyed
-        # byt player-number...
-        self.players = dict()
+        # The collection of players (Player objects) playing the game...
+        self.players = []
 
         # The collection of players who have gone bankrupt...
-        self.bankrupt_players = dict()
-
-    def copy(self):  # TODO: test speed of copy by just returning self
-        '''
-        Returns a copy of the game state.
-        '''
-        return self
-        ## We create a deep copy of the game...
-        #game_copy = copy.deepcopy(self)
-        #
-        ## Then we 'redact' some information...
-        #for player in game_copy.players:
-        #    player._ai = None
+        self.bankrupt_players = []
 
     @property
     def number_of_players(self):

@@ -8,9 +8,7 @@ from ..squares import Square, Property, Street
 from ..utility import typecheck, Logger
 
 # TODO: Only offer players to buy houses if they have a set
-# TODO: Do we need a cleanup, to unhook all objects?
-# Otherwise, do objects leak in "bubbles"?
-
+# TODO: Choose random cards from the decks, to avoid "peeking"
 
 class Game(object):
     '''
@@ -77,9 +75,8 @@ class Game(object):
         Returns the Player object created.
         '''
         # We wrap the AI up into a Player object...
-        player_number = len(self.state.players)
-        player = Player(ai, player_number, self.state.board)
-        self.state.players[player_number] = player
+        player = Player(ai, self.state.board)
+        self.state.players.append(player)
         return player
 
     def play_game(self):
@@ -129,7 +126,7 @@ class Game(object):
         # We play a turn for each player in the game.
         # Note that we iterate over a copy of the list of players, as
         # players can be removed from the game if they go bankrupt.
-        list_players = list(self.state.players.values())
+        list_players = list(self.state.players)
         for player in list_players:
             if player.state.cash < 0:
                 # The player is out...
@@ -160,8 +157,8 @@ class Game(object):
             current_player.state.number_of_turns_in_jail += 1
 
         # We notify all players that this player's turn is starting...
-        for player in self.state.players.values():
-            player.ai.start_of_turn(self.state.copy(), current_player.state.player_number)
+        for player in self.state.players:
+            player.ai.start_of_turn(self.state, current_player)
 
         # The player can make deals...
         self._make_deals(current_player)
@@ -264,8 +261,8 @@ class Game(object):
 
         # We notify all players that the player has landed
         # on this square...
-        for player in self.state.players.values():
-            player.ai.player_landed_on_square(self.state.copy(), square.name, player.state.player_number)
+        for player in self.state.players:
+            player.ai.player_landed_on_square(self.state, square, player)
 
         # We perform the square's landed-on action...
         square.landed_on(self, current_player)
@@ -281,7 +278,7 @@ class Game(object):
         gone bankrupt, this may not be the same as the amount requested.
         '''
         # We tell the player that we need money from them...
-        player.ai.money_will_be_taken(player.state.copy(), amount)
+        player.ai.money_will_be_taken(player, amount)
 
         # We allow the player to make deals (if this money-taking was
         # not itself the result of making a deal)...
@@ -297,7 +294,7 @@ class Game(object):
         # We take the money, and tell the player that it was taken...
         cash_before_money_taken = player.state.cash
         player.state.cash -= amount
-        player.ai.money_taken(player.state.copy(), amount)
+        player.ai.money_taken(player, amount)
 
         # And log it...
         Logger.log("{0} pays £{1}".format(player.name, amount))
@@ -314,7 +311,7 @@ class Game(object):
         '''
         # We give the money to the player and tell them about it...
         player.state.cash += amount
-        player.ai.money_given(player.state.copy(), amount)
+        player.ai.money_given(player, amount)
 
         # And log it...
         Logger.log("{0} gets £{1}".format(player.name, amount))
@@ -375,7 +372,7 @@ class Game(object):
         # So they both know about each other...
         index = self.state.board.get_index(square_name)
         square = self.state.board.get_square_by_index(index)
-        square.owner_player_number = player.state.player_number
+        square.owner = player
         player.state.property_indexes.add(index)
 
         # We update which sets are owned by which players, as this
@@ -428,14 +425,13 @@ class Game(object):
         # We get bids from each player and store them in a list of
         # tuples of (player, bid)...
         bids = []
-        for player in self.state.players.values():
+        for player in self.state.players:
             # We get a bid from the player and make sure that
             # it's an integer amount...
             bid = player.ai.property_offered_for_auction(
-                self.state.copy(),
-                player.state.copy(),
-                square.name,
-                square.price)
+                self.state,
+                player,
+                square)
             if not self.typecheck(player, "property_offered_for_auction", bid, int):
                 continue
 
@@ -476,11 +472,7 @@ class Game(object):
         Returns Game.Action.PROPERTY_BOUGHT or PROPERTY_NOT_BOUGHT.
         '''
         # We ask the player if they want to buy the property...
-        action = player.ai.landed_on_unowned_property(
-            self.state.copy(),
-            player.state.copy(),
-            square.name,
-            square.price)
+        action = player.ai.landed_on_unowned_property(self.state, player, square)
         if not self.typecheck(player, "landed_on_unowned_property", action, int):
             return Game.Action.PROPERTY_NOT_BOUGHT
 
@@ -507,11 +499,10 @@ class Game(object):
         '''
         # We find which players own sets, and put this info
         # into the Player objects...
-        player_number_to_owned_sets_map = self.state.board.get_owned_sets()
-        for player in self.state.players.values():
-            player_number = player.state.player_number
-            if player_number in player_number_to_owned_sets_map:
-                player.state.owned_sets = player_number_to_owned_sets_map[player_number]
+        player_to_owned_sets_map = self.state.board.get_owned_sets()
+        for player in self.state.players:
+            if player in player_to_owned_sets_map:
+                player.state.owned_sets = player_to_owned_sets_map[player]
             else:
                 # The player does not own any sets...
                 player.state.owned_sets.clear()
@@ -523,9 +514,7 @@ class Game(object):
         # We ask the player if he wants to build any houses.
         # build_instructions is a list of tuples like:
         # (street_name, number_of_houses)
-        build_instructions = current_player.ai.build_houses(
-            self.state.copy(),
-            current_player.state.copy())
+        build_instructions = current_player.ai.build_houses(self.state, current_player)
         if not build_instructions:
             return
 
@@ -557,22 +546,21 @@ class Game(object):
 
             # Is the set that this street is a part of wholly owned by
             # the current player, and unmortgaged?
-            if street.street_set not in current_player.state.owned_sets:
+            if street.property_set not in current_player.state.owned_sets:
                 self._roll_back_house_building(current_player, instructions_with_streets)
                 return
 
             # We check if the set that this street is part of has been
             # built in a balanced way...
-            if not self._set_has_balanced_houses(street.street_set):
+            if not self._set_has_balanced_houses(street.property_set):
                 self._roll_back_house_building(current_player, instructions_with_streets)
                 return
 
-    def _set_has_balanced_houses(self, street_set):
+    def _set_has_balanced_houses(self, property_set):
         '''
         Returns True if the set has balanced housing, False if not.
         '''
-        properties_in_set = self.state.board.get_properties_for_set(street_set)
-        houses_for_each_property = [p.number_of_houses for p in properties_in_set]
+        houses_for_each_property = [p.number_of_houses for p in property_set.properties]
         if max(houses_for_each_property) - min(houses_for_each_property) <= 1:
             return True
         else:
@@ -612,9 +600,7 @@ class Game(object):
         We give the current player the option to mortgage properties.
         '''
         # We ask the player if they want to mortgage anything...
-        property_names_to_mortgage = current_player.ai.mortgage_properties(
-            self.state.copy(),
-            current_player.state.copy())
+        property_names_to_mortgage = current_player.ai.mortgage_properties(self.state, current_player)
         if not property_names_to_mortgage:
             return
 
@@ -629,7 +615,7 @@ class Game(object):
             # We check that the current player owns the property and
             # that they are not sneakily trying to mortgage someone
             # else's property...
-            if square.owner_player_number != current_player.state.player_number:
+            if square.owner is not current_player:
                 continue
 
             # We check that the property is not already mortgaged...
@@ -656,9 +642,7 @@ class Game(object):
         We offer the player the chance to sell houses.
         '''
         # We ask the player which properties they want to sell...
-        sale_instructions = current_player.ai.sell_houses(
-            self.state.copy(),
-            current_player.state.copy())
+        sale_instructions = current_player.ai.sell_houses(self.state, current_player)
         if not sale_instructions:
             return
 
@@ -746,7 +730,7 @@ class Game(object):
             return
 
         # We ask the player if they want to buy their way out or play a card...
-        action = current_player.ai.get_out_of_jail(current_player.state.copy())
+        action = current_player.ai.get_out_of_jail(current_player)
         if action == PlayerAIBase.Action.BUY_WAY_OUT_OF_JAIL:
             # The player is buying their way out...
             self.take_money_from_player(current_player, 50)
@@ -774,7 +758,7 @@ class Game(object):
         '''
 
         # We ask the player if they want to unmortgage anything...
-        square_names = current_player.ai.unmortgage_properties(self.state.copy(), current_player.state.copy())
+        square_names = current_player.ai.unmortgage_properties(self.state, current_player)
         if not square_names:
             return
 
@@ -789,7 +773,7 @@ class Game(object):
                 continue
 
             # We check if the property is owned by the current player...
-            if square.owner_player_number != current_player.state.player_number:
+            if square.owner is not current_player:
                 return
 
             unmortgage_cost += int(square.mortgage_value * 1.1)
@@ -821,7 +805,7 @@ class Game(object):
         '''
 
         # We see if the player wants to propose a deal...
-        proposal = current_player.ai.propose_deal(self.state.copy(), current_player.state.copy())
+        proposal = current_player.ai.propose_deal(self.state, current_player)
         if proposal.deal_proposed is False:
             return
 
@@ -955,7 +939,7 @@ class Game(object):
         # We check each player to see if they are bankrupt.
         # Note that we iterate through a copy of the collection of players, as
         # we may remove players from the list...
-        list_players = list(self.state.players.values())
+        list_players = list(self.state.players)
         for player in list_players:
             if player.state.cash < 0:
                 self._player_went_bankrupt(player)
@@ -968,21 +952,20 @@ class Game(object):
         board = self.state.board
         for property_index in current_player.state.property_indexes:
             property = board.get_square_by_index(property_index)
-            property.owner_player_number = Property.NOT_OWNED
+            property.owner = None
             property.number_of_houses = 0
 
         # We notify all players that this player went bankrupt...
-        current_player_number = current_player.state.player_number
-        for player in self.state.players.values():
-            player.ai.player_went_bankrupt(current_player_number)
+        for player in self.state.players:
+            player.ai.player_went_bankrupt(current_player)
 
         # We return any Get Out Of Jail Free cards to their decks...
         for card in current_player.state.get_out_of_jail_free_cards:
             card.put_back_in_deck()
 
         # We move the player to the bankrupt list...
-        del self.state.players[current_player_number]
-        self.state.bankrupt_players[current_player_number] = current_player
+        self.state.players.remove(current_player)
+        self.state.bankrupt_players.append(current_player)
 
     def _find_winner(self):
         '''

@@ -13,7 +13,7 @@ class ItIsYourBirthday(Card):
         from ..game import Game
 
         # We get £10 from each player...
-        for player in game.state.players.values():
+        for player in game.state.players:
             if player is current_player:
                 continue
 

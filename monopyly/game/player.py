@@ -8,11 +8,11 @@ class Player(object):
     derived from PlayerAIBase).
     '''
 
-    def __init__(self, ai, player_number, board):
+    def __init__(self, ai, board):
         '''
         The 'constructor'.
         '''
-        self.state = PlayerState(player_number)
+        self.state = PlayerState()
         self.ai = ai
         self.board = board
 
@@ -29,8 +29,9 @@ class Player(object):
             if not isinstance(square, Property):
                 return False
 
-            if square.owner_player_number != self.state.player_number:
+            if square.owner is not self:
                 return False
+
         return True
 
     @property

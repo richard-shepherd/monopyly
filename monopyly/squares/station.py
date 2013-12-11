@@ -8,11 +8,11 @@ class Station(Property):
     Represents a station.
     '''
 
-    def __init__(self, name):
+    def __init__(self, name, property_set):
         '''
         The 'constructor'.
         '''
-        super().__init__(name=name, property_set=Street.Set.STATION, price=200)
+        super().__init__(name, property_set, 200)
         self._station_indexes = set()
 
     def calculate_rent(self, game, player):

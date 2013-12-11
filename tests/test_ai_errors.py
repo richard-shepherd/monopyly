@@ -27,7 +27,7 @@ def test_player_buys_property():
     The player returns the wrong type from the landed_on_unowned_property method.
     '''
     class TestPlayer(AIErrorRecorder):
-        def landed_on_unowned_property(self, game_state, player_state, property_name, price):
+        def landed_on_unowned_property(self, game_state, player, property):
             return "BUY"
 
     game = Game()
@@ -42,7 +42,7 @@ def test_player_bids_in_auction():
     The player returns the wrong type from the property_offered_for_auction method.
     '''
     class TestPlayer(AIErrorRecorder):
-        def property_offered_for_auction(self, game_state, player_state, property_name, face_value):
+        def property_offered_for_auction(self, game_state, player, property):
             return "45.6"
 
     game = Game()

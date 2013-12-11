@@ -10,7 +10,7 @@ class PlayerState(object):
     Note: The player algorithm is not in this class (or in a derived class).
     '''
 
-    def __init__(self, player_number):
+    def __init__(self):
         '''
         The 'constructor'.
         '''
@@ -32,15 +32,6 @@ class PlayerState(object):
         # Get Out Of Jail Free cards the player is holding...
         self.get_out_of_jail_free_cards = []
 
-        # The player number. Each player is assigned a number when the
-        # game starts, and this is reported to the player AI. This can help
-        # an AI know which player is themself when looking at the state of
-        # the game.
-        #
-        # This is a zero-based number, which can be used as an index into
-        # the GameState.players list to find the corresponding Player object.
-        self.player_number = player_number
-
         # Whether the player is in jail, and if so how many turns they
         # have been there...
         self.is_in_jail = False
@@ -49,13 +40,6 @@ class PlayerState(object):
         # The collection of complete unmortgaged sets owned by this player.
         # The items in the collection are Property.Set 'enums'.
         self.owned_sets = set()
-
-    def copy(self):  # TODO: test speed of copy by just returning self
-        '''
-        Returns a copy of the player state.
-        '''
-        return self
-        #return copy.deepcopy(self)
 
     def get_number_of_houses_and_hotels(self, board):
         '''

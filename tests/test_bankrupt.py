@@ -46,14 +46,14 @@ def test_player_goes_bankrupt():
     # Player 1 should be bankrupt, and all houses and properties
     # returned to the bank...
     assert player0.state.cash == 2000
-    assert player1 in game.state.bankrupt_players.values()
-    assert player1 not in game.state.players.values()
+    assert player1 in game.state.bankrupt_players
+    assert player1 not in game.state.players
     assert bow_street.number_of_houses == 0
     assert marlborough_street.number_of_houses == 0
     assert vine_street.number_of_houses == 0
-    assert bow_street.owner_player_number == Property.NOT_OWNED
-    assert marlborough_street.owner_player_number == Property.NOT_OWNED
-    assert vine_street.owner_player_number == Property.NOT_OWNED
+    assert bow_street.owner is None
+    assert marlborough_street.owner is None
+    assert vine_street.owner is None
 
     # We play another round. Player 1 should be out and should not move
     game.dice = MockDice([(4, 6), (4, 6), (6, 4)])
@@ -93,8 +93,8 @@ def test_goojf_cards_returned():
     game.play_one_round()
 
     assert mock_deck.number_of_cards == 2
-    assert player1 not in game.state.players.values()
-    assert player1 in game.state.bankrupt_players.values()
+    assert player1 not in game.state.players
+    assert player1 in game.state.bankrupt_players
 
 
 def test_player_goes_bankrupt_in_other_players_turn():
@@ -121,10 +121,10 @@ def test_player_goes_bankrupt_in_other_players_turn():
     game.dice = MockDice([(2, 5), (4, 6)])
     game.play_one_round()
 
-    assert player0 in game.state.players.values()
-    assert player1 not in game.state.players.values()
-    assert player2 in game.state.players.values()
-    assert player1 in game.state.bankrupt_players.values()
+    assert player0 in game.state.players
+    assert player1 not in game.state.players
+    assert player2 in game.state.players
+    assert player1 in game.state.bankrupt_players
     assert player2.state.square == 10
 
 

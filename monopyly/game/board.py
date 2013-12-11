@@ -87,33 +87,31 @@ class Board(object):
         '''
         Returns which sets are owned by which players.
 
-        Returned as a dictionary of player-numbers to a set of
-        street-sets owned by them. For example:
-        { 2: {BROWN, PINK}, 4: {YELLOW} }
+        Returned as a dictionary of player to a set of
+        property-sets owned by them. For example:
+        { player2: {BROWN, PINK}, player4: {YELLOW} }
+
+        The sets are PropertySet objects rather than enums.
 
         Only players which own a whole unmortgaged set are returned.
         '''
-        # (I think this could be done in a slightly horrific dictionary
-        # comprehension with a nested set comprehension. But I'm doing it
-        # a longer way, as I think it will be clearer.)
+        # We look through the collection of sets...
         results = {}
-        for street_set, properties in self._set_to_property_map.items():
-            # We see if all properties in this set are owned by the
-            # same player and are all unmortgaged...
-            owner_infos = {(p.owner_player_number, p.is_mortgaged) for p in properties}
-            if len(owner_infos) != 1:
-                # The set has a mixture of owners and/or mortgage states...
+        for property_set in self._property_set_map.values():
+            # Does the set have a unique owner?
+            owner = property_set.owner
+            if owner is None:
                 continue
 
-            # The set is owned by only one player...
-            owner_info = owner_infos.pop()
-            player_number = owner_info[0]
-            is_mortgaged = owner_info[1]
-            if player_number != Property.NOT_OWNED and is_mortgaged is False:
-                # We've found a set owned by a player...
-                if player_number not in results:
-                    results[player_number] = set()
-                results[player_number].add(street_set)
+            # There is a unique owner. We still need to check if all
+            # the properties in the set are unmortgaged...
+            if not property_set.all_properties_are_unmortgaged:
+                continue
+
+            # We add this set to the collection for the owner...
+            if owner not in results:
+                results[owner] = set()
+            results[owner].add(property_set)
 
         return results
 
@@ -381,16 +379,19 @@ class Board(object):
         Creates a property set for each set, and maps them to
         the set ID.
         '''
-        self._property_set_map[PropertySet.BROWN] = PropertySet()
-        self._property_set_map[PropertySet.LIGHT_BLUE] = PropertySet()
-        self._property_set_map[PropertySet.PURPLE] = PropertySet()
-        self._property_set_map[PropertySet.ORANGE] = PropertySet()
-        self._property_set_map[PropertySet.RED] = PropertySet()
-        self._property_set_map[PropertySet.YELLOW] = PropertySet()
-        self._property_set_map[PropertySet.GREEN] = PropertySet()
-        self._property_set_map[PropertySet.DARK_BLUE] = PropertySet()
-        self._property_set_map[PropertySet.STATION] = PropertySet()
-        self._property_set_map[PropertySet.UTILITY] = PropertySet()
+        def add_set(set_enum):
+            self._property_set_map[set_enum] = PropertySet(set_enum)
+
+        add_set(PropertySet.BROWN)
+        add_set(PropertySet.LIGHT_BLUE)
+        add_set(PropertySet.PURPLE)
+        add_set(PropertySet.ORANGE)
+        add_set(PropertySet.RED)
+        add_set(PropertySet.YELLOW)
+        add_set(PropertySet.GREEN)
+        add_set(PropertySet.DARK_BLUE)
+        add_set(PropertySet.STATION)
+        add_set(PropertySet.UTILITY)
 
 
 

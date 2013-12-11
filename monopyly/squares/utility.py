@@ -7,11 +7,11 @@ class Utility(Property):
     Represents the utilities (Water Works and Electric Company).
     '''
 
-    def __init__(self, name):
+    def __init__(self, name, property_set):
         '''
         The 'constructor'
         '''
-        super().__init__(name=name, property_set=Property.Set.UTILITY, price=150)
+        super().__init__(name, property_set, 150)
         self._utility_indexes = set()
 
     def calculate_rent(self, game, player):
