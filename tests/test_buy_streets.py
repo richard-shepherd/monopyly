@@ -31,17 +31,16 @@ def test_buy_streets():
     assert 18 in player.state.property_indexes
     assert 19 in player.state.property_indexes
     assert len(player.state.owned_sets) == 1
-    assert Property.Set.ORANGE in player.state.owned_sets
+    board = game.state.board
+    assert board.get_property_set(PropertySet.ORANGE) in player.state.owned_sets
 
     # The player should have paid the money...
     assert player.state.cash == 940
 
     # The squares should know their owner...
-    player_number = player.state.player_number
-    board = game.state.board
-    assert board.get_square_by_name(Square.Name.BOW_STREET).owner_player_number == player_number
-    assert board.get_square_by_name(Square.Name.MARLBOROUGH_STREET).owner_player_number == player_number
-    assert board.get_square_by_name(Square.Name.VINE_STREET).owner_player_number == player_number
+    assert board.get_square_by_name(Square.Name.BOW_STREET).owner is player
+    assert board.get_square_by_name(Square.Name.MARLBOROUGH_STREET).owner is player
+    assert board.get_square_by_name(Square.Name.VINE_STREET).owner is player
 
 
 def test_buy_streets_not_enough_money():
@@ -70,11 +69,10 @@ def test_buy_streets_not_enough_money():
     assert player.state.cash == 140
 
     # The squares should know their owner...
-    player_number = player.state.player_number
     board = game.state.board
-    assert board.get_square_by_name(Square.Name.BOW_STREET).owner_player_number == player_number
-    assert board.get_square_by_name(Square.Name.MARLBOROUGH_STREET).owner_player_number == player_number
-    assert board.get_square_by_name(Square.Name.VINE_STREET).owner_player_number == Property.NOT_OWNED
+    assert board.get_square_by_name(Square.Name.BOW_STREET).owner is player
+    assert board.get_square_by_name(Square.Name.MARLBOROUGH_STREET).owner is player
+    assert board.get_square_by_name(Square.Name.VINE_STREET).owner is None
 
 
 

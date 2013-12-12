@@ -21,7 +21,7 @@ class GenerousDaddyAI(PlayerAIBase):
         else:
             return PlayerAIBase.Action.DO_NOT_BUY
 
-    def deal_proposed(self, game_state, player_state, deal_proposal):
+    def deal_proposed(self, game_state, player, deal_proposal):
         '''
         Called when a deal is proposed by another player.
         '''

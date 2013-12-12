@@ -393,7 +393,7 @@ class Game(object):
         square = self.state.board.get_square_by_index(index)
 
         # We update the owner and the collections managed by each player...
-        square.owner_player_number = to_player.state.player_number
+        square.owner = to_player
         to_player.state.property_indexes.add(index)
         from_player.state.property_indexes.remove(index)
 
@@ -836,10 +836,7 @@ class Game(object):
         proposal.maximum_cash_offered = 0
         proposal.minimum_cash_wanted = 0
 
-        response = proposed_to_player.ai.deal_proposed(
-            self.state.copy(),
-            proposed_to_player.state.copy(),
-            proposal)
+        response = proposed_to_player.ai.deal_proposed(self.state, proposed_to_player, proposal)
 
         if response.action == DealResponse.Action.REJECT:
             # The proposee rejected the deal...

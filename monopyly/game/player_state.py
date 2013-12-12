@@ -27,6 +27,7 @@ class PlayerState(object):
         # to one of the squares on the board. The squares themselves hold
         # information about how many houses are on them, whether they are
         # mortgages and so on...
+        # TODO: Change to collection of properties
         self.property_indexes = set()
 
         # Get Out Of Jail Free cards the player is holding...

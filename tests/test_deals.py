@@ -32,7 +32,7 @@ class DealResponder(PlayerAIBase):
         self.deal_response = deal_response
         self.deal_info = -1
 
-    def deal_proposed(self, game_state, player_state, deal_proposal):
+    def deal_proposed(self, game_state, player, deal_proposal):
         return self.deal_response
 
     def deal_result(self, deal_info):
@@ -65,7 +65,7 @@ def test_buy_mayfair():
 
     # Mayfair should now belong to player0 who should have
     # paid £750 for it...
-    assert mayfair.owner_player_number == 0
+    assert mayfair.owner is player0
     assert player0.state.cash == 750
     assert player1.state.cash == 2250
 
@@ -100,7 +100,7 @@ def test_sell_mayfair():
 
     # Mayfair should now belong to player1 who should have
     # paid £1100 for it...
-    assert mayfair.owner_player_number == 1
+    assert mayfair.owner is player1
     assert player0.state.cash == 2600
     assert player1.state.cash == 400
 
@@ -132,7 +132,7 @@ def test_buy_mayfair_but_player_does_not_own_it():
 
     # Mayfair should not belong to anyone, no money should have changed hands...
     mayfair = game.state.board.get_square_by_name(Square.Name.MAYFAIR)
-    assert mayfair.owner_player_number == Property.NOT_OWNED
+    assert mayfair.owner is None
     assert player0.state.cash == 1500
     assert player1.state.cash == 1500
 
@@ -164,7 +164,7 @@ def test_sell_mayfair_but_player_does_not_own_it():
     # Mayfair should not be owned and no money should have
     # changed hands...
     mayfair = game.state.board.get_square_by_name(Square.Name.MAYFAIR)
-    assert mayfair.owner_player_number == Property.NOT_OWNED
+    assert mayfair.owner is None
     assert player0.state.cash == 1500
     assert player1.state.cash == 1500
 
@@ -203,7 +203,7 @@ def test_buy_mayfair_player_doesnt_have_enough_money():
 
     # Mayfair should still belong to player 1 and no
     # money should have changed hands...
-    assert mayfair.owner_player_number == 1
+    assert mayfair.owner is player1
     assert player0.state.cash == 700
     assert player1.state.cash == 1500
 
@@ -243,7 +243,7 @@ def test_sell_mayfair_player_doesnt_have_enough_money():
 
     # Mayfair should still belong to player 0 and no
     # money should have changed hands...
-    assert mayfair.owner_player_number == 0
+    assert mayfair.owner is player0
     assert player0.state.cash == 1500
     assert player1.state.cash == 1200
 
@@ -270,7 +270,7 @@ def test_invalid_player():
 
     # No deal should have been made...
     mayfair = game.state.board.get_square_by_name(Square.Name.MAYFAIR)
-    assert mayfair.owner_player_number == Property.NOT_OWNED
+    assert mayfair.owner is None
     assert player0.state.cash == 1500
 
     # We check that the players were notified correctly...
@@ -334,8 +334,8 @@ def test_exchange_properties_plus_cash():
 
     # The properties should be owned by the other players, and
     # £300 should have changed hands...
-    assert mayfair.owner_player_number == 0
-    assert vine_street.owner_player_number == 1
+    assert mayfair.owner is player0
+    assert vine_street.owner is player1
     assert player0.state.cash == 1200
     assert player1.state.cash == 1800
 
@@ -372,8 +372,8 @@ def test_exchange_properties_no_cash():
 
     # The properties should be owned by the other players, and
     # £300 should have changed hands...
-    assert mayfair.owner_player_number == 0
-    assert vine_street.owner_player_number == 1
+    assert mayfair.owner is player0
+    assert vine_street.owner is player1
     assert player0.state.cash == 1500
     assert player1.state.cash == 1500
 

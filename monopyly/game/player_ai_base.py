@@ -352,7 +352,7 @@ class PlayerAIBase(object):
         '''
         return DealProposal()
 
-    def deal_proposed(self, game_state, player_state, deal_proposal):
+    def deal_proposed(self, game_state, player, deal_proposal):
         '''
         Called when another player proposes a deal to you.
 
