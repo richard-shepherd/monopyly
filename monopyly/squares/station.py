@@ -21,7 +21,7 @@ class Station(Property):
         '''
         # We find how many stations the owner has...
         self._find_station_indexes(game.state.board)
-        owner = game.state.players[self.owner_player_number]
+        owner = self.owner
         owned_stations = set.intersection(self._station_indexes, owner.state.property_indexes)
         number_of_owned_stations = len(owned_stations)
 

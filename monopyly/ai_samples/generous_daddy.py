@@ -16,7 +16,7 @@ class GenerousDaddyAI(PlayerAIBase):
         return "Generous Daddy"
 
     def landed_on_unowned_property(self, game_state, player, property):
-        if player_state.cash > 500 + price:
+        if player.state.cash > 500 + property.price:
             return PlayerAIBase.Action.BUY
         else:
             return PlayerAIBase.Action.DO_NOT_BUY

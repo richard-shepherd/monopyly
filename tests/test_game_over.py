@@ -168,9 +168,9 @@ def test_all_players_bankrupt_in_same_round():
 
     # Players 0 and 1 should be bankrupt, and player2
     # should be the winner...
-    assert player0 not in game.state.players.values()
-    assert player1 not in game.state.players.values()
-    assert player2 in game.state.players.values()
-    assert player0 in game.state.bankrupt_players.values()
-    assert player1 in game.state.bankrupt_players.values()
-    assert game.winner == player2
+    assert player0 not in game.state.players
+    assert player1 not in game.state.players
+    assert player2 in game.state.players
+    assert player0 in game.state.bankrupt_players
+    assert player1 in game.state.bankrupt_players
+    assert game.winner is player2

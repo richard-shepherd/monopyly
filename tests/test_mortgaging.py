@@ -39,8 +39,10 @@ def test_simple_mortgaging():
     # has the properties and sets as expected...
     assert len(player.state.property_indexes) == 8
     assert len(player.state.owned_sets) == 2
-    assert Property.Set.ORANGE in player.state.owned_sets
-    assert Property.Set.GREEN in player.state.owned_sets
+
+    board = game.state.board
+    assert board.get_property_set(PropertySet.ORANGE) in player.state.owned_sets
+    assert board.get_property_set(PropertySet.GREEN) in player.state.owned_sets
 
     # We check that none of the properties are mortgaged...
     assert square1.is_mortgaged is False
@@ -63,7 +65,7 @@ def test_simple_mortgaging():
     assert player.state.cash == 1590
     assert len(player.state.property_indexes) == 8
     assert len(player.state.owned_sets) == 1
-    assert Property.Set.GREEN in player.state.owned_sets
+    assert board.get_property_set(PropertySet.GREEN) in player.state.owned_sets
 
     # We check that Bow Street and Kings Cross are mortgaged...
     assert square1.is_mortgaged is True
@@ -129,7 +131,9 @@ def test_mortgaging_a_property_belonging_to_another_player():
     # Player 1 should still have all his properties...
     assert len(player1.state.property_indexes) == 3
     assert len(player1.state.owned_sets) == 1
-    assert Property.Set.GREEN in player1.state.owned_sets
+
+    board = game.state.board
+    assert board.get_property_set(PropertySet.GREEN) in player1.state.owned_sets
 
     # We check that Bow Street is mortgaged (and Bond Street is not)...
     assert square1.is_mortgaged is True

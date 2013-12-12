@@ -21,7 +21,7 @@ class Utility(Property):
         '''
         # We find how many utilities the owner has...
         self._find_utility_indexes(game.state.board)
-        owner = game.state.players[self.owner_player_number]
+        owner = self.owner
         owned_utilities = set.intersection(self._utility_indexes, owner.state.property_indexes)
         number_of_owned_stations = len(owned_utilities)
 

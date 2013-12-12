@@ -34,23 +34,24 @@ def test_owned_sets():
     game.give_property_to_player(player2, Square.Name.COVENTRY_STREET)
 
     # We find the sets...
-    owned_sets = game.state.board.get_owned_sets()
+    board = game.state.board
+    owned_sets = board.get_owned_sets()
 
     # Player 0...
-    assert 0 in owned_sets
-    player0_sets = owned_sets[0]
+    assert player0 in owned_sets
+    player0_sets = owned_sets[player0]
     assert len(player0_sets) == 1
-    assert Property.Set.BROWN in player0_sets
+    assert board.get_property_set(PropertySet.BROWN) in player0_sets
 
     # Player 1...
-    assert 1 not in owned_sets
+    assert player1 not in owned_sets
 
     # Player 2...
-    assert 2 in owned_sets
-    player2_sets = owned_sets[2]
+    assert player2 in owned_sets
+    player2_sets = owned_sets[player2]
     assert len(player2_sets) == 2
-    assert Property.Set.ORANGE in player2_sets
-    assert Property.Set.DARK_BLUE in player2_sets
+    assert board.get_property_set(PropertySet.ORANGE) in player2_sets
+    assert board.get_property_set(PropertySet.DARK_BLUE) in player2_sets
 
 
 

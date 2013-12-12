@@ -5,7 +5,7 @@ class DealProposal(object):
 
     def __init__(
             self,
-            propose_to_player_number=-1,
+            propose_to_player=None,
             properties_offered=None,
             properties_wanted=None,
             maximum_cash_offered=0,
@@ -26,7 +26,7 @@ class DealProposal(object):
         if (not properties_wanted):
             properties_wanted = []
 
-        self.propose_to_player_number = propose_to_player_number
+        self.propose_to_player = propose_to_player
         self.properties_offered = properties_offered
         self.properties_wanted = properties_wanted
         self.maximum_cash_offered = maximum_cash_offered

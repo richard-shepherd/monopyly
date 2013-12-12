@@ -87,8 +87,8 @@ class Game(object):
         # player-number they are...
         Logger.log("Start of game. Players:")
         Logger.indent()
-        for player in self.state.players.values():
-            player.ai.start_of_game(player.state.player_number)
+        for player in self.state.players:
+            player.ai.start_of_game()
             Logger.log(player.name)
         Logger.dedent()
 
@@ -668,12 +668,12 @@ class Game(object):
                 return
 
             # We check that the street belongs to the current player...
-            if street.owner_player_number != current_player.state.player_number:
+            if street.owner is not current_player:
                 self._replace_houses(instructions_with_streets)
                 return
 
             # Will the sale result in unbalanced housing?
-            if not self._set_has_balanced_houses(street.street_set):
+            if not self._set_has_balanced_houses(street.property_set):
                 self._replace_houses(instructions_with_streets)
                 return
 
@@ -811,10 +811,10 @@ class Game(object):
 
         # We find the player the deal is being proposed to (checking that the
         # player is valid first)...
-        if proposal.propose_to_player_number < 0 or proposal.propose_to_player_number >= self.state.number_of_players:
+        if proposal.propose_to_player is None:
             current_player.ai.deal_result(PlayerAIBase.DealInfo.INVALID_DEAL_PROPOSED)
             return
-        proposed_to_player = self.state.players[proposal.propose_to_player_number]
+        proposed_to_player = proposal.propose_to_player
 
         Logger.log("{0} proposed deal to {1}: {2}".format(current_player.name, proposed_to_player.name, proposal))
         Logger.indent()
@@ -917,7 +917,7 @@ class Game(object):
         Checks if the game has a winner.
         '''
         # We see how many players still have money...
-        solvent_players = {player for player in self.state.players.values() if player.state.cash >= 0}
+        solvent_players = {player for player in self.state.players if player.state.cash >= 0}
         number_of_solvent_players = len(solvent_players)
         if number_of_solvent_players > 1:
             self.status = Game.Action.GAME_NOT_OVER
@@ -977,8 +977,8 @@ class Game(object):
             self.winner = None
             return
 
-        max_net_worth = max(player.net_worth for player in self.state.players.values())
-        winning_players = [player for player in self.state.players.values() if player.net_worth == max_net_worth]
+        max_net_worth = max(player.net_worth for player in self.state.players)
+        winning_players = [player for player in self.state.players if player.net_worth == max_net_worth]
 
         # If there is only one player, then they have won...
         if(len(winning_players) == 1):
