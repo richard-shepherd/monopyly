@@ -12,20 +12,15 @@ class PlayerAIBase(object):
     AI. Others are just notifications that something has
     occurred.
 
-    Many of the functions are passed game_state and player_state.
+    Many of the functions are passed game_state and player.
 
-    game_state: A copy of the GameState object, including the
-                state of all players. Note that some information
-                about other players will be 'redacted', such as
-                how much money they have.
+    game_state: The GameState object, including the state of all players
+                and the board.
 
-    player_state: A copy of the AI's own PlayerState object. Each
-                  player has a number, so the AI can tell which of
-                  the game players it is.
+    player:     The Player object for the current player, ie "you".
 
-    These objects are passed as copies to avoid the AIs being able
-    to directly change the state.
     '''
+    # TODO: Include a note about not cheating above
 
     class Action(object):
         '''
@@ -54,6 +49,8 @@ class PlayerAIBase(object):
         OFFERED_TOO_LITTLE_MONEY = 3
         PLAYER_DID_NOT_HAVE_ENOUGH_MONEY = 4
         DEAL_REJECTED = 5
+
+    # TODO: note for each function what types the params are
 
     def get_name(self):
         '''
