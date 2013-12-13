@@ -7,8 +7,6 @@ from .deal_response import DealResponse
 from ..squares import Square, Property, Street
 from ..utility import typecheck, Logger
 
-# TODO: Only offer players to buy houses if they have a set
-# TODO: Choose random cards from the decks, to avoid "peeking"
 
 class Game(object):
     '''
@@ -509,12 +507,20 @@ class Game(object):
         '''
         We give the current player the option to build houses.
         '''
+        # We only offer the chance to build if the player owns
+        # at least one complete, unmortgaged set...
+        if not current_player.state.owned_sets:
+            return
+
         # We ask the player if he wants to build any houses.
         # build_instructions is a list of tuples like:
         # (street_name, number_of_houses)
         build_instructions = current_player.ai.build_houses(self.state, current_player)
         if not build_instructions:
             return
+
+        Logger.log("{0} wants to build houses: {1}".format(current_player.name, build_instructions))
+        Logger.indent()
 
         # We find the Street objects for the square names provided...
         instructions_with_streets = self._get_instructions_with_streets(build_instructions)
@@ -527,32 +533,45 @@ class Game(object):
 
         # Did the player have enough money?
         if current_player.state.cash < 0:
+            Logger.log("{0} does not have enough cash".format(current_player.name))
             self._roll_back_house_building(current_player, instructions_with_streets)
+            Logger.dedent()
             return
 
         # We check each street to see if it looks as we expect...
         for (square_name, number_of_houses, street) in instructions_with_streets:
             # Did the player try to build a -ve number of houses?
             if number_of_houses < 0:
+                Logger.log("Negative number of houses specified")
                 self._roll_back_house_building(current_player, instructions_with_streets)
+                Logger.dedent()
                 return
 
             # Does the street have more than five houses?
             if street.number_of_houses > 5:
+                Logger.log("Too many houses requested")
                 self._roll_back_house_building(current_player, instructions_with_streets)
+                Logger.dedent()
                 return
 
             # Is the set that this street is a part of wholly owned by
             # the current player, and unmortgaged?
             if street.property_set not in current_player.state.owned_sets:
+                Logger.log("Set now fully owned, or partly mortgaged")
                 self._roll_back_house_building(current_player, instructions_with_streets)
+                Logger.dedent()
                 return
 
             # We check if the set that this street is part of has been
             # built in a balanced way...
             if not self._set_has_balanced_houses(street.property_set):
+                Logger.log("Building was unbalanced")
                 self._roll_back_house_building(current_player, instructions_with_streets)
+                Logger.dedent()
                 return
+
+        Logger.log("Houses build successfully")
+        Logger.dedent()
 
     def _set_has_balanced_houses(self, property_set):
         '''

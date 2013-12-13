@@ -16,14 +16,27 @@ from monopyly import *
 # TODO: auto-discovery of AIs
 
 # We set up the logger...
-Logger.add_handler(ConsoleLogHandler(Logger.INFO))
+Logger.add_handler(ConsoleLogHandler(Logger.WARNING))
 
 # We play a game with some sample AIs...
-game = Game()
-game.add_player(SophieAI())
-game.add_player(GenerousDaddyAI())
-game.add_player(SophieAI())
-game.add_player(GenerousDaddyAI())
-game.add_player(SophieAI())
-game.add_player(GenerousDaddyAI())
-game.play_game()
+results = dict()
+for i in range(10000):
+    game = Game()
+    game.add_player(SophieAI())
+    game.add_player(GenerousDaddyAI())
+    game.play_game()
+
+    winner = game.winner
+    if not winner:
+        print("Game {0} was drawn".format(i))
+        continue
+
+    print("Winner of game {0} was {1}".format(i, winner.name))
+
+    if winner.name not in results:
+        results[winner.name] = 1
+    else:
+        results[winner.name] += 1
+
+print(results)
+

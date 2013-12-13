@@ -58,12 +58,3 @@ class Square(object):
         '''
         raise Exception("landed_on() not implemented")
 
-    def copy(self):
-        '''
-        Returns a copy of the square.
-
-        Can be overridden in derived classes, if necessary, to
-        provide more efficient copying.
-        '''
-        # TODO: Don't think this is ever invoked. Are we copying the board correctly?
-        return copy.deepcopy(self)

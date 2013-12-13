@@ -1,4 +1,5 @@
 from ..game import *
+from ..squares import PropertySet
 
 
 class GenerousDaddyAI(PlayerAIBase):
@@ -7,16 +8,28 @@ class GenerousDaddyAI(PlayerAIBase):
     I'm playing with my children).
 
     - It initially buys any properties it can.
-    - If it runs out of money it will mortgage properties to be
-      able to try to complete a set or build houses.
+    - It builds houses when it has complete sets.
     - It makes favourable deals with other players.
-    - It keeps a small reserve of cash
+    - It keeps a small reserve of cash.
     '''
+    def __init__(self):
+        '''
+        The 'constructor'.
+        '''
+        self.cash_reserve = 500
+
     def get_name(self):
+        '''
+        Returns the name shown for this AI.
+        '''
         return "Generous Daddy"
 
     def landed_on_unowned_property(self, game_state, player, property):
-        if player.state.cash > 500 + property.price:
+        '''
+        Called when we land on an unowned property. We always buy it if we
+        can while keeping a small cash reserve.
+        '''
+        if player.state.cash > (self.cash_reserve + property.price):
             return PlayerAIBase.Action.BUY
         else:
             return PlayerAIBase.Action.DO_NOT_BUY
@@ -38,4 +51,26 @@ class GenerousDaddyAI(PlayerAIBase):
         return DealResponse(
             action=DealResponse.Action.ACCEPT,
             minimum_cash_wanted=property.price+1)
+
+    def build_houses(self, game_state, player):
+        '''
+        Gives us the opportunity to build houses.
+        '''
+        # We find the first set we own that we can build on...
+        for owned_set in player.state.owned_sets:
+            # We can't build on stations or utilities, or if the
+            # set already has hotels on all the properties...
+            if not owned_set.can_build_houses:
+                continue
+
+            # We see how much money we need for one house on each property...
+            cost = owned_set.house_price * owned_set.number_of_properties
+            if player.state.cash > (self.cash_reserve + cost):
+                # We build one house on each property...
+                return [(p.name, 1) for p in owned_set.properties]
+
+        # We can't build...
+        return []
+
+
 

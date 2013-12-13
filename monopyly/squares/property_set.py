@@ -6,16 +6,16 @@ class PropertySet(object):
     '''
 
     # An 'enum' for the different property sets.
-    BROWN = 1
-    LIGHT_BLUE = 2
-    PURPLE = 3
-    ORANGE = 4
-    RED = 5
-    YELLOW = 6
-    GREEN = 7
-    DARK_BLUE = 8
-    STATION = 9
-    UTILITY = 10
+    BROWN = "Brown"
+    LIGHT_BLUE = "Light blue"
+    PURPLE = "Purple"
+    ORANGE = "Orange"
+    RED = "Red"
+    YELLOW = "Yellow"
+    GREEN = "Green"
+    DARK_BLUE = "Dark blue"
+    STATION = "Station"
+    UTILITY = "Utility"
 
     def __init__(self, set_enum):
         '''
@@ -23,6 +23,19 @@ class PropertySet(object):
         '''
         self.properties = []
         self.set_enum = set_enum
+
+
+    def __repr__(self):
+        '''
+        Returns the string name of the set.
+        '''
+        return self.__str__()
+
+    def __str__(self):
+        '''
+        Returns the string name of the set.
+        '''
+        return self.set_enum
 
     def add_property(self, property):
         '''
@@ -91,3 +104,33 @@ class PropertySet(object):
         passed in and the properties in this set.
         '''
         return set.intersection(set(self.properties), properties)
+
+    @property
+    def can_build_houses(self):
+        '''
+        True if you can build houses on this set.
+
+        This is False if the set is the stations or utilities, or if
+        the set already has hotels on all properties.
+        '''
+        # Is the set the stations or utilities?
+        if (self.set_enum == PropertySet.STATION or self.set_enum == PropertySet.UTILITY):
+            return False
+
+        # Do all properties already have hotels?
+        for property in self.properties:
+            if property.number_of_houses < 5:
+                return True
+
+        return False
+
+    @property
+    def house_price(self):
+        '''
+        Returns the house price.
+        '''
+        if (self.set_enum == PropertySet.STATION or self.set_enum == PropertySet.UTILITY):
+            return 0
+
+        return self.properties[0].house_price
+

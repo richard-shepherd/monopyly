@@ -71,3 +71,13 @@ class SophieAI(PlayerAIBase):
 
         return DealProposal()
 
+    def build_houses(self, game_state, player):
+        '''
+        Sophie always tries to build houses if she can.
+        '''
+        for owned_set in player.state.owned_sets:
+            if not owned_set.can_build_houses:
+                continue
+            return [(p.name, 1) for p in owned_set.properties]
+
+        return []
