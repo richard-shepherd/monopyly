@@ -23,12 +23,8 @@ class PlayerState(object):
         self.cash = 1500
 
         # The collection of properties owned by the player.
-        # This is held as a set of integers, each of which is an index
-        # to one of the squares on the board. The squares themselves hold
-        # information about how many houses are on them, whether they are
-        # mortgages and so on...
-        # TODO: Change to collection of properties
-        self.property_indexes = set()
+        # These are objects derived from the Property class.
+        self.properties = set()
 
         # Get Out Of Jail Free cards the player is holding...
         self.get_out_of_jail_free_cards = []
@@ -48,18 +44,16 @@ class PlayerState(object):
         '''
         number_of_houses = 0
         number_of_hotels = 0
-        for index in self.property_indexes:
-            # We find the square for this index and check if
-            # it is a street (ie, not a station or utility)...
-            square = board.get_square_by_index(index)
-            if type(square) != Street:
+        for property in self.properties:
+            # We check if the property is a street (ie, not a station or utility)...
+            if type(property) != Street:
                 continue
 
-            if square.number_of_houses == 5:
+            if property.number_of_houses == 5:
                 # Five houses is a hotel...
                 number_of_hotels += 1
             else:
-                number_of_houses += square.number_of_houses
+                number_of_houses += property.number_of_houses
 
         return number_of_houses, number_of_hotels
 

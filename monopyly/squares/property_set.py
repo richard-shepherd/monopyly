@@ -85,3 +85,9 @@ class PropertySet(object):
                 return False
         return True
 
+    def intersection(self, properties):
+        '''
+        Returns the set of common properties between the set
+        passed in and the properties in this set.
+        '''
+        return set.intersection(set(self.properties), properties)

@@ -43,9 +43,8 @@ class Player(object):
         # Net worth includes cash...
         total = self.state.cash
 
-        for property_index in self.state.property_indexes:
+        for property in self.state.properties:
             # We add the mortgage value of properties...
-            property = self.board.get_square_by_index(property_index)
             total += property.mortgage_value
 
             # We add the resale value of houses...

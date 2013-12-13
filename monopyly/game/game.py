@@ -370,10 +370,9 @@ class Game(object):
         # The square on the board is given the player number of its owner,
         # and the player is given the index of the square on the board.
         # So they both know about each other...
-        index = self.state.board.get_index(square_name)
-        square = self.state.board.get_square_by_index(index)
+        square = self.state.board.get_square_by_name(square_name)
         square.owner = player
-        player.state.property_indexes.add(index)
+        player.state.properties.add(square)
 
         # We update which sets are owned by which players, as this
         # may have changed...
@@ -389,13 +388,12 @@ class Game(object):
             square_name, from_player.name, to_player.name))
 
         # We get the Property object...
-        index = self.state.board.get_index(square_name)
-        square = self.state.board.get_square_by_index(index)
+        square = self.state.board.get_square_by_name(square_name)
 
         # We update the owner and the collections managed by each player...
         square.owner = to_player
-        to_player.state.property_indexes.add(index)
-        from_player.state.property_indexes.remove(index)
+        to_player.state.properties.add(square)
+        from_player.state.properties.remove(square)
 
         # We update which sets are owned by which players, as this
         # may have changed...
@@ -947,8 +945,7 @@ class Game(object):
         '''
         # We return properties to the bank...
         board = self.state.board
-        for property_index in current_player.state.property_indexes:
-            property = board.get_square_by_index(property_index)
+        for property in current_player.state.properties:
             property.owner = None
             property.number_of_houses = 0
 

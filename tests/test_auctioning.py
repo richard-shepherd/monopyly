@@ -32,12 +32,13 @@ def test_two_players_both_bid():
     game.play_one_turn(player0)
 
     # Player 0 should not have any properties or paid any money...
-    assert len(player0.state.property_indexes) == 0
+    assert len(player0.state.properties) == 0
     assert player0.state.cash == 1500
 
     # Player 1 should have won the auction and paid £151...
-    assert len(player1.state.property_indexes) == 1
-    assert 19 in player1.state.property_indexes
+    vine_street = game.state.board.get_square_by_name(Square.Name.VINE_STREET)
+    assert len(player1.state.properties) == 1
+    assert vine_street in player1.state.properties
     assert player1.state.cash == 1349
 
 
@@ -59,16 +60,17 @@ def test_three_players_only_one_bids():
     game.play_one_turn(player0)
 
     # Player 0 should have won the auction and paid £1...
-    assert len(player0.state.property_indexes) == 1
-    assert 19 in player0.state.property_indexes
+    vine_street = game.state.board.get_square_by_name(Square.Name.VINE_STREET)
+    assert len(player0.state.properties) == 1
+    assert vine_street in player0.state.properties
     assert player0.state.cash == 1499
 
     # Player 1 should not have any properties or paid any money...
-    assert len(player1.state.property_indexes) == 0
+    assert len(player1.state.properties) == 0
     assert player1.state.cash == 1500
 
     # Player 2 should not have any properties or paid any money...
-    assert len(player2.state.property_indexes) == 0
+    assert len(player2.state.properties) == 0
     assert player2.state.cash == 1500
 
 
@@ -95,15 +97,16 @@ def test_three_bids_but_highest_cannot_afford_it():
     game.play_one_turn(player0)
 
     # Player 0 should not have any properties or paid any money...
-    assert len(player0.state.property_indexes) == 0
+    assert len(player0.state.properties) == 0
     assert player0.state.cash == 1500
 
     # Player 1 should not have any properties or paid any money...
-    assert len(player1.state.property_indexes) == 0
+    assert len(player1.state.properties) == 0
     assert player1.state.cash == 250
 
     # Player 2 should have won the auction and paid £201...
-    assert len(player2.state.property_indexes) == 1
-    assert 19 in player2.state.property_indexes
+    vine_street = game.state.board.get_square_by_name(Square.Name.VINE_STREET)
+    assert len(player2.state.properties) == 1
+    assert vine_street in player2.state.properties
     assert player2.state.cash == 1299
 

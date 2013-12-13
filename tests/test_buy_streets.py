@@ -25,22 +25,26 @@ def test_buy_streets():
     game.dice = MockDice([(3, 3), (1, 1), (0, 1)])
     game.play_one_turn(player)
 
-    # The player should have bought the orange set...
-    assert len(player.state.property_indexes) == 3
-    assert 16 in player.state.property_indexes
-    assert 18 in player.state.property_indexes
-    assert 19 in player.state.property_indexes
-    assert len(player.state.owned_sets) == 1
     board = game.state.board
+    bow_street = board.get_square_by_name(Square.Name.BOW_STREET)
+    marlborough_street = board.get_square_by_name(Square.Name.MARLBOROUGH_STREET)
+    vine_street = board.get_square_by_name(Square.Name.VINE_STREET)
+
+    # The player should have bought the orange set...
+    assert len(player.state.properties) == 3
+    assert bow_street in player.state.properties
+    assert marlborough_street in player.state.properties
+    assert vine_street in player.state.properties
+    assert len(player.state.owned_sets) == 1
     assert board.get_property_set(PropertySet.ORANGE) in player.state.owned_sets
 
     # The player should have paid the money...
     assert player.state.cash == 940
 
     # The squares should know their owner...
-    assert board.get_square_by_name(Square.Name.BOW_STREET).owner is player
-    assert board.get_square_by_name(Square.Name.MARLBOROUGH_STREET).owner is player
-    assert board.get_square_by_name(Square.Name.VINE_STREET).owner is player
+    assert bow_street.owner is player
+    assert marlborough_street.owner is player
+    assert vine_street.owner is player
 
 
 def test_buy_streets_not_enough_money():
@@ -59,10 +63,15 @@ def test_buy_streets_not_enough_money():
     game.dice = MockDice([(3, 3), (1, 1), (0, 1)])
     game.play_one_turn(player)
 
+    board = game.state.board
+    bow_street = board.get_square_by_name(Square.Name.BOW_STREET)
+    marlborough_street = board.get_square_by_name(Square.Name.MARLBOROUGH_STREET)
+    vine_street = board.get_square_by_name(Square.Name.VINE_STREET)
+
     # The player should have bought only the first two properties...
-    assert len(player.state.property_indexes) == 2
-    assert 16 in player.state.property_indexes
-    assert 18 in player.state.property_indexes
+    assert len(player.state.properties) == 2
+    assert bow_street in player.state.properties
+    assert marlborough_street in player.state.properties
     assert len(player.state.owned_sets) == 0
 
     # The player should have paid the money...
@@ -70,9 +79,9 @@ def test_buy_streets_not_enough_money():
 
     # The squares should know their owner...
     board = game.state.board
-    assert board.get_square_by_name(Square.Name.BOW_STREET).owner is player
-    assert board.get_square_by_name(Square.Name.MARLBOROUGH_STREET).owner is player
-    assert board.get_square_by_name(Square.Name.VINE_STREET).owner is None
+    assert bow_street.owner is player
+    assert marlborough_street.owner is player
+    assert vine_street.owner is None
 
 
 
