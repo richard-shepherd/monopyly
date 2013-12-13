@@ -33,7 +33,6 @@ class Board(object):
         self._map_names_to_indexes()
 
         # The cards...
-        # TODO: redact the decks on copy (otherwise the players can peek at them!)
         self.chance_deck = ChanceDeck()
         self.community_chest_deck = CommunityChestDeck()
 

@@ -8,7 +8,6 @@ from .go_back import GoBack
 from .it_is_your_birthday import ItIsYourBirthday
 from .ten_pound_fine_or_take_a_chance import TenPoundFineOrTakeAChance
 from .go_to_jail_card import GoToJailCard
-import random
 
 
 class CommunityChestDeck(Deck):
@@ -70,6 +69,5 @@ class CommunityChestDeck(Deck):
         # Annuity Matures Collect £100...
         self.cards.append(RewardCard(100))
 
-        random.shuffle(self.cards)
 
 

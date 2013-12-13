@@ -21,6 +21,7 @@ class PlayerAIBase(object):
 
     '''
     # TODO: Include a note about not cheating above
+    # TODO: Check all comments (for object vs ID etc)
 
     class Action(object):
         '''

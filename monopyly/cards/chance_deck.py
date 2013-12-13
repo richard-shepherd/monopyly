@@ -7,7 +7,6 @@ from .advance_to import AdvanceTo
 from .go_back_three_spaces import GoBackThreeSpaces
 from .go_to_jail_card import GoToJailCard
 from .repairs import Repairs
-import random
 
 
 class ChanceDeck(Deck):
@@ -68,6 +67,4 @@ class ChanceDeck(Deck):
 
         # "Drunk in Charge" Fine £20...
         self.cards.append(FineCard(20))
-
-        random.shuffle(self.cards)
 

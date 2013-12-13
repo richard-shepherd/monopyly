@@ -3,8 +3,7 @@ from monopyly import Deck
 
 class MockCardDeck(Deck):
     '''
-    Mocks the Chance or CommunityChest deck, letting you
-    control which card is taken next.
+    A mock for card decks.
     '''
 
     def __init__(self, next_card=None):
@@ -12,6 +11,7 @@ class MockCardDeck(Deck):
         The 'constructor'.
         '''
         super().__init__()
+        self.index = 0
         if next_card:
             self.set_next_card(next_card)
 
@@ -28,3 +28,14 @@ class MockCardDeck(Deck):
         '''
         self.cards = cards
         self.index = 0
+
+    def _get_next_index(self):
+        '''
+        Returns the index of the next card to use.
+        '''
+        if self.index >= self.number_of_cards:
+            self.index = 0
+        index = self.index
+        self.index += 1
+        return index
+
