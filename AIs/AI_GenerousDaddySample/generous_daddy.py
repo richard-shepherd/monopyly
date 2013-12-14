@@ -1,5 +1,4 @@
-from ..game import *
-from ..squares import PropertySet
+from monopyly import *
 
 
 class GenerousDaddyAI(PlayerAIBase):

@@ -1,5 +1,4 @@
-from ..game import *
-from ..squares import *
+from monopyly import *
 
 
 class SophieAI(PlayerAIBase):
