@@ -20,7 +20,7 @@ Logger.add_handler(ConsoleLogHandler(Logger.WARNING))
 
 # We play a game with some sample AIs...
 results = dict()
-for i in range(10000):
+for i in range(1000):
     game = Game()
     game.add_player(SophieAI())
     game.add_player(GenerousDaddyAI())
@@ -29,14 +29,12 @@ for i in range(10000):
     winner = game.winner
     if not winner:
         print("Game {0} was drawn".format(i))
-        continue
-
-    print("Winner of game {0} was {1}".format(i, winner.name))
-
-    if winner.name not in results:
-        results[winner.name] = 1
     else:
-        results[winner.name] += 1
+        print("Winner of game {0} was {1}".format(i, winner.name))
+        if winner.name not in results:
+            results[winner.name] = 1
+        else:
+            results[winner.name] += 1
 
 print(results)
 
