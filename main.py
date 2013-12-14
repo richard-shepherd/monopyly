@@ -24,6 +24,7 @@ for i in range(1000):
     game = Game()
     game.add_player(SophieAI())
     game.add_player(GenerousDaddyAI())
+    game.add_player(PlayerAIBase())
     game.play_game()
 
     winner = game.winner

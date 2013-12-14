@@ -59,3 +59,17 @@ class Player(object):
         Returns the player name.
         '''
         return self.ai.get_name()
+
+    def is_same_player(self, other):
+        '''
+        Returns true if the other player is the same as this one.
+
+        'other' can be either a Player object or a Player AI object.
+        '''
+        if other is self:
+            return True
+
+        if other is self.ai:
+            return True
+
+        return False
