@@ -1,7 +1,7 @@
 from monopyly import *
 
 
-class DoNothingAI(PlayerAIBase):
+class LazyBonesAI(PlayerAIBase):
     '''
     This player does nothing - just has the default behaviour
     of the base AI. It does not buy properties, make deals etc.
