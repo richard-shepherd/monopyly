@@ -1,2 +1,2 @@
-from .sophie import SophieAI as AI
+from .sophie import SophieAI
 
