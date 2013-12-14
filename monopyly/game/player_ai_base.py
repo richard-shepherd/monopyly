@@ -57,7 +57,7 @@ class PlayerAIBase(object):
         '''
         Returns the name of this AI player.
         '''
-        return "I need a better name"
+        return "no-name"
 
     def start_of_game(self):
         '''

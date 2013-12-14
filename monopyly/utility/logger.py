@@ -7,9 +7,10 @@ class Logger(object):
     # An 'enum' for log levels...
     DEBUG = (0, "Debug")
     INFO = (1, "Info")
-    WARNING = (2, "Warning")
-    ERROR = (3, "Error")
-    FATAL = (4, "Fatal")
+    INFO_PLUS = (3, "InfoPlus")
+    WARNING = (4, "Warning")
+    ERROR = (5, "Error")
+    FATAL = (6, "Fatal")
 
     # The collection of handlers...
     _handlers = set()

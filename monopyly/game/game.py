@@ -1018,4 +1018,3 @@ class Game(object):
         player.ai.ai_error(message)
         return False
 
-
