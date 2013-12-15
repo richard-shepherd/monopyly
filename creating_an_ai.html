@@ -36,14 +36,56 @@
 </h2>
 
 <h3>
-    [header].
+    Create a Python package for your AI
 </h3>
-
-<p>[some text]</p>
-
+<p>
+    You should create a Python package for your AI and put it in the AIs folder under the root
+    folder of the project. Your AI class should be exposed by the __init__.py file.
+</p>
+<p>
+    If you are familiar with Python packages you can skip the rest of this section.
+</p>
+<p>
+    A Python package is roughly the equivalent to a library in other languages.
+    In practice, it is just a folder containing some Python files and an __init__.py
+    file. It is the existence of the __init__.py file that makes it a package.
+</p>
+<p>
+    You should create a file containing your AI class in your package. You can also
+    create any other modules and classes in your package that you need to support your
+    AI.
+    Note that if you reference other modules in your package, you must use
+    <a href="http://docs.python.org/3.2/tutorial/modules.html#intra-package-references">intra-package references</a>.
+    For example:
+</p>
 <pre><code>
-[some code here]
+from .my_monopyly_utilities import HouseBuilder
 </code></pre>
+<p>
+    The __init__.py file should 'expose' your AI class. This allows the Monopyly framework
+    to 'discover' your AI. For example:
+</p>
+<pre><code>
+from .rockefeller import RockefellerAI
+</code></pre>
+<p>
+    See also the sample AIs provided.
+</p>
+
+<h3>
+    Creating your AI class
+</h3>
+<p>
+    You can import the Monopyly API into your code by importing:
+</p>
+<pre><code>
+from monopyly import *
+</code></pre>
+<p>
+    Your AI class should derive from
+</p>
+
+
 
 </section>
 
