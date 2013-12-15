@@ -37,13 +37,18 @@ body {
 
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2 {
   color:#232323;
-  margin:36px 0 10px;
+  margin:0px 0 15px;
+}
+
+h3, h4, h5, h6 {
+  color:#232323;
+  margin:0px 0 10px;
 }
 
 p, ul, ol, table, dl {
-  margin:0 0 22px;
+  margin:0 0 15px;
 }
 
 h1, h2, h3 {
@@ -319,7 +324,7 @@ a.buttons:hover {
 section {
   width:650px;
   float:right;
-  padding-bottom:5px;
+  padding-bottom:50px;
 }
 
 
