@@ -44,7 +44,8 @@ def test_owned_sets():
     assert board.get_property_set(PropertySet.BROWN) in player0_sets
 
     # Player 1...
-    assert player1 not in owned_sets
+    assert player1 in owned_sets
+    assert len(owned_sets[player1]) == 0
 
     # Player 2...
     assert player2 in owned_sets

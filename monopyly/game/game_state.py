@@ -17,7 +17,7 @@ class GameState(object):
         '''
 
         # The board...
-        self.board = Board()
+        self.board = Board(self)
 
         # The collection of players (Player objects) playing the game...
         self.players = []

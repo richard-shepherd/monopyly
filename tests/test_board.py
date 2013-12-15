@@ -5,7 +5,8 @@ def test_number_of_squares():
     '''
     Tests that the board has the number of squares we expect.
     '''
-    board = Board()
+    game = Game()
+    board = game.state.board
     assert len(board.squares) == Board.NUMBER_OF_SQUARES
 
 
@@ -13,7 +14,8 @@ def test_square_indexes():
     '''
     Tests that the board indexes are as we expect.
     '''
-    board = Board()
+    game = Game()
+    board = game.state.board
     assert board.get_index(Square.Name.GO) == 0
     assert board.get_index(Square.Name.OLD_KENT_ROAD) == 1
     assert board.get_index_list(Square.Name.COMMUNITY_CHEST) == [2, 17, 33]
@@ -27,7 +29,8 @@ def test_sets():
     '''
     Tests that the properties are in the correct sets.
     '''
-    board = Board()
+    game = Game()
+    board = game.state.board
 
     stations_set = board.get_properties_for_set(PropertySet.STATION)
     assert len(stations_set) == 4

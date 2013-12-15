@@ -14,10 +14,14 @@ class Board(object):
     # A constant for the number of squares on the board...
     NUMBER_OF_SQUARES = 40
 
-    def __init__(self):
+    def __init__(self, game_state):
         '''
         The 'constructor'.
         '''
+        # We hold a reference to the game-state so that we
+        # can access the collection of players...
+        self.game_state = game_state
+
         # We map the street sets to the collections of properties in them...
         self._property_set_map = dict()
         self._setup_property_sets()
@@ -95,7 +99,7 @@ class Board(object):
         Only players which own a whole unmortgaged set are returned.
         '''
         # We look through the collection of sets...
-        results = {}
+        results = {player: set() for player in self.game_state.players}
         for property_set in self._property_set_map.values():
             # Does the set have a unique owner?
             owner = property_set.owner
@@ -108,8 +112,6 @@ class Board(object):
                 continue
 
             # We add this set to the collection for the owner...
-            if owner not in results:
-                results[owner] = set()
             results[owner].add(property_set)
 
         return results
