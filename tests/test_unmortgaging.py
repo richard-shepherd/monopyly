@@ -20,7 +20,10 @@ def test_owned_properties_got_enough_money():
     '''
     # We give the player a number of mortgaged properties...
     game = Game()
-    player = game.add_player(PlayerWhoUnmortgages([Square.Name.BOW_STREET, Square.Name.VINE_STREET]))
+    board = game.state.board
+    player = game.add_player(PlayerWhoUnmortgages([
+        board.get_square_by_name(Square.Name.BOW_STREET),
+        board.get_square_by_name(Square.Name.VINE_STREET)]))
     bow_street = game.give_property_to_player(player, Square.Name.BOW_STREET)
     vine_street = game.give_property_to_player(player, Square.Name.VINE_STREET)
     bow_street.is_mortgaged = True
@@ -48,7 +51,10 @@ def test_unowned_properties():
     # The player will try to unmortgage two of the orange properties,
     # but they only own ne of them...
     game = Game()
-    player = game.add_player(PlayerWhoUnmortgages([Square.Name.BOW_STREET, Square.Name.VINE_STREET]))
+    board = game.state.board
+    player = game.add_player(PlayerWhoUnmortgages([
+        board.get_square_by_name(Square.Name.BOW_STREET),
+        board.get_square_by_name(Square.Name.VINE_STREET)]))
     bow_street = game.give_property_to_player(player, Square.Name.BOW_STREET)
     bow_street.is_mortgaged = True
 
@@ -71,7 +77,10 @@ def test_not_enough_money():
     '''
     # We give the player a number of mortgaged properties...
     game = Game()
-    player = game.add_player(PlayerWhoUnmortgages([Square.Name.BOW_STREET, Square.Name.VINE_STREET]))
+    board = game.state.board
+    player = game.add_player(PlayerWhoUnmortgages([
+        board.get_square_by_name(Square.Name.BOW_STREET),
+        board.get_square_by_name(Square.Name.VINE_STREET)]))
     bow_street = game.give_property_to_player(player, Square.Name.BOW_STREET)
     vine_street = game.give_property_to_player(player, Square.Name.VINE_STREET)
     bow_street.is_mortgaged = True
@@ -100,9 +109,12 @@ def test_not_a_property():
     '''
     # We give the player a number of mortgaged properties...
     game = Game()
+    board = game.state.board
     player = game.add_player(
-        PlayerWhoUnmortgages(
-            [Square.Name.BOW_STREET, Square.Name.VINE_STREET, Square.Name.FREE_PARKING]))
+        PlayerWhoUnmortgages([
+            board.get_square_by_name(Square.Name.BOW_STREET),
+            board.get_square_by_name(Square.Name.VINE_STREET),
+            board.get_square_by_name(Square.Name.FREE_PARKING)]))
     bow_street = game.give_property_to_player(player, Square.Name.BOW_STREET)
     vine_street = game.give_property_to_player(player, Square.Name.VINE_STREET)
     bow_street.is_mortgaged = True

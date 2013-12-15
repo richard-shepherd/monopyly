@@ -16,15 +16,13 @@ class Player(object):
         self.ai = ai
         self.board = board
 
-    def owns_properties(self, property_names):
+    def owns_properties(self, properties):
         '''
         Returns True if this player owns all the properties passed in,
         False if not (or if any of the squares passed in are no properties).
         '''
         # We check each property...
-        for property_name in property_names:
-            square = self.board.get_square_by_name(property_name)
-
+        for square in properties:
             # We check that the square is a property...
             if not isinstance(square, Property):
                 return False

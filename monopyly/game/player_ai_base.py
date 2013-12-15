@@ -177,7 +177,9 @@ class PlayerAIBase(object):
 
         Return a list of tuples indicating which properties you want to build houses
         on and how many houses to build on each. For example:
-        [(Square.Name.PARK_LANE, 3), (Square.Name.MAYFAIR, 4)]
+        [(park_lane, 3), (mayfair, 4)]
+
+        The properties should be Property objects.
 
         Return an empty list if you do not want to build.
 
@@ -192,7 +194,7 @@ class PlayerAIBase(object):
 
         - You specify the _additional_ houses you will be building, not the
           total after building. For example, if Park Lane already has 3 houses
-          and you specify (Square.Name.PARK_LANE, 2) you will end up with 5
+          and you specify (park_lane, 2) you will end up with 5
           houses (ie, a hotel).
 
         - Sets must end up with 'balanced' housing. No square in a set can
@@ -228,7 +230,9 @@ class PlayerAIBase(object):
 
         Return a list of tuples of the streets and number of houses you
         want to sell. For example:
-        [(Square.Name.OLD_KENT_ROAD, 1), (Square.Name.BOW_STREET, 1)]
+        [(old_kent_road, 1), (bow_street, 1)]
+
+        The streets should be Property objects.
 
         The default is not to sell any houses.
         '''
@@ -248,12 +252,34 @@ class PlayerAIBase(object):
           (The AI will have been given the option to sell houses before this
           function is called.)
 
-        Return a list of property names to mortgage, for example:
-        [Square.Name.BOW_STREET, Square.Name.LIVERPOOL_STREET_STATION]
+        Return a list of properties to mortgage, for example:
+        [bow_street, liverpool_street_station]
+
+        The properties should be Property objects.
 
         Return an empty list if you do not want to mortgage anything.
 
         The default behaviour is not to mortgage anything.
+        '''
+        return []
+
+    def unmortgage_properties(self, game_state, player):
+        '''
+        Called near the start of the player's turn to give them the
+        opportunity to unmortgage properties.
+
+        Unmortgaging costs half the face value plus 10%. Between deciding
+        to unmortgage and money being taken the player will be given the
+        opportunity to make deals or sell other properties. If after this
+        they do not have enough money, the whole transaction will be aborted,
+        and no properties will be unmortgaged and no money taken.
+
+        Return a list of property names to unmortgage, like:
+        [old_kent_road, bow_street]
+
+        The properties should be Property objects.
+
+        The default is to return an empty list, ie to do nothing.
         '''
         return []
 
@@ -273,32 +299,13 @@ class PlayerAIBase(object):
         '''
         return PlayerAIBase.Action.STAY_IN_JAIL
 
-    def unmortgage_properties(self, game_state, player):
-        '''
-        Called near the start of the player's turn to give them the
-        opportunity to unmortgage properties.
-
-        Unmortgaging costs half the face value plus 10%. Between deciding
-        to unmortgage and money being taken the player will be given the
-        opportunity to make deals or sell other properties. If after this
-        they do not have enough money, the whole transaction will be aborted,
-        and no properties will be unmortgaged and no money taken.
-
-        Return a list of property names to unmortgage, like:
-        [Square.Name.OLD_KENT_ROAD, Square.Name.BOW_STREET]
-
-        The default is to return an empty list, ie to do nothing.
-        '''
-        return []
-
     def propose_deal(self, game_state, player):
         '''
         Called to allow the player to propose a deal.
 
         You return a DealProposal object.
 
-        If you do not want to make a deal, return a default-constructed
-        object, ie: return DealProposal()
+        If you do not want to make a deal, return None.
 
         If you want to make a deal, you provide this information:
         - The player number of the player you are proposing the deal to
@@ -308,8 +315,7 @@ class PlayerAIBase(object):
         - Minimum cash wanted as part of the deal.
 
         Properties offered and properties wanted are passed as lists of
-        property names, for example:
-        [Square.Name.EUSTON_ROAD, Square.Name.WHITEHALL]
+        Property objects.
 
         If you offer money as part of the deal, set the cash wanted to zero
         and vice versa.
@@ -342,13 +348,13 @@ class PlayerAIBase(object):
         Example construction and return of a DealProposal object:
             return DealProposal(
                 propose_to_player_number=2,
-                properties_offered=[Square.Name.VINE_STREET, Square.Name.BOW_STREET],
-                properties_wanted=[Square.Name.PARK_LANE],
+                properties_offered=[vine_street, bow_street],
+                properties_wanted=[park_lane],
                 maximum_cash_offered=200)
 
         The default is for no deal to be proposed.
         '''
-        return DealProposal()
+        return None
 
     def deal_proposed(self, game_state, player, deal_proposal):
         '''

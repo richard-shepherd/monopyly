@@ -20,12 +20,13 @@ def test_simple_house_building():
     Builds two houses on each of the red set and one each on the brown set.
     '''
     game = Game()
+    board = game.state.board
     player = game.add_player(PlayerWhoBuildsHouses([
-        (Square.Name.STRAND, 2),
-        (Square.Name.FLEET_STREET, 2),
-        (Square.Name.TRAFALGAR_SQUARE, 3),
-        (Square.Name.OLD_KENT_ROAD, 1),
-        (Square.Name.WHITECHAPEL_ROAD, 1)]))
+        (board.get_square_by_name(Square.Name.STRAND), 2),
+        (board.get_square_by_name(Square.Name.FLEET_STREET), 2),
+        (board.get_square_by_name(Square.Name.TRAFALGAR_SQUARE), 3),
+        (board.get_square_by_name(Square.Name.OLD_KENT_ROAD), 1),
+        (board.get_square_by_name(Square.Name.WHITECHAPEL_ROAD), 1)]))
 
     # We give the player the red set and the brown set...
     strand = game.give_property_to_player(player, Square.Name.STRAND)
@@ -58,9 +59,10 @@ def test_building_on_incomplete_set():
     # The player will try to build a house on two properties
     # of the red set, without owning the whole set.
     game = Game()
+    board = game.state.board
     player = game.add_player(PlayerWhoBuildsHouses([
-        (Square.Name.STRAND, 1),
-        (Square.Name.FLEET_STREET, 1)]))
+        (board.get_square_by_name(Square.Name.STRAND), 1),
+        (board.get_square_by_name(Square.Name.FLEET_STREET), 1)]))
 
     # We give the player two properties from the red set...
     strand = game.give_property_to_player(player, Square.Name.STRAND)
@@ -86,10 +88,11 @@ def test_building_not_enough_money():
     does not have enough money
     '''
     game = Game()
+    board = game.state.board
     player = game.add_player(PlayerWhoBuildsHouses([
-        (Square.Name.STRAND, 2),
-        (Square.Name.FLEET_STREET, 2),
-        (Square.Name.TRAFALGAR_SQUARE, 2)]))
+        (board.get_square_by_name(Square.Name.STRAND), 2),
+        (board.get_square_by_name(Square.Name.FLEET_STREET), 2),
+        (board.get_square_by_name(Square.Name.TRAFALGAR_SQUARE), 2)]))
 
     # We give the player the red set...
     strand = game.give_property_to_player(player, Square.Name.STRAND)
@@ -124,14 +127,19 @@ def test_builds_then_mortgages():
 
     If they do not have enough money, the houses will not be built.
     '''
+    game = Game()
+    board = game.state.board
+
     class PlayerWhoBuildsAndMortgages(DefaultPlayerAI):
         def build_houses(self, game_state, player_state):
-            return [(Square.Name.STRAND, 2), (Square.Name.FLEET_STREET, 2), (Square.Name.TRAFALGAR_SQUARE, 2)]
+            return [
+                (board.get_square_by_name(Square.Name.STRAND), 2),
+                (board.get_square_by_name(Square.Name.FLEET_STREET), 2),
+                (board.get_square_by_name(Square.Name.TRAFALGAR_SQUARE), 2)]
 
         def mortgage_properties(self, game_state, player_state):
             return [Square.Name.TRAFALGAR_SQUARE]
 
-    game = Game()
     player = game.add_player(PlayerWhoBuildsAndMortgages())
 
     # We give the player the red set...
@@ -177,10 +185,11 @@ def test_build_more_than_five_houses():
     Builds six houses on each of the red set. This is not allowed.
     '''
     game = Game()
+    board = game.state.board
     player = game.add_player(PlayerWhoBuildsHouses([
-        (Square.Name.STRAND, 6),
-        (Square.Name.FLEET_STREET, 6),
-        (Square.Name.TRAFALGAR_SQUARE, 6)]))
+        (board.get_square_by_name(Square.Name.STRAND), 6),
+        (board.get_square_by_name(Square.Name.FLEET_STREET), 6),
+        (board.get_square_by_name(Square.Name.TRAFALGAR_SQUARE), 6)]))
 
     # We give the player the red set...
     strand = game.give_property_to_player(player, Square.Name.STRAND)
@@ -211,9 +220,10 @@ def test_building_a_negative_number_of_houses():
     This should not be a sneaky way of selling houses back at full price!
     '''
     game = Game()
+    board = game.state.board
     player = game.add_player(PlayerWhoBuildsHouses([
-        (Square.Name.PARK_LANE, -2),
-        (Square.Name.MAYFAIR, -2)]))
+        (board.get_square_by_name(Square.Name.PARK_LANE), -2),
+        (board.get_square_by_name(Square.Name.MAYFAIR), -2)]))
 
     # We give the player the dark-blue set, each with four houses...
     park_lane = game.give_property_to_player(player, Square.Name.PARK_LANE)
@@ -242,12 +252,13 @@ def test_unbalanced_house_building():
     # The player is trying to build 4 houses on Trafalgar Square, but
     # only two houses on the other red squares...
     game = Game()
+    board = game.state.board
     player = game.add_player(PlayerWhoBuildsHouses([
-        (Square.Name.STRAND, 2),
-        (Square.Name.FLEET_STREET, 2),
-        (Square.Name.TRAFALGAR_SQUARE, 4),
-        (Square.Name.OLD_KENT_ROAD, 1),
-        (Square.Name.WHITECHAPEL_ROAD, 1)]))
+        (board.get_square_by_name(Square.Name.STRAND), 2),
+        (board.get_square_by_name(Square.Name.FLEET_STREET), 2),
+        (board.get_square_by_name(Square.Name.TRAFALGAR_SQUARE), 4),
+        (board.get_square_by_name(Square.Name.OLD_KENT_ROAD), 1),
+        (board.get_square_by_name(Square.Name.WHITECHAPEL_ROAD), 1)]))
 
     # We give the player the red set and the brown set...
     strand = game.give_property_to_player(player, Square.Name.STRAND)
@@ -276,9 +287,10 @@ def test_building_on_unowned_properties():
     Attempts to build on properties owned by another player.
     '''
     game = Game()
+    board = game.state.board
     player = game.add_player(PlayerWhoBuildsHouses([
-        (Square.Name.OLD_KENT_ROAD, 1),
-        (Square.Name.WHITECHAPEL_ROAD, 1)]))
+        (board.get_square_by_name(Square.Name.OLD_KENT_ROAD), 1),
+        (board.get_square_by_name(Square.Name.WHITECHAPEL_ROAD), 1)]))
     owner = game.add_player(DefaultPlayerAI())
 
     # We give the owner the brown set...
@@ -303,12 +315,13 @@ def test_building_on_partially_mortgaged_set():
     but Strand is mortgaged.
     '''
     game = Game()
+    board = game.state.board
     player = game.add_player(PlayerWhoBuildsHouses([
-        (Square.Name.STRAND, 2),
-        (Square.Name.FLEET_STREET, 2),
-        (Square.Name.TRAFALGAR_SQUARE, 2),
-        (Square.Name.OLD_KENT_ROAD, 1),
-        (Square.Name.WHITECHAPEL_ROAD, 1)]))
+        (board.get_square_by_name(Square.Name.STRAND), 2),
+        (board.get_square_by_name(Square.Name.FLEET_STREET), 2),
+        (board.get_square_by_name(Square.Name.TRAFALGAR_SQUARE), 2),
+        (board.get_square_by_name(Square.Name.OLD_KENT_ROAD), 1),
+        (board.get_square_by_name(Square.Name.WHITECHAPEL_ROAD), 1)]))
 
     # We give the player the red set and the brown set...
     strand = game.give_property_to_player(player, Square.Name.STRAND)

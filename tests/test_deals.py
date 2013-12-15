@@ -8,13 +8,13 @@ class DealProposer(PlayerAIBase):
     A player who proposes deals.
     '''
     def __init__(self, deal_proposal):
-        self.deal_proposals = [deal_proposal, DealProposal(), DealProposal()]
+        self.deal_proposals = [deal_proposal, None, None]
         self.index = 0
         self.deal_info = -1
 
     def propose_deal(self, game_state, player_state):
         if self.index >= len(self.deal_proposals):
-            return DealProposal()
+            return None
         else:
             proposal = self.deal_proposals[self.index]
             self.index += 1
@@ -44,6 +44,7 @@ def test_buy_mayfair():
     player0 proposes to buy Mayfair from player1, who accepts.
     '''
     game = Game()
+    board = game.state.board
     player1 = game.add_player(DealResponder(
         DealResponse(
             DealResponse.Action.ACCEPT,
@@ -52,7 +53,7 @@ def test_buy_mayfair():
     player0 = game.add_player(DealProposer(
         DealProposal(
             propose_to_player=player1,
-            properties_wanted=[Square.Name.MAYFAIR],
+            properties_wanted=[board.get_square_by_name(Square.Name.MAYFAIR)],
             maximum_cash_offered=1000)))
 
     # We give Mayfair to player1...
@@ -79,6 +80,7 @@ def test_sell_mayfair():
     player0 proposes to sell Mayfair to player1, who accepts.
     '''
     game = Game()
+    board = game.state.board
     player1 = game.add_player(DealResponder(
         DealResponse(
             DealResponse.Action.ACCEPT,
@@ -87,7 +89,7 @@ def test_sell_mayfair():
     player0 = game.add_player(DealProposer(
         DealProposal(
             propose_to_player=player1,
-            properties_offered=[Square.Name.MAYFAIR],
+            properties_offered=[board.get_square_by_name(Square.Name.MAYFAIR)],
             minimum_cash_wanted=1000)))
 
     # We give Mayfair to player0...
@@ -114,6 +116,7 @@ def test_buy_mayfair_but_player_does_not_own_it():
     player0 proposes to buy Mayfair from player1, who accepts but does not own it.
     '''
     game = Game()
+    board = game.state.board
     player1 = game.add_player(DealResponder(
         DealResponse(
             DealResponse.Action.ACCEPT,
@@ -122,7 +125,7 @@ def test_buy_mayfair_but_player_does_not_own_it():
     player0 = game.add_player(DealProposer(
         DealProposal(
             propose_to_player=player1,
-            properties_wanted=[Square.Name.MAYFAIR],
+            properties_wanted=[board.get_square_by_name(Square.Name.MAYFAIR)],
             maximum_cash_offered=1000)))
 
     # Player 0 takes a turn during which the deal should be done...
@@ -145,6 +148,7 @@ def test_sell_mayfair_but_player_does_not_own_it():
     player0 proposes to sell Mayfair to player1, who accepts. But player0 doesn't own it.
     '''
     game = Game()
+    board = game.state.board
     player1 = game.add_player(DealResponder(
         DealResponse(
             DealResponse.Action.ACCEPT,
@@ -153,7 +157,7 @@ def test_sell_mayfair_but_player_does_not_own_it():
     player0 = game.add_player(DealProposer(
         DealProposal(
             propose_to_player=player1,
-            properties_offered=[Square.Name.MAYFAIR],
+            properties_offered=[board.get_square_by_name(Square.Name.MAYFAIR)],
             minimum_cash_wanted=1000)))
 
     # Player 0 takes a turn during which the deal should be done...
@@ -178,6 +182,7 @@ def test_buy_mayfair_player_doesnt_have_enough_money():
     does not have enough money for the deal value.
     '''
     game = Game()
+    board = game.state.board
     player1 = game.add_player(DealResponder(
         DealResponse(
             DealResponse.Action.ACCEPT,
@@ -186,7 +191,7 @@ def test_buy_mayfair_player_doesnt_have_enough_money():
     player0 = game.add_player(DealProposer(
         DealProposal(
             propose_to_player=player1,
-            properties_wanted=[Square.Name.MAYFAIR],
+            properties_wanted=[board.get_square_by_name(Square.Name.MAYFAIR)],
             maximum_cash_offered=1000)))
 
     # We give Mayfair to player1...
@@ -218,6 +223,7 @@ def test_sell_mayfair_player_doesnt_have_enough_money():
     does not have enough money for the deal value.
     '''
     game = Game()
+    board = game.state.board
     player1 = game.add_player(DealResponder(
         DealResponse(
             DealResponse.Action.ACCEPT,
@@ -226,7 +232,7 @@ def test_sell_mayfair_player_doesnt_have_enough_money():
     player0 = game.add_player(DealProposer(
         DealProposal(
             propose_to_player=player1,
-            properties_offered=[Square.Name.MAYFAIR],
+            properties_offered=[board.get_square_by_name(Square.Name.MAYFAIR)],
             minimum_cash_wanted=1000)))
 
     # We give Mayfair to player0...
@@ -257,10 +263,11 @@ def test_invalid_player():
     player0 proposes to buy Mayfair from None, who does not exist.
     '''
     game = Game()
+    board = game.state.board
     player0 = game.add_player(DealProposer(
         DealProposal(
             propose_to_player=None,
-            properties_wanted=[Square.Name.MAYFAIR],
+            properties_wanted=[board.get_square_by_name(Square.Name.MAYFAIR)],
             maximum_cash_offered=1000)))
 
     # Player 0 takes a turn during which the deal is attempted to be done...
@@ -282,6 +289,7 @@ def test_buy_free_parking():
     player0 proposes to buy Free Parking from player1, who accepts.
     '''
     game = Game()
+    board = game.state.board
     player1 = game.add_player(DealResponder(
         DealResponse(
             DealResponse.Action.ACCEPT,
@@ -290,7 +298,7 @@ def test_buy_free_parking():
     player0 = game.add_player(DealProposer(
         DealProposal(
             propose_to_player=player1,
-            properties_wanted=[Square.Name.FREE_PARKING],
+            properties_wanted=[board.get_square_by_name(Square.Name.FREE_PARKING)],
             maximum_cash_offered=1000)))
 
     # Player 0 takes a turn during which the deal should be done...
@@ -311,6 +319,7 @@ def test_exchange_properties_plus_cash():
     An exchange of properties, with some cash to sweeten the deal.
     '''
     game = Game()
+    board = game.state.board
     player1 = game.add_player(DealResponder(
         DealResponse(
             DealResponse.Action.ACCEPT,
@@ -319,8 +328,8 @@ def test_exchange_properties_plus_cash():
     player0 = game.add_player(DealProposer(
         DealProposal(
             propose_to_player=player1,
-            properties_wanted=[Square.Name.MAYFAIR],
-            properties_offered=[Square.Name.VINE_STREET],
+            properties_wanted=[board.get_square_by_name(Square.Name.MAYFAIR)],
+            properties_offered=[board.get_square_by_name(Square.Name.VINE_STREET)],
             maximum_cash_offered=400)))
 
     # We give Vine Street to player0 and Mayfair to player1...
@@ -349,6 +358,7 @@ def test_exchange_properties_no_cash():
     An exchange of properties, with no additional cash.
     '''
     game = Game()
+    board = game.state.board
     player1 = game.add_player(DealResponder(
         DealResponse(
             DealResponse.Action.ACCEPT,
@@ -357,8 +367,8 @@ def test_exchange_properties_no_cash():
     player0 = game.add_player(DealProposer(
         DealProposal(
             propose_to_player=player1,
-            properties_wanted=[Square.Name.MAYFAIR],
-            properties_offered=[Square.Name.VINE_STREET],
+            properties_wanted=[board.get_square_by_name(Square.Name.MAYFAIR)],
+            properties_offered=[board.get_square_by_name(Square.Name.VINE_STREET)],
             maximum_cash_offered=0)))
 
     # We give Vine Street to player0 and Mayfair to player1...

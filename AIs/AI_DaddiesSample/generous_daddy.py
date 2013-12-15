@@ -45,8 +45,7 @@ class GenerousDaddyAI(PlayerAIBase):
 
         # We'll accept as long as the price offered is greater than
         # the original selling price...
-        property_name = deal_proposal.properties_wanted[0]
-        property = game_state.board.get_square_by_name(property_name)
+        property = deal_proposal.properties_wanted[0]
         return DealResponse(
             action=DealResponse.Action.ACCEPT,
             minimum_cash_wanted=property.price+1)
@@ -66,7 +65,7 @@ class GenerousDaddyAI(PlayerAIBase):
             cost = owned_set.house_price * owned_set.number_of_properties
             if player.state.cash > (self.cash_reserve + cost):
                 # We build one house on each property...
-                return [(p.name, 1) for p in owned_set.properties]
+                return [(p, 1) for p in owned_set.properties]
 
         # We can't build...
         return []

@@ -21,10 +21,11 @@ def test_simple_selling():
     Avenue where we sell one.
     '''
     game = Game()
-    player = game.add_player(PlayerWhoSellsHouses(
-        [(Square.Name.PALL_MALL, 2),
-         (Square.Name.WHITEHALL, 2),
-         (Square.Name.NORTHUMBERLAND_AVENUE, 1)]))
+    board = game.state.board
+    player = game.add_player(PlayerWhoSellsHouses([
+        (board.get_square_by_name(Square.Name.PALL_MALL), 2),
+        (board.get_square_by_name(Square.Name.WHITEHALL), 2),
+        (board.get_square_by_name(Square.Name.NORTHUMBERLAND_AVENUE), 1)]))
 
     # We give the player the pink set with four houses on
     # each property...
@@ -56,10 +57,11 @@ def test_sell_negative_number_of_houses():
     of buying houses cheaply.
     '''
     game = Game()
-    player = game.add_player(PlayerWhoSellsHouses(
-        [(Square.Name.PALL_MALL, -5),
-         (Square.Name.WHITEHALL, -5),
-         (Square.Name.NORTHUMBERLAND_AVENUE, -5)]))
+    board = game.state.board
+    player = game.add_player(PlayerWhoSellsHouses([
+        (board.get_square_by_name(Square.Name.PALL_MALL), -5),
+        (board.get_square_by_name(Square.Name.WHITEHALL), -5),
+        (board.get_square_by_name(Square.Name.NORTHUMBERLAND_AVENUE), -5)]))
 
     # We give the player the pink set...
     pall_mall = game.give_property_to_player(player, Square.Name.PALL_MALL)
@@ -86,10 +88,11 @@ def test_selling_unowned_houses():
     Players should not be able to sell houses they do not have.
     '''
     game = Game()
-    player = game.add_player(PlayerWhoSellsHouses(
-        [(Square.Name.PALL_MALL, 100),
-         (Square.Name.WHITEHALL, 100),
-         (Square.Name.NORTHUMBERLAND_AVENUE, 100)]))
+    board = game.state.board
+    player = game.add_player(PlayerWhoSellsHouses([
+        (board.get_square_by_name(Square.Name.PALL_MALL), 100),
+        (board.get_square_by_name(Square.Name.WHITEHALL), 100),
+        (board.get_square_by_name(Square.Name.NORTHUMBERLAND_AVENUE), 100)]))
 
     # We give the player the pink set with four houses on
     # each property...
@@ -120,11 +123,12 @@ def test_selling_another_players_houses():
     Player tries to sell houses belonging to another player.
     '''
     game = Game()
+    board = game.state.board
     owner = game.add_player(DefaultPlayerAI())
-    player = game.add_player(PlayerWhoSellsHouses(
-        [(Square.Name.PALL_MALL, 2),
-         (Square.Name.WHITEHALL, 2),
-         (Square.Name.NORTHUMBERLAND_AVENUE, 2)]))
+    player = game.add_player(PlayerWhoSellsHouses([
+        (board.get_square_by_name(Square.Name.PALL_MALL), 2),
+        (board.get_square_by_name(Square.Name.WHITEHALL), 2),
+        (board.get_square_by_name(Square.Name.NORTHUMBERLAND_AVENUE), 2)]))
 
     # We give the owner the pink set with four houses on each property...
     pall_mall = game.give_property_to_player(owner, Square.Name.PALL_MALL)
@@ -158,11 +162,12 @@ def test_unbalanced_selling():
     # The player will sell two houses on Pall Mall and Whitehall, but try to leave
     # four houses on Northumberland Ave...
     game = Game()
-    player = game.add_player(PlayerWhoSellsHouses(
-        [(Square.Name.PALL_MALL, 2),
-         (Square.Name.WHITEHALL, 2),
-         (Square.Name.OLD_KENT_ROAD, 1),
-         (Square.Name.WHITECHAPEL_ROAD, 1)]))
+    board = game.state.board
+    player = game.add_player(PlayerWhoSellsHouses([
+        (board.get_square_by_name(Square.Name.PALL_MALL), 2),
+        (board.get_square_by_name(Square.Name.WHITEHALL), 2),
+        (board.get_square_by_name(Square.Name.OLD_KENT_ROAD), 1),
+        (board.get_square_by_name(Square.Name.WHITECHAPEL_ROAD), 1)]))
 
     # We give the player the pink set with four houses on each property,
     # and the brown set with three houses on each...

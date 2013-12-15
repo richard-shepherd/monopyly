@@ -23,7 +23,10 @@ def test_simple_mortgaging():
     property and set-ownership state is correctly updated.
     '''
     game = Game()
-    player = game.add_player(PlayerWhoMortgages([Square.Name.BOW_STREET, Square.Name.KINGS_CROSS_STATION]))
+    board = game.state.board
+    player = game.add_player(PlayerWhoMortgages([
+        board.get_square_by_name(Square.Name.BOW_STREET),
+        board.get_square_by_name(Square.Name.KINGS_CROSS_STATION)]))
 
     # We give the player the properties...
     square1 = game.give_property_to_player(player, Square.Name.BOW_STREET)
@@ -83,7 +86,9 @@ def test_mortgaging_a_non_property_square():
     Mortgaging a non-property square should do nothing.
     '''
     game = Game()
-    player = game.add_player(PlayerWhoMortgages([Square.Name.FREE_PARKING]))
+    board = game.state.board
+    player = game.add_player(PlayerWhoMortgages([
+        board.get_square_by_name(Square.Name.FREE_PARKING)]))
 
     # The player starts on Liverpool Street Station and rolls a 3
     # to end up on Super Tax. (We need a payment of some kind to
@@ -102,8 +107,11 @@ def test_mortgaging_a_property_belonging_to_another_player():
     to another player as well as one not owned at all.
     '''
     game = Game()
-    player0 = game.add_player(PlayerWhoMortgages(
-        [Square.Name.BOW_STREET, Square.Name.KINGS_CROSS_STATION, Square.Name.BOND_STREET]))
+    board = game.state.board
+    player0 = game.add_player(PlayerWhoMortgages([
+        board.get_square_by_name(Square.Name.BOW_STREET),
+        board.get_square_by_name(Square.Name.KINGS_CROSS_STATION),
+        board.get_square_by_name(Square.Name.BOND_STREET)]))
     player1 = game.add_player(DefaultPlayerAI())
 
     # Player 0 has the orange set...
@@ -153,7 +161,9 @@ def test_mortgage_property_with_houses():
     You can't mortgage a property with houses on it.
     '''
     game = Game()
-    player = game.add_player(PlayerWhoMortgages([Square.Name.BOW_STREET]))
+    board = game.state.board
+    player = game.add_player(PlayerWhoMortgages([
+        board.get_square_by_name(Square.Name.BOW_STREET)]))
 
     # We give the player Bow Street and put some houses on it...
     bow_street = game.give_property_to_player(player, Square.Name.BOW_STREET)

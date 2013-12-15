@@ -63,12 +63,12 @@ class SophieAI(PlayerAIBase):
             price_offered = property.price * 2
             if player.state.cash > price_offered:
                 return DealProposal(
-                    properties_wanted=[property_name],
+                    properties_wanted=[property],
                     maximum_cash_offered=price_offered,
-                    propose_to_player=property.owner
-                )
+                    propose_to_player=property.owner)
 
-        return DealProposal()
+        # We do not want to propose a deal...
+        return None
 
     def build_houses(self, game_state, player):
         '''
@@ -77,6 +77,6 @@ class SophieAI(PlayerAIBase):
         for owned_set in player.state.owned_sets:
             if not owned_set.can_build_houses:
                 continue
-            return [(p.name, 1) for p in owned_set.properties]
+            return [(p, 1) for p in owned_set.properties]
 
         return []

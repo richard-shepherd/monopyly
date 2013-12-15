@@ -522,35 +522,32 @@ class Game(object):
         Logger.log("{0} wants to build houses: {1}".format(current_player.name, build_instructions))
         Logger.indent()
 
-        # We find the Street objects for the square names provided...
-        instructions_with_streets = self._get_instructions_with_streets(build_instructions)
-
         # There are a number of ways that building can fail. Some are
         # hard to see without doing the transaction first. So we first do
         # the building and take the money then check that everything looks
         # OK. If not, we roll back...
-        self._build_houses_and_take_money(current_player, instructions_with_streets)
+        self._build_houses_and_take_money(current_player, build_instructions)
 
         # Did the player have enough money?
         if current_player.state.cash < 0:
             Logger.log("{0} does not have enough cash".format(current_player.name))
-            self._roll_back_house_building(current_player, instructions_with_streets)
+            self._roll_back_house_building(current_player, build_instructions)
             Logger.dedent()
             return
 
         # We check each street to see if it looks as we expect...
-        for (square_name, number_of_houses, street) in instructions_with_streets:
+        for (street, number_of_houses) in build_instructions:
             # Did the player try to build a -ve number of houses?
             if number_of_houses < 0:
                 Logger.log("Negative number of houses specified")
-                self._roll_back_house_building(current_player, instructions_with_streets)
+                self._roll_back_house_building(current_player, build_instructions)
                 Logger.dedent()
                 return
 
             # Does the street have more than five houses?
             if street.number_of_houses > 5:
                 Logger.log("Too many houses requested")
-                self._roll_back_house_building(current_player, instructions_with_streets)
+                self._roll_back_house_building(current_player, build_instructions)
                 Logger.dedent()
                 return
 
@@ -558,7 +555,7 @@ class Game(object):
             # the current player, and unmortgaged?
             if street.property_set not in current_player.state.owned_sets:
                 Logger.log("Set now fully owned, or partly mortgaged")
-                self._roll_back_house_building(current_player, instructions_with_streets)
+                self._roll_back_house_building(current_player, build_instructions)
                 Logger.dedent()
                 return
 
@@ -566,7 +563,7 @@ class Game(object):
             # built in a balanced way...
             if not self._set_has_balanced_houses(street.property_set):
                 Logger.log("Building was unbalanced")
-                self._roll_back_house_building(current_player, instructions_with_streets)
+                self._roll_back_house_building(current_player, build_instructions)
                 Logger.dedent()
                 return
 
@@ -592,7 +589,7 @@ class Game(object):
         '''
         # We build the houses...
         total_cost = 0
-        for (square_name, number_of_houses, street) in build_instructions:
+        for (street, number_of_houses) in build_instructions:
             street.number_of_houses += number_of_houses
             total_cost += (street.house_price * number_of_houses)
 
@@ -605,7 +602,7 @@ class Game(object):
         '''
         # We remove the houses...
         total_cost = 0
-        for (square_name, number_of_houses, street) in build_instructions:
+        for (street, number_of_houses) in build_instructions:
             street.number_of_houses -= number_of_houses
             total_cost += (street.house_price * number_of_houses)
 
@@ -617,15 +614,14 @@ class Game(object):
         We give the current player the option to mortgage properties.
         '''
         # We ask the player if they want to mortgage anything...
-        property_names_to_mortgage = current_player.ai.mortgage_properties(self.state, current_player)
-        if not property_names_to_mortgage:
+        properties_to_mortgage = current_player.ai.mortgage_properties(self.state, current_player)
+        if not properties_to_mortgage:
             return
 
         # We mortgage them...
         total_mortgage_value = 0
-        for property_name in property_names_to_mortgage:
+        for square in properties_to_mortgage:
             # We check that the square is a property...
-            square = self.state.board.get_square_by_name(property_name)
             if not isinstance(square, Property):
                 continue
 
@@ -663,35 +659,32 @@ class Game(object):
         if not sale_instructions:
             return
 
-        # We convert the street names into Street objects...
-        instructions_with_streets = self._get_instructions_with_streets(sale_instructions)
-
         # We first remove the houses from the board, then check that things
         # look good. We may have to replace them if things don't look OK.
-        sale_value = self._remove_houses(instructions_with_streets)
+        sale_value = self._remove_houses(sale_instructions)
 
         # A few checks...
-        for (square_name, number_of_houses, street) in instructions_with_streets:
+        for (street, number_of_houses) in sale_instructions:
 
             # We check that the player isn't trying to sell a negative
             # number of houses. (As a sneaky way of buying houses cheaply.)
             if number_of_houses < 0:
-                self._replace_houses(instructions_with_streets)
+                self._replace_houses(sale_instructions)
                 return
 
             # We check that the property has been left with between 0 and 5 houses...
             if street.number_of_houses < 0 or street.number_of_houses > 5:
-                self._replace_houses(instructions_with_streets)
+                self._replace_houses(sale_instructions)
                 return
 
             # We check that the street belongs to the current player...
             if street.owner is not current_player:
-                self._replace_houses(instructions_with_streets)
+                self._replace_houses(sale_instructions)
                 return
 
             # Will the sale result in unbalanced housing?
             if not self._set_has_balanced_houses(street.property_set):
-                self._replace_houses(instructions_with_streets)
+                self._replace_houses(sale_instructions)
                 return
 
         # The sale looks good, so we give the player the money...
@@ -704,7 +697,7 @@ class Game(object):
         Returns the total sale value.
         '''
         total_sale_value = 0
-        for (square_name, number_of_houses, street) in instructions:
+        for (street, number_of_houses) in instructions:
             street.number_of_houses -= number_of_houses
             sale_price = int(street.house_price / 2)
             total_sale_value += (number_of_houses * sale_price)
@@ -715,28 +708,8 @@ class Game(object):
         '''
         Replaces houses on the board if a sale of them was unsuccessful.
         '''
-        for (square_name, number_of_houses, street) in instructions:
+        for (street, number_of_houses) in instructions:
             street.number_of_houses += number_of_houses
-
-    def _get_instructions_with_streets(self, instructions):
-        '''
-        Takes a list of house-build or house-sale instructions and
-        converts it to a list including the Street object.
-        In:  [(square_name, number_of_houses), ...]
-        Out: [(square_name, number_of_houses, street_object), ...]
-        '''
-        board = self.state.board
-        instructions_with_streets = []
-
-        # We convert each instruction...
-        for (square_name, number_of_houses) in instructions:
-            square = board.get_square_by_name(square_name)
-
-            # We only include the square if it is a Street...
-            if isinstance(square, Street):
-                instructions_with_streets.append((square_name, number_of_houses, square))
-
-        return instructions_with_streets
 
     def _get_out_of_jail(self, current_player):
         '''
@@ -775,15 +748,13 @@ class Game(object):
         '''
 
         # We ask the player if they want to unmortgage anything...
-        square_names = current_player.ai.unmortgage_properties(self.state, current_player)
-        if not square_names:
+        squares = current_player.ai.unmortgage_properties(self.state, current_player)
+        if not squares:
             return
 
         # We calculate the cost to unmortgage these properties. This is
         # 55% of their total face value...
         unmortgage_cost = 0
-        board = self.state.board
-        squares = [board.get_square_by_name(name) for name in square_names]
         for square in squares:
             # Is the square a property?
             if not isinstance(square, Property):
@@ -823,7 +794,7 @@ class Game(object):
 
         # We see if the player wants to propose a deal...
         proposal = current_player.ai.propose_deal(self.state, current_player)
-        if proposal.deal_proposed is False:
+        if not proposal:
             return
 
         # We find the player the deal is being proposed to (checking that the
@@ -917,11 +888,11 @@ class Game(object):
 
         # The cash transfer worked, so we transfer the properties...
         Logger.log("Deal successful")
-        for property_name in proposal.properties_offered:
-            self.transfer_property(current_player, proposed_to_player, property_name)
+        for property in proposal.properties_offered:
+            self.transfer_property(current_player, proposed_to_player, property.name)
 
-        for property_name in proposal.properties_wanted:
-            self.transfer_property(proposed_to_player, current_player, property_name)
+        for property in proposal.properties_wanted:
+            self.transfer_property(proposed_to_player, current_player, property.name)
 
         # We tell the players that the deal succeeded...
         current_player.ai.deal_result(PlayerAIBase.DealInfo.SUCCEEDED)
