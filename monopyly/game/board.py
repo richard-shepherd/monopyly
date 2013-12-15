@@ -86,7 +86,7 @@ class Board(object):
         index = self.get_index(square_name)
         return self.get_square_by_index(index)
 
-    def get_owned_sets(self):
+    def get_owned_sets(self, include_mortgaged_sets):
         '''
         Returns which sets are owned by which players.
 
@@ -96,7 +96,8 @@ class Board(object):
 
         The sets are PropertySet objects rather than enums.
 
-        Only players which own a whole unmortgaged set are returned.
+        You can choose to exclude sets where at least one property
+        is mortgaged by setting include_mortgaged_sets to False.
         '''
         # We look through the collection of sets...
         results = {player: set() for player in self.game_state.players}
@@ -106,9 +107,9 @@ class Board(object):
             if owner is None:
                 continue
 
-            # There is a unique owner. We still need to check if all
+            # There is a unique owner. We may still need to check if all
             # the properties in the set are unmortgaged...
-            if not property_set.all_properties_are_unmortgaged:
+            if (not include_mortgaged_sets) and (not property_set.all_properties_are_unmortgaged):
                 continue
 
             # We add this set to the collection for the owner...

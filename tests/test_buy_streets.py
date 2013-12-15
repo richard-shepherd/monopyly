@@ -35,8 +35,8 @@ def test_buy_streets():
     assert bow_street in player.state.properties
     assert marlborough_street in player.state.properties
     assert vine_street in player.state.properties
-    assert len(player.state.owned_sets) == 1
-    assert board.get_property_set(PropertySet.ORANGE) in player.state.owned_sets
+    assert len(player.state.owned_unmortgaged_sets) == 1
+    assert board.get_property_set(PropertySet.ORANGE) in player.state.owned_unmortgaged_sets
 
     # The player should have paid the money...
     assert player.state.cash == 940
@@ -72,7 +72,7 @@ def test_buy_streets_not_enough_money():
     assert len(player.state.properties) == 2
     assert bow_street in player.state.properties
     assert marlborough_street in player.state.properties
-    assert len(player.state.owned_sets) == 0
+    assert len(player.state.owned_unmortgaged_sets) == 0
 
     # The player should have paid the money...
     assert player.state.cash == 140

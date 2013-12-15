@@ -495,13 +495,11 @@ class Game(object):
         '''
         # We find which players own sets, and put this info
         # into the Player objects...
-        player_to_owned_sets_map = self.state.board.get_owned_sets()
+        all_sets = self.state.board.get_owned_sets(include_mortgaged_sets=True)
+        unmortgaged_sets = self.state.board.get_owned_sets(include_mortgaged_sets=False)
         for player in self.state.players:
-            if player in player_to_owned_sets_map:
-                player.state.owned_sets = player_to_owned_sets_map[player]
-            else:
-                # The player does not own any sets...
-                player.state.owned_sets.clear()
+            player.state.owned_unmortgaged_sets = unmortgaged_sets[player]
+            player.state.owned_sets = all_sets[player]
 
     def _build_houses(self, current_player):
         '''
@@ -509,7 +507,7 @@ class Game(object):
         '''
         # We only offer the chance to build if the player owns
         # at least one complete, unmortgaged set...
-        if not current_player.state.owned_sets:
+        if not current_player.state.owned_unmortgaged_sets:
             return
 
         # We ask the player if he wants to build any houses.
@@ -553,7 +551,7 @@ class Game(object):
 
             # Is the set that this street is a part of wholly owned by
             # the current player, and unmortgaged?
-            if street.property_set not in current_player.state.owned_sets:
+            if street.property_set not in current_player.state.owned_unmortgaged_sets:
                 Logger.log("Set now fully owned, or partly mortgaged")
                 self._roll_back_house_building(current_player, build_instructions)
                 Logger.dedent()

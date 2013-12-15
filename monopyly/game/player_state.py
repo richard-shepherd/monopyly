@@ -34,9 +34,13 @@ class PlayerState(object):
         self.is_in_jail = False
         self.number_of_turns_in_jail = 0
 
-        # The collection of complete unmortgaged sets owned by this player.
+        # The collection of complete sets owned by this player.
         # The items in the collection are PropertySet objects.
         self.owned_sets = set()
+
+        # The collection of complete unmortgaged sets owned by this player.
+        # The items in the collection are PropertySet objects.
+        self.owned_unmortgaged_sets = set()
 
     def get_number_of_houses_and_hotels(self, board):
         '''

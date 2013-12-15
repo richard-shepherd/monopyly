@@ -41,11 +41,11 @@ def test_simple_mortgaging():
     # Before mortgaging, we do a quick double-check that the player
     # has the properties and sets as expected...
     assert len(player.state.properties) == 8
-    assert len(player.state.owned_sets) == 2
+    assert len(player.state.owned_unmortgaged_sets) == 2
 
     board = game.state.board
-    assert board.get_property_set(PropertySet.ORANGE) in player.state.owned_sets
-    assert board.get_property_set(PropertySet.GREEN) in player.state.owned_sets
+    assert board.get_property_set(PropertySet.ORANGE) in player.state.owned_unmortgaged_sets
+    assert board.get_property_set(PropertySet.GREEN) in player.state.owned_unmortgaged_sets
 
     # We check that none of the properties are mortgaged...
     assert square1.is_mortgaged is False
@@ -67,8 +67,8 @@ def test_simple_mortgaging():
     # The player should have received £90 + £100 and paid £100...
     assert player.state.cash == 1590
     assert len(player.state.properties) == 8
-    assert len(player.state.owned_sets) == 1
-    assert board.get_property_set(PropertySet.GREEN) in player.state.owned_sets
+    assert len(player.state.owned_unmortgaged_sets) == 1
+    assert board.get_property_set(PropertySet.GREEN) in player.state.owned_unmortgaged_sets
 
     # We check that Bow Street and Kings Cross are mortgaged...
     assert square1.is_mortgaged is True
@@ -134,14 +134,14 @@ def test_mortgaging_a_property_belonging_to_another_player():
     # Player 0 should have received £90 and paid £100...
     assert player0.state.cash == 1490
     assert len(player0.state.properties) == 3
-    assert len(player0.state.owned_sets) == 0
+    assert len(player0.state.owned_unmortgaged_sets) == 0
 
     # Player 1 should still have all his properties...
     assert len(player1.state.properties) == 3
-    assert len(player1.state.owned_sets) == 1
+    assert len(player1.state.owned_unmortgaged_sets) == 1
 
     board = game.state.board
-    assert board.get_property_set(PropertySet.GREEN) in player1.state.owned_sets
+    assert board.get_property_set(PropertySet.GREEN) in player1.state.owned_unmortgaged_sets
 
     # We check that Bow Street is mortgaged (and Bond Street is not)...
     assert square1.is_mortgaged is True

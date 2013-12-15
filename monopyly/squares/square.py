@@ -58,3 +58,14 @@ class Square(object):
         '''
         raise Exception("landed_on() not implemented")
 
+    def __str__(self):
+        '''
+        String representation of the Square, ie its name.
+        '''
+        return self.__repr__()
+
+    def __repr__(self):
+        '''
+        String representation of the Square, ie its name.
+        '''
+        return self.name

@@ -18,6 +18,8 @@ TODOs
 
 *- Test with Python 3.3
 
+- Add logging for mortgaging etc
+
 
 - test that events are raised to the AIs, e.g. start of turn etc
 

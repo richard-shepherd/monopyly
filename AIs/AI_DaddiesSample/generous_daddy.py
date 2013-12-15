@@ -55,7 +55,7 @@ class GenerousDaddyAI(PlayerAIBase):
         Gives us the opportunity to build houses.
         '''
         # We find the first set we own that we can build on...
-        for owned_set in player.state.owned_sets:
+        for owned_set in player.state.owned_unmortgaged_sets:
             # We can't build on stations or utilities, or if the
             # set already has hotels on all the properties...
             if not owned_set.can_build_houses:

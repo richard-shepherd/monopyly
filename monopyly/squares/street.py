@@ -38,7 +38,7 @@ class Street(Property):
         if self.number_of_houses == 0:
             rent = self.rents[0]
             owner = self.owner
-            if self.property_set in owner.state.owned_sets:
+            if self.property_set in owner.state.owned_unmortgaged_sets:
                 # The player owns the whole set, so the rent is doubled...
                 rent *= 2
         else:
