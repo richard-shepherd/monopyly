@@ -57,17 +57,17 @@
     Note that if you reference other modules in your package, you must use
     <a href="http://docs.python.org/3.2/tutorial/modules.html#intra-package-references">intra-package references</a>.
     For example:
+    <pre><code>
+    from .my_monopyly_utilities import HouseBuilder
+    </code></pre>
 </p>
-<pre><code>
-from .my_monopyly_utilities import HouseBuilder
-</code></pre>
 <p>
     The __init__.py file should 'expose' your AI class. This allows the Monopyly framework
     to 'discover' your AI. For example:
+    <pre><code>
+    from .rockefeller import RockefellerAI
+    </code></pre>
 </p>
-<pre><code>
-from .rockefeller import RockefellerAI
-</code></pre>
 <p>
     See also the sample AIs provided.
 </p>
@@ -77,12 +77,26 @@ from .rockefeller import RockefellerAI
 </h3>
 <p>
     You can import the Monopyly API into your code by importing:
+    <pre><code>
+    from monopyly import *
+    </code></pre>
 </p>
-<pre><code>
-from monopyly import *
-</code></pre>
 <p>
-    Your AI class should derive from
+    Your AI class should have PlayerAIBase as a base class, ie it should derive from it
+    or be derived from a class that ultimately derives from it.
+</p>
+<p>
+    You must implement the get_name() method from PlayerAIBase, but all other overrides are
+    optional. You can override the methods in PlayerAIBase to buy, sell and mortgage properties,
+    build and sell houses, take part in auctions and make deals with other players.
+</p>
+<p>
+    If you do not override PlayerAIBase methods, the default behaviour is usually 'boring'.
+    That is, your player will just move around the board without buying properties or taking
+    part in the game, except to pay fines and collect money when passing Go.
+</p>
+<p>
+    See the comments in PlayerAIBase (monopyly/game/player_ai_base.py) for more details.
 </p>
 
 
