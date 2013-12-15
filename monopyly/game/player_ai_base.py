@@ -1,7 +1,6 @@
 from .deal_proposal import DealProposal
 from .deal_response import DealResponse
 
-# TODO: add error notification callback, e.g. if params are wrong
 
 class PlayerAIBase(object):
     '''
@@ -19,9 +18,25 @@ class PlayerAIBase(object):
 
     player:     The Player object for the current player, ie "you".
 
+    "Cheating"
+    ----------
+    AIs must not change the state of the game except through the interactions defined by
+    the PlayerAIBase API. This includes, but is not limited to:
+    - Changing the cash or properties owned by any player
+    - Changing the state of the board or the Chance or Community Chest cards
+    - Setting the random seed used by the dice
+    - 'Stealing' CPU from other players by running extra threads.
+    You know what I mean: No 'Kobayashi Maru' style cheating!
+
+    AIs must not deliberately act favourably towards other specific AIs.
+    You may enter multiple AIs into the competition, but you are not allowed to
+    create 'sacrificial' AIs which deliberately boost other AIs chances of winning.
+
+    You are allowed to remember details about other players' behaviour between
+    games. Only one instance of your AI is created for the whole tournament and is
+    reused for each game. So if you want, you can learn how other AIs behave and use
+    that information in subsequent games.
     '''
-    # TODO: Include a note about not cheating above
-    # TODO: Check all comments (for object vs ID etc)
 
     class Action(object):
         '''
@@ -50,8 +65,6 @@ class PlayerAIBase(object):
         OFFERED_TOO_LITTLE_MONEY = 3
         PLAYER_DID_NOT_HAVE_ENOUGH_MONEY = 4
         DEAL_REJECTED = 5
-
-    # TODO: note for each function what types the params are
 
     def get_name(self):
         '''
