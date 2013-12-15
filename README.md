@@ -3,4 +3,4 @@ monopyly
 
 A python framework to allow AI algorithms to compete at playing Monopoly.
 
-See the [wiki](https://github.com/richard-shepherd/monopyly/wiki) for details.
+See the project's [GitHub Pages](http://richard-shepherd.github.io/monopyly/index.html) for details.

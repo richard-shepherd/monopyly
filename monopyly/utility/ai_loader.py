@@ -39,8 +39,8 @@ def load_ais():
     '''
     from ..game import PlayerAIBase
 
-    # We find the AI package folders, which all being with "AI_"...
-    ai_folders = [item for item in os.listdir("AIs") if item.startswith("AI_")]
+    # We find the AI package folders, which live in the "AIs" folder...
+    ai_folders = [item for item in os.listdir("AIs")]
 
     # We loop through the packages...
     ais = []

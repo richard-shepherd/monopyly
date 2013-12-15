@@ -8,16 +8,12 @@ TODOs
    - Owned sets
    - Property
    - PropertySet
-   - Prizes!
-   - owned_sets = unmortgaged
-   - cheating
-   - How the competition will be run
    - report bugs
-   - graphics on their way!
    - log level, more verbose game
    - AIs in packages
 
-*- Test with Python 3.3
+*- Mail for work
+
 
 - Add logging for mortgaging etc
 
@@ -36,12 +32,6 @@ TODOs
 
 
 
-Cheating
---------
-- Seeding the random number generator is cheating!
-- Changing the game state is cheating.
-- Remembering info about players between games is not cheating.
-- Nepotism or favouritism is cheating.
 
 
 
