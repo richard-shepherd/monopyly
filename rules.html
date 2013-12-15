@@ -32,6 +32,9 @@
 
 <h3><a class="anchor"><span class="octicon octicon-link"></span></a>Monopyly rules</h3>
 
+<h4>
+    Entering, Play-offs and Prizes
+</h4>
 <p>
     The closing date for entries is Tuesday 28th January 2014.
     Entries must be mailed as a zip file to richard.s.shepherd@gmail.com by this date.
@@ -40,7 +43,7 @@
 
 <p>
     In advance of the final a tournament will be played between all entries. This will
-    consist of all entries playing all other entries in every combination of four players.
+    consist of all entries playing all other entries in every permutation of four players.
     A large number of rounds will be played - the number will depend on the speed of the AIs.
     The four AIs which win the most games will be picked to play in the final. You may enter
     more than one AI, but no more than one AI from each entrant will be picked for the final.
@@ -58,7 +61,24 @@
     <a href="http://www.amazon.co.uk/Monopoly-HAS40753-Nostalgia-Wooden-Edition/dp/B0002VZ2OG/ref=sr_1_1?ie=UTF8&qid=1387126497&sr=8-1&keywords=monopoly+nostalgia">wooden-boxed 'nostalgia edition' Monopoly set</a>.
 </p>
 
-
+<h4>
+    Rules for AIs
+</h4>
+<p>
+    Any entry found to be breaking the rules below will be excluded from the competition.
+</p>
+<p>
+    AIs must not change the state of the game except through the interactions defined by
+    the PlayerAIBase API. This includes, but is not limited to:
+    changing the cash or properties owned by any player; changing the state of the board
+    or the Chance or Community Chest cards; setting the random seed used by the dice; 'stealing'
+    CPU from other players by running extra threads.
+</p>
+<p>
+    AIs must not deliberately act favourably towards other specific AIs.
+    You may enter multiple AIs into the competition, but you are not allowed to
+    enter 'sacrificial' AIs which deliberately boost other AIs chances of winning.
+</p>
 
 
 
