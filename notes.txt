@@ -14,7 +14,8 @@ TODOs
    - How the competition will be run
    - report bugs
    - graphics on their way!
-   - log level, more verbose game description
+   - log level, more verbose game
+   - AIs in packages
 
 *- Test with Python 3.3
 
