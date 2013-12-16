@@ -10,7 +10,8 @@ TODOs
    - PropertySet
    - report bugs
    - log level, more verbose game
-   - AIs in packages
+   - auctioning
+   - deals
 
 *- Mail for work
 
