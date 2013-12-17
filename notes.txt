@@ -13,7 +13,9 @@ TODOs
    - auctioning
    - deals
 
-*- Mail for work
+# TODO: how did the game end
+# TODO: auction success?
+# TODO: when you're dead
 
 
 - Add logging for mortgaging etc

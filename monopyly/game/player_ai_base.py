@@ -2,11 +2,6 @@ from .deal_proposal import DealProposal
 from .deal_response import DealResponse
 
 
-# TODO: how did the game end
-# TODO: auction success?
-# TODO: when you're dead
-
-
 class PlayerAIBase(object):
     '''
     A base class for player AIs.
