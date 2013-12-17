@@ -2,6 +2,11 @@ from .deal_proposal import DealProposal
 from .deal_response import DealResponse
 
 
+# TODO: how did the game end
+# TODO: auction success?
+# TODO: when you're dead
+
+
 class PlayerAIBase(object):
     '''
     A base class for player AIs.
@@ -154,7 +159,7 @@ class PlayerAIBase(object):
         '''
         return "I hope you choke on your birthday cake!"
 
-    def pay_ten_pounds_or_take_a_chance(self):
+    def pay_ten_pounds_or_take_a_chance(self, game_state, player):
         '''
         Called when the player picks up the "Pay a £10 fine or take a Chance" card.
 

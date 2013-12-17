@@ -9,12 +9,12 @@ def test_ten_pound_fine_or_take_a_chance():
 
     # A player who pays the fine...
     class PlayerWhoPaysFine(DefaultPlayerAI):
-        def pay_ten_pounds_or_take_a_chance(self):
+        def pay_ten_pounds_or_take_a_chance(self, game_state, player):
             return PlayerAIBase.Action.PAY_TEN_POUND_FINE
 
     # A player who takes a Chance...
     class PlayerWhoTakesAChance(DefaultPlayerAI):
-        def pay_ten_pounds_or_take_a_chance(self):
+        def pay_ten_pounds_or_take_a_chance(self, game_state, player):
             return PlayerAIBase.Action.TAKE_A_CHANCE
 
     # We set up a game with the two players...
