@@ -12,6 +12,11 @@ TODOs
    - log level, more verbose game
    - auctioning
    - deals
+<p>
+    In Monopyly you go bankrupt if you do not have enough cash to pay rent or a fine.
+    It is your responsibility to sell houses, mortgage properties or make deals to
+    raise cash. The framework will not do this for you.
+</p>
 
 # TODO: What happen if a deal transfers a property with houses on it,
         but not the whole set?
