@@ -418,6 +418,9 @@ class Game(object):
         If the highest bidder cannot actually pay, it goes to the next
         highest (and so on).
         '''
+        Logger.log("{0} offered for auction".format(square.name))
+        Logger.indent()
+
         # We get bids from each player and store them in a list of
         # tuples of (player, bid)...
         bids = []
@@ -437,6 +440,9 @@ class Game(object):
 
         # We sort the bids from high to low...
         bids.sort(key=lambda x: x[1], reverse=True)
+
+        readable_bids = [(player.name, bid) for (player, bid) in bids]
+        Logger.log("Bids: {0}".format(readable_bids))
 
         # We sell to the highest bidder...
         number_of_bids = len(bids)
@@ -459,7 +465,13 @@ class Game(object):
             else:
                 # The player successfully bought the property...
                 self.give_property_to_player(player, square.name)
+
+                # We notify all the players...
+                # TODO: notify the players.
+
                 break
+
+        Logger.dedent()
 
     def _offer_property_to_current_player(self, player, square):
         '''

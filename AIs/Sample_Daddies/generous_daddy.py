@@ -70,5 +70,10 @@ class GenerousDaddyAI(PlayerAIBase):
         # We can't build...
         return []
 
+    def property_offered_for_auction(self, game_state, player, property):
+        '''
+        We offer the face value in auctions.
+        '''
+        return property.price
 
 

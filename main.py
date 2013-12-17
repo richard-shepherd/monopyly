@@ -27,9 +27,11 @@ print(results)
 # Logger.add_handler(ConsoleLogHandler(Logger.INFO))
 # sophie_ai = next(ai for ai in ais if ai.get_name() == "Sophie")
 # generous_daddy_ai = next(ai for ai in ais if ai.get_name() == "Generous Daddy")
+# mean_daddy_ai = next(ai for ai in ais if ai.get_name() == "Mean Daddy")
 # game = Game()
 # game.add_player(sophie_ai)
 # game.add_player(generous_daddy_ai)
+# game.add_player(mean_daddy_ai)
 # game.play_game()
 
 
