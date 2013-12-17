@@ -40,7 +40,8 @@ class PlayerAIBase(object):
 
     class Action(object):
         '''
-        An 'enum' for the various actions an AI can perform.
+        An 'enum' for the various actions an AI can perform, and
+        info passed to them.
         '''
         # Buying houses...
         BUY = 0
@@ -54,6 +55,10 @@ class PlayerAIBase(object):
         BUY_WAY_OUT_OF_JAIL = 4
         PLAY_GET_OUT_OF_JAIL_FREE_CARD = 5
         STAY_IN_JAIL = 6
+
+        # Auctioning...
+        AUCTION_SUCCEEDED = 7
+        AUCTION_FAILED = 8
 
     class DealInfo(object):
         '''
@@ -183,6 +188,23 @@ class PlayerAIBase(object):
         The default behaviour is not to bid.
         '''
         return 0
+
+    def auction_result(self, status, property, player, amount_paid):
+        '''
+        Called with the result of an auction. All players receive
+        this notification.
+
+        status is either AUCTION_SUCCEEDED or AUCTION_FAILED.
+
+        If the auction succeeded, the property, the player who won
+        the auction and the amount they paid are passed to the AI.
+
+        If the auction failed, the player will be None and the
+        amount paid will be 0.
+
+        No response is required.
+        '''
+        pass
 
     def build_houses(self, game_state, player):
         '''

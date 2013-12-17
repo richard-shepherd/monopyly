@@ -424,19 +424,19 @@ class Game(object):
         # We get bids from each player and store them in a list of
         # tuples of (player, bid)...
         bids = []
-        for player in self.state.players:
+        for player_who_won_auction in self.state.players:
             # We get a bid from the player and make sure that
             # it's an integer amount...
-            bid = player.ai.property_offered_for_auction(
+            bid = player_who_won_auction.ai.property_offered_for_auction(
                 self.state,
-                player,
+                player_who_won_auction,
                 square)
-            if not self.typecheck(player, "property_offered_for_auction", bid, int):
+            if not self.typecheck(player_who_won_auction, "property_offered_for_auction", bid, int):
                 continue
 
             # A bid of zero (or below) is not a bid...
             if bid > 0:
-                bids.append((player, bid))
+                bids.append((player_who_won_auction, bid))
 
         # We sort the bids from high to low...
         bids.sort(key=lambda x: x[1], reverse=True)
@@ -445,10 +445,14 @@ class Game(object):
         readable_bids = [(player.name, bid) for (player, bid) in bids]
         Logger.log("Bids: {0}".format(readable_bids))
 
+        status = PlayerAIBase.Action.AUCTION_FAILED
+        player_who_won_auction = None
+        selling_price = 0
+
         # We sell to the highest bidder...
         number_of_bids = len(bids)
         for i in range(number_of_bids):
-            player = bids[i][0]
+            player_who_won_auction = bids[i][0]
 
             # We find the next highest bid...
             if i+1 < number_of_bids:
@@ -458,19 +462,20 @@ class Game(object):
             selling_price = next_highest_bid + 1
 
             # We sell it to the player...
-            self.take_money_from_player(player, selling_price)
-            if player.state.cash < 0:
+            self.take_money_from_player(player_who_won_auction, selling_price)
+            if player_who_won_auction.state.cash < 0:
                 # The player did not have enough money, so we refund what we
                 # took and sell the property to the next highest bidder...
-                self.give_money_to_player(player, selling_price)
+                self.give_money_to_player(player_who_won_auction, selling_price)
             else:
                 # The player successfully bought the property...
-                self.give_property_to_player(player, square.name)
-
-                # We notify all the players...
-                # TODO: notify the players.
-
+                self.give_property_to_player(player_who_won_auction, square.name)
+                status = PlayerAIBase.Action.AUCTION_SUCCEEDED
                 break
+
+        # We notify all the players...
+        for player in self.state.players:
+            player.ai.auction_result(status, square, player_who_won_auction, selling_price)
 
         Logger.dedent()
 

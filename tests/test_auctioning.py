@@ -10,9 +10,17 @@ class PlayerWhoBidsInAuctions(PlayerAIBase):
     '''
     def __init__(self, next_bid=0):
         self.next_bid = next_bid
+        self.winner = None
+        self.property = None
+        self.amount = 0
 
     def property_offered_for_auction(self, game_state, player, property):
         return self.next_bid
+
+    def auction_result(self, status, property, player, amount_paid):
+        self.winner = player
+        self.property = property
+        self.amount = amount
 
 
 def test_two_players_both_bid():
@@ -31,15 +39,22 @@ def test_two_players_both_bid():
     game.dice = MockDice([(4, 5)])
     game.play_one_turn(player0)
 
+    vine_street = game.state.board.get_square_by_name(Square.Name.VINE_STREET)
+
     # Player 0 should not have any properties or paid any money...
     assert len(player0.state.properties) == 0
     assert player0.state.cash == 1500
+    assert player0.ai.property is vine_street
+    assert player0.ai.winner is player1
+    assert player0.ai.amount == 151
 
     # Player 1 should have won the auction and paid £151...
-    vine_street = game.state.board.get_square_by_name(Square.Name.VINE_STREET)
     assert len(player1.state.properties) == 1
     assert vine_street in player1.state.properties
     assert player1.state.cash == 1349
+    assert player1.ai.property is vine_street
+    assert player1.ai.winner is player1
+    assert player1.ai.amount == 151
 
 
 def test_three_players_only_one_bids():
