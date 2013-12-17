@@ -133,9 +133,6 @@ class Game(object):
             # The player takes a turn...
             self.play_one_turn(player)
 
-            # We check if any players went bankrupt during this turn...
-            self._check_for_bankrupt_players()
-
             # If there is only one player left, the game is over...
             if len(self.state.players) == 1:
                 break
@@ -178,9 +175,10 @@ class Game(object):
 
             # We check if the player has gone bankrupt at the end of each move...
             if current_player.state.cash < 0:
-                Logger.dedent()
-                return
+                break
 
+        # We check if any players went bankrupt during this turn...
+        self._check_for_bankrupt_players()
         Logger.dedent()
 
     def roll_and_move(self, current_player, number_of_doubles_rolled):
@@ -235,6 +233,7 @@ class Game(object):
             # Note that we don't give £200 for landing on Go, as the
             # square itself does this...
             if current_player.state.square != 0:
+                Logger.log("{0} gets £200 for passing Go".format(current_player.name))
                 current_player.state.cash += 200
 
         # We perform any actions appropriate for the new square
@@ -583,7 +582,7 @@ class Game(object):
                 Logger.dedent()
                 return
 
-        Logger.log("Houses build successfully")
+        Logger.log("Houses built successfully")
         Logger.dedent()
 
     def _set_has_balanced_houses(self, property_set):
@@ -949,6 +948,8 @@ class Game(object):
         '''
         Called when a player has gone bankrupt.
         '''
+        Logger.log("{0} went bankrupt".format(current_player.name))
+
         # We return properties to the bank...
         board = self.state.board
         for property in current_player.state.properties:
@@ -990,6 +991,13 @@ class Game(object):
         else:
             self.winner = None
             Logger.log("Game over. Draw.")
+
+        # We notify all the players...
+        maximum_rounds_played = (self.number_of_rounds_played == self.maximum_rounds)
+        for player in self.state.players:
+            player.ai.game_over(self.winner, maximum_rounds_played)
+        for player in self.state.bankrupt_players:
+            player.ai.game_over(self.winner, maximum_rounds_played)
 
     def typecheck(self, player, function, return_value, expected_type):
         '''

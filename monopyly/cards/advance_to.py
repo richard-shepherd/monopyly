@@ -1,5 +1,6 @@
 from .card import Card
 from ..squares import Square
+from ..utility import Logger
 
 
 class AdvanceTo(Card):
@@ -27,6 +28,7 @@ class AdvanceTo(Card):
         player_position = current_player.state.square
         if (player_position > destination_square_position) and (destination_square_position != go_square_position):
             # The player has to pass Go to get to the destination...
+            Logger.log("{0} gets £200 for passing Go".format(current_player.name))
             game.give_money_to_player(current_player, 200)
 
         # We move the player to the destination...

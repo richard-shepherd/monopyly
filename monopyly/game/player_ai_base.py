@@ -424,8 +424,26 @@ class PlayerAIBase(object):
 
     def player_went_bankrupt(self, player):
         '''
-        Called when a player goes bankrupt. All non-bankrupt players
-        receive this notification.
+        Called when a player goes bankrupt.
+
+        All non-bankrupt players receive this notification.
+
+        player is a Player object.
+
+        No response is required.
+        '''
+        pass
+
+    def game_over(self, winner, maximum_rounds_played):
+        '''
+        Called when the game is over.
+
+        All players receive this notification.
+
+        winner is the winning player (a Player object) or None if the
+        game was drawn.
+
+        maximum_rounds_played is True if the game went to the round-limit.
 
         No response is required.
         '''

@@ -1,8 +1,6 @@
 from monopyly import *
 from testing_utils import *
 
-# TODO: What happens if two players bid the same amount?
-
 
 class PlayerWhoBidsInAuctions(PlayerAIBase):
     '''
@@ -20,7 +18,7 @@ class PlayerWhoBidsInAuctions(PlayerAIBase):
     def auction_result(self, status, property, player, amount_paid):
         self.winner = player
         self.property = property
-        self.amount = amount
+        self.amount = amount_paid
 
 
 def test_two_players_both_bid():

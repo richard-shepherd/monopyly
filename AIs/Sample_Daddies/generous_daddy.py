@@ -3,8 +3,8 @@ from monopyly import *
 
 class GenerousDaddyAI(PlayerAIBase):
     '''
-    An AI that plays like a dad (or at least, like I play when
-    I'm playing with my children).
+    An AI that plays like a dad (or at least, similarly to how
+    I play when I'm playing with my children).
 
     - It initially buys any properties it can.
     - It builds houses when it has complete sets.

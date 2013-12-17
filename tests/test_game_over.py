@@ -2,14 +2,27 @@ from monopyly import *
 from testing_utils import *
 
 
+class GameOverLoggingPlayer(DefaultPlayerAI):
+    '''
+    A player which logs the game-over event.
+    '''
+    def __init__(self):
+        self.winner = None
+        self.maximum_rounds_played = False
+
+    def game_over(self, winner, maximum_rounds_played):
+        self.winner = winner
+        self.maximum_rounds_played = maximum_rounds_played
+
+
 def test_maximum_rounds():
     '''
     Tests that the game is over when the maximum number of rounds
     has been played.
     '''
     game = Game()
-    player0 = game.add_player(DefaultPlayerAI())
-    player1 = game.add_player(DefaultPlayerAI())
+    player0 = game.add_player(GameOverLoggingPlayer())
+    player1 = game.add_player(GameOverLoggingPlayer())
 
     # We put both players on Free Parking and ensure that all dice
     # are zeros. Player1 has more money, so after the maximum number
@@ -26,7 +39,13 @@ def test_maximum_rounds():
 
     # We check the winner and the turns played...
     assert game.number_of_rounds_played == game.maximum_rounds
-    assert game.winner == player1
+    assert game.winner is player1
+
+    # Did we get the notifications?
+    assert player0.ai.winner is player1
+    assert player0.ai.maximum_rounds_played is True
+    assert player1.ai.winner is player1
+    assert player1.ai.maximum_rounds_played is True
 
 
 def test_maximum_rounds_net_worth_properties():
@@ -35,8 +54,8 @@ def test_maximum_rounds_net_worth_properties():
     has the higher net worth because of properties.
     '''
     game = Game()
-    player0 = game.add_player(DefaultPlayerAI())
-    player1 = game.add_player(DefaultPlayerAI())
+    player0 = game.add_player(GameOverLoggingPlayer())
+    player1 = game.add_player(GameOverLoggingPlayer())
 
     # player0 has more money...
     player0.state.cash = 1000
@@ -74,8 +93,8 @@ def test_maximum_rounds_net_worth_properties_and_houses():
     player has higher value houses.
     '''
     game = Game()
-    player0 = game.add_player(DefaultPlayerAI())
-    player1 = game.add_player(DefaultPlayerAI())
+    player0 = game.add_player(GameOverLoggingPlayer())
+    player1 = game.add_player(GameOverLoggingPlayer())
 
     # player0 has more money...
     player0.state.cash = 1000
@@ -118,8 +137,8 @@ def test_maximum_rounds_equal_worth():
     Maximum rounds are played, and it's a draw.
     '''
     game = Game()
-    player0 = game.add_player(DefaultPlayerAI())
-    player1 = game.add_player(DefaultPlayerAI())
+    player0 = game.add_player(GameOverLoggingPlayer())
+    player1 = game.add_player(GameOverLoggingPlayer())
 
     # We put both players on Free Parking and ensure that all dice
     # are zeros. Player1 has more money, so after the maximum number
@@ -147,9 +166,9 @@ def test_all_players_bankrupt_in_same_round():
     We check that the last remaining player wins.
     '''
     game = Game()
-    player0 = game.add_player(DefaultPlayerAI())
-    player1 = game.add_player(DefaultPlayerAI())
-    player2 = game.add_player(DefaultPlayerAI())
+    player0 = game.add_player(GameOverLoggingPlayer())
+    player1 = game.add_player(GameOverLoggingPlayer())
+    player2 = game.add_player(GameOverLoggingPlayer())
 
     # All players are on Liverpool Street station, and all roll
     # three to land on Super Tax...
@@ -174,3 +193,11 @@ def test_all_players_bankrupt_in_same_round():
     assert player0 in game.state.bankrupt_players
     assert player1 in game.state.bankrupt_players
     assert game.winner is player2
+
+    # Did we get the notifications?
+    assert player0.ai.winner is player2
+    assert player0.ai.maximum_rounds_played is False
+    assert player1.ai.winner is player2
+    assert player1.ai.maximum_rounds_played is False
+    assert player2.ai.winner is player2
+    assert player2.ai.maximum_rounds_played is False
