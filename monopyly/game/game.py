@@ -441,6 +441,7 @@ class Game(object):
         # We sort the bids from high to low...
         bids.sort(key=lambda x: x[1], reverse=True)
 
+        # We log the bids...
         readable_bids = [(player.name, bid) for (player, bid) in bids]
         Logger.log("Bids: {0}".format(readable_bids))
 

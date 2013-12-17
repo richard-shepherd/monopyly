@@ -5,7 +5,8 @@ from .generous_daddy import GenerousDaddyAI
 class MeanDaddyAI(GenerousDaddyAI):
     '''
     Similar to GenerousDaddyAI (which it is derived from)
-    except that it does not accept deals.
+    except that it does not accept deals and bids lower in
+    auctions.
     '''
     def get_name(self):
         '''
