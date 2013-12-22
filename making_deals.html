@@ -34,16 +34,88 @@
 <h2>
     Making Deals
 </h2>
+<p>
+    Monopyly has a simplified deal-making protocol which allows players to trade properties
+    with each other and which allows cash to be included in the deal.
+</p>
+<p>
+    I suspect that there is a bit of a prisoners-dilemma involved in the decision about
+    whether to make deals or not. AIs that do not make deals will, I think, lose against AIs
+    that make them, as the ones that make deals will be more likely to gain complete sets of
+    properties. On the other hand, there is a strong incentive not to offer too good a deal to
+    an opposing player, and this may result in deals not being made at all.
+    Getting the balance right between these extremes will be one of the challenges
+    in writing a good AI.
+</p>
 
 <h3>
-    [header].
+    Proposing deals
 </h3>
+<p>
+    Towards the start of your turn, you are given the opportunity to make deals.
+    The propose_deal() method will be called three times to let you do this. A deal
+    proposal consists of these parts:
+    <ul>
+    <li>
+        'propose_to_player': the player (Player object) you propose the deal to.
+    </li>
+    <li>
+        'properties_offered': a list of Property object you offer to the player.
+    </li>
+    <li>
+        'properties_wanted': a list of Property object you want from the player.
+    </li>
+    <li>
+        'maximum_cash_offered': cash you are willing to pay as part of the deal.
+    </li>
+    <li>
+        'minimum_cash_accepted': cash you want as part of the deal.
+    </li>
+    </ul>
+</p>
+<p>
+    Either 'properties_offered' or 'properties_wanted' can be empty lists (or None)
+    but they can not both be empty. At least one property must change hands as part
+    of a deal.
+</p>
+<p>
+    You specify either (but not both) of the maximum-cash-offered or minimum-cash_accepted
+    values.
+</p>
 
-<p>[some text]</p>
+<h3>
+    Accepting or rejecting a deal
+</h3>
+<p>
+    If a deal is proposed to you, the deal_proposed() method will be called on your AI.
+    You see the properties proposed but you <u>do not</u> see the cash component. You can
+    reject the deal outright. If you accept the deal, you can in turn specify the maximum
+    cash you will offer or the minimum you will accept for the deal to take place. If the
+    cash amount is acceptable to both parties, the deal will take place. The properties will
+    be transferred, and an amount of cash midway between what is acceptable to both parties will
+    change hands.
+</p>
 
-<pre><code>
-[some code here]
-</code></pre>
+<h3>
+    Example 1
+</h3>
+<p>
+    Player 1 proposed a deal to Player 2, offering Vine Street and wanting Mayfair and
+    offering up to £600 along with the deal. Player 2 does not see the cash component, and
+    accepts the deal wanting at least £400. The deal will take place, and the properties and
+    £500 will be exchanged.
+</p>
+
+<h3>
+    Example 2
+</h3>
+<p>
+    Player 1 proposed a deal to Player 2, wanting Kings Cross Station and offering up to £300.
+    Player 2 accepts the deal, wanting at least £350. Because Player 2 wants more cash for the deal
+    than Player 1 is willing to pay, the deal fails.
+</p>
+
+
 
 </section>
 

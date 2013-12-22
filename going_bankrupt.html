@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Monopyly TODOs</title>
+    <title>Monopyly - going bankrupt</title>
 
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
@@ -32,26 +32,39 @@
 
 <a href="index.html"><img src="images/monopoly.jpg"></a>
 <h2>
-    Monopyly TODOs and Upcoming Features
+    Going Bankrupt
 </h2>
 
+<h3>
+    You go bankrupt if you run out of cash
+</h3>
+
 <p>
-<ul>
-    <li>
-        Graphics will be added to make the finals more interesting to watch.
-    </li>
-    <li>
-        Timing code to be added to be able to time AIs for the efficient-coding prize.
-    </li>
-    <li>
-        Bug fix: deals involving properties with houses must include the whole set.
-    </li>
-</ul>
+    If you have to pay rent or a fine and you do not have enough cash, you go bankrupt and
+    are out of the game.
+</p>
+<p>
+    Any time that money will be taken from you, you are first notified via the money_will_be_taken()
+    method. You are then given the option to make deals,
+    sell houses and mortgage properties. It is your responsibility to do this if you need to
+    raise money. After this, the money is taken and if you do not have enough cash, you go bankrupt.
+</p>
+<p>
+    Note that this means that you can go bankrupt even if your 'net worth' (ie, cash + properties + houses)
+    is greater than the sum you owe. The framework will not mortgage properties or sell houses for
+    you to raise cash to pay a debt.
 </p>
 
-
-
-
+<h3>
+    Some payments are optional
+</h3>
+<p>
+    Not all failures to pay money will cause you to go bankrupt. All mandatory payments such
+    as fines or rents will cause you to go bankrupt if you can not pay. Other payments are not
+    mandatory, such as buying properties or houses or transferring money as part of a deal. If you
+    do not have enough money in these cases, the transaction will be 'rolled back' and you
+    will not go bankrupt.
+</p>
 
 
 </section>

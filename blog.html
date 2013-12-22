@@ -36,6 +36,37 @@
 </h2>
 
 <h3>
+    22nd December 2013
+</h3>
+<p>
+<ul>
+    <li>
+        A lot more detail added to the <a href="api_reference.html">API reference</a> page.
+    </li>
+    <li>
+        Added the <a href="going_bankrupt.html">going bankrupt</a> page.
+    </li>
+    <li>
+        Added the <a href="making_deals.html">making deals</a> page.
+    </li>
+</ul>
+</p>
+<p>
+    Started thinking about how to do the graphics. I had been thinking about doing this
+    with pygame, but that seemed rather complicated and low-level. Bel Lobley gave me a
+    good idea: to do the graphics in C#, and to communicate the game-state between the
+    Python code and C# somehow. I rather like this idea.
+</p>
+<p>
+    My current thought is to send data using a messaging protocol between the Python code
+    and C# front-end. I'm currently thinking of using ZeroMQ and Protocol Buffers for this.
+    To be honest, this may end up being more complicated than just writing the graphics in
+    pygame, but it will a good excuse to learn ZeroMQ which I've wondered about doing for
+    a while, and an opportunity to brush up on proto-bufs, which I haven't looked at in anger
+    for a while.
+</p>
+
+<h3>
     17th December 2013
 </h3>
 <p>
