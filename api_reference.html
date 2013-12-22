@@ -43,16 +43,162 @@
 </p>
 
 <h3>
-    Important classes in the API
+    Getting started
 </h3>
 <p>
-    Details coming soon.
+    The best way to get started is to look at the PlayerAIBase class in monopyly/game/player_ai_base.py
+    and at the sample AIs. Your AI should derive from PlayerAIBase and override its methods. The class
+    is well commented, and gives a good overview of each call your AI can receive from the framework
+    and how you are expected to respond to them.
 </p>
 <p>
-    For now, see PlayerAIBase in monopyly/game/player_ai_base.py, and the sample AIs.
-    You should be able to get started from looking at these.
+    I'm not going to cut-n-paste the comments from the code in this documentation. Instead, I'll try to
+    give some insight into why the framework works how it does, and some of the key classes in it.
 </p>
 
+<h3>
+    The framework calls you for all events and actions
+</h3>
+<p>
+    The Monopyly framework always calls you to ask if you want to perform an action. Your
+    code does not call into the framework for any actions - though you can call into it to query the
+    state of the game. All actions take place by the framework calling into methods on your
+    AI class and by you specifying the action in the return value of the method.
+</p>
+<p>
+    In some cases this might seem a little odd, and you would be right to think so. As with a
+    lot of code, there is a mixture of good reasons and 'historical reasons' why this is the case.
+</p>
+<p>
+    An example of this is mortgaging properties. You do not call into the framework when you
+    want to mortgage. Instead, you wait to receive the mortgage_properties() call on your AI
+    and returning whether you want to mortgage or not. This will always be called before any
+    money is taken from you, so you always get a chance to do this when you need to raise money.
+</p>
+<p>
+    To continue the example, at the point of deciding to buy a property (in the landed_on_unowned_property()
+    method) you may realize that you do not have enough money, and that you need to mortgage to buy the
+    property. You cannot mortgage at that point. Instead, you return that you do want to buy, and
+    before the money is taken from you, you will be given a chance to mortgage.
+</p>
+<p>
+    The 'historical reason' for this is that at one point I had planned that the AIs would not
+    have any access to the real game objects. They were only ever going to be given copies of
+    game state. The idea was to limit the AIs ability to 'cheat' by altering game state. This
+    meant that it was not possible for the AIs to call directly back into the framework. However,
+    this copying proved too slow and so I removed it, but the don't-call-us-we'll-call-you
+    design stayed.
+</p>
+<p>
+    The 'good reason' for this design is that it treats all occasions where you need to raise
+    money in a uniform way. Sometimes you know when you need to raise money, as in the property-purchase
+    example above. At other times, you do not know that you need to raise money, such as when you
+    land on a property and must pay rent. In all cases the sequence of events is the same:
+    <ul>
+    <li>
+        money_will_be_taken() is called to tell you how much will be taken.
+    </li>
+    <li>
+        propose_deal() is called three times to give you the opportunity to make deals.
+    </li>
+    <li>
+        sell_houses() is called, to give you the opportunity to sell houses.
+    </li>
+    <li>
+        mortgage_properties() is called, to give you the opportunity to mortgage.
+    </li>
+    <li>
+        The money is taken, and then the money_taken() method is called on your AI.
+    </li>
+    </ul>
+</p>
+
+<h3>
+    The GameState and Board classes
+</h3>
+<p>
+    Two of the most useful sources of information for AIs are the GameState and Board classes.
+    Most AI methods are passed the GameState in the 'game_state' parameter.
+</p>
+<p>
+    GameState has two main members:
+    <ul>
+    <li>
+        'board': a Board object (see below).
+    </li>
+    <li>
+        'players': a list of the players (Player objects) remaining in the game.
+    </li>
+    </ul>
+</p>
+<p>
+    The Board object holds the collection of squares on the board. It has a number of
+    helper functions to help you access them, such as get_square_by_name(), get_square_by_index()
+    and so on. The get_owned_sets() method lets you see which sets of properties are owned
+    by which players.
+</p>
+
+<h3>
+    Player and PlayerState classes
+</h3>
+<p>
+    Most AI functions are passed a Player object in the 'player' parameter.
+    Player objects have two main properties:
+    <ul>
+    <li>
+        ai: The AI object (derived from PlayerAIBase).
+    </li>
+    <li>
+        state: A PlayerState object.
+    </li>
+    </ul>
+    To check whether a player is 'you', you can compare its ai property with 'self' in
+    any AI method. The Player class also has a helper method is_same_player() that does
+    the same.
+</p>
+<p>
+    PlayerState holds the cash and properties owned by a player, along with other
+    information such as which whole sets the player owns. You can see this information
+    for yourself by looking at the 'player' object, or for any other players in the game
+    by looking through the state for the 'players' list in the game_state.
+</p>
+
+<h3>
+    Squares, Properties, Streets and PropertySets
+</h3>
+<p>
+    There is this inheritance relationship between classes representing squares on the board:
+<pre><code> Square
+   |
+Property
+   |
+ Street
+</code></pre>
+
+    Every square on the board is a Square. Squares that you can own are Properties.
+    Properties that you can build on are Streets. So, for example, Just visiting is a
+    Square but not a Property. The stations are Properties but not Streets.
+</p>
+<p>
+    Property objects have a number of useful members, including the price and mortgage
+    value of the property and the owner (if any). See the class for details:
+    monopyly/squares/property.py.
+</p>
+<p>
+    The PropertySet class manages one set of properties, for example the Orange set of
+    Bow Street, Marlborough Street and Vine Street. A PropertySet object holds a list
+    of the properties (Property objects) in the set and an 'enum' indicating which set it is.
+</p>
+<p>
+    Each Property object has a reference to the PropertySet it is a member of. The Board object
+    holds a collection of all the property sets, and some helper methods to look them up, such
+    as get_property_set() and get_properties_for_set().
+</p>
+<p>
+    PropertySet has some helper methods and properties to let you know the price of houses
+    on the set, who it is owned by and so on. See the PropertySet class (monopyly/squares/property_set.py)
+    for more details.
+</p>
 
 
 </section>
