@@ -6,7 +6,7 @@ class PlayerAIBase(object):
     '''
     A base class for player AIs.
 
-    Contains default implementations events that players can be
+    Contains default implementations for events that players can be
     notified about. Some events will require a decision from the
     AI. Others are just notifications that something has
     occurred.
@@ -96,6 +96,8 @@ class PlayerAIBase(object):
     def player_landed_on_square(self, game_state, square, player):
         '''
         Called when a player lands on a square. All AIs receive this notification.
+
+        No response is required.
         '''
         pass
 
@@ -318,7 +320,7 @@ class PlayerAIBase(object):
         '''
         return []
 
-    def get_out_of_jail(self, player):
+    def get_out_of_jail(self, game_state, player):
         '''
         Called in the player's turn, before the dice are rolled, if the player
         is in jail.

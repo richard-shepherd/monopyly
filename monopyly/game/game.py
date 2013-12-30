@@ -735,7 +735,7 @@ class Game(object):
             return
 
         # We ask the player if they want to buy their way out or play a card...
-        action = current_player.ai.get_out_of_jail(current_player)
+        action = current_player.ai.get_out_of_jail(self.state, current_player)
         if action == PlayerAIBase.Action.BUY_WAY_OUT_OF_JAIL:
             # The player is buying their way out...
             self.take_money_from_player(current_player, 50)

@@ -12,7 +12,7 @@ class PlayerWhoGetsOutOfJail(DefaultPlayerAI):
     def set_action(self, action):
         self.action = action
 
-    def get_out_of_jail(self, player):
+    def get_out_of_jail(self, game_state, player):
         return self.action
 
 
