@@ -1,5 +1,6 @@
 from .player_state import PlayerState
 from ..squares import Property, Street
+import time
 
 
 class Player(object):
@@ -71,3 +72,24 @@ class Player(object):
             return True
 
         return False
+
+    def call_ai(self, function, *args):
+        '''
+        Calls the function passed in, times it and updates the
+        total time used by this player.
+
+        The functions will be the AI methods.
+        '''
+        # We call the function and time how long the AI spends processing it...
+        start = time.clock()
+        result = function(*args)
+        end = time.clock()
+        elapsed_seconds = end-start
+
+        # We update the time the AI has remaining for the current game...
+        self.state.ai_processing_seconds_remaining -= elapsed_seconds
+
+        # And return what the function returned...
+        return result
+
+

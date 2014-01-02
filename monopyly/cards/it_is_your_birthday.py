@@ -22,7 +22,7 @@ class ItIsYourBirthday(Card):
                 continue
 
             # We see if the player says "Happy Birthday!"...
-            message = player.ai.players_birthday()
+            message = player.call_ai(player.ai.players_birthday)
             Logger.log("{0} says {1}".format(player.name, message))
             if message == "Happy Birthday!":
                 amount = 10

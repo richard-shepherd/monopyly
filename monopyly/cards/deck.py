@@ -41,7 +41,7 @@ class Deck(object):
             # The card is Get Out Of Jail Free.
             # We give it to the player...
             player.state.get_out_of_jail_free_cards.append(card)
-            player.ai.got_get_out_of_jail_free_card()
+            player.call_ai(player.ai.got_get_out_of_jail_free_card)
 
             # And remove it from the deck...
             del self.cards[index]

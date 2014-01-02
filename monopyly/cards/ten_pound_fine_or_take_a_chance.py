@@ -14,7 +14,7 @@ class TenPoundFineOrTakeAChance(Card):
         # A delayed import to avoid circular importing...
         from ..game import PlayerAIBase
 
-        action = current_player.ai.pay_ten_pounds_or_take_a_chance(game.state, current_player)
+        action = current_player.call_ai(current_player.ai.pay_ten_pounds_or_take_a_chance, game.state, current_player)
         if action == PlayerAIBase.Action.PAY_TEN_POUND_FINE:
             game.take_money_from_player(current_player, 10)
         else:

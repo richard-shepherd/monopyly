@@ -86,7 +86,7 @@ class Game(object):
         Logger.log("Start of game. Players:")
         Logger.indent()
         for player in self.state.players:
-            player.ai.start_of_game()
+            player.call_ai(player.ai.start_of_game)
             Logger.log(player.name)
         Logger.dedent()
 
@@ -153,7 +153,7 @@ class Game(object):
 
         # We notify all players that this player's turn is starting...
         for player in self.state.players:
-            player.ai.start_of_turn(self.state, current_player)
+            player.call_ai(player.ai.start_of_turn, self.state, current_player)
 
         # The player can make deals...
         self._make_deals(current_player)
@@ -177,8 +177,12 @@ class Game(object):
             if current_player.state.cash < 0:
                 break
 
+        # We show the processing time remaining for the player...
+        Logger.log("Processing time remaining={0}sec".format(current_player.state.ai_processing_seconds_remaining))
+
         # We check if any players went bankrupt during this turn...
         self._check_for_bankrupt_players()
+
         Logger.dedent()
 
     def roll_and_move(self, current_player, number_of_doubles_rolled):
@@ -259,7 +263,7 @@ class Game(object):
         # We notify all players that the player has landed
         # on this square...
         for player in self.state.players:
-            player.ai.player_landed_on_square(self.state, square, player)
+            player.call_ai(player.ai.player_landed_on_square, self.state, square, player)
 
         # We perform the square's landed-on action...
         square.landed_on(self, current_player)
@@ -275,7 +279,7 @@ class Game(object):
         gone bankrupt, this may not be the same as the amount requested.
         '''
         # We tell the player that we need money from them...
-        player.ai.money_will_be_taken(player, amount)
+        player.call_ai(player.ai.money_will_be_taken, player, amount)
 
         # We allow the player to make deals (if this money-taking was
         # not itself the result of making a deal)...
@@ -291,7 +295,7 @@ class Game(object):
         # We take the money, and tell the player that it was taken...
         cash_before_money_taken = player.state.cash
         player.state.cash -= amount
-        player.ai.money_taken(player, amount)
+        player.call_ai(player.ai.money_taken, player, amount)
 
         # And log it...
         Logger.log("{0} pays £{1}".format(player.name, amount))
@@ -308,7 +312,7 @@ class Game(object):
         '''
         # We give the money to the player and tell them about it...
         player.state.cash += amount
-        player.ai.money_given(player, amount)
+        player.call_ai(player.ai.money_given, player, amount)
 
         # And log it...
         Logger.log("{0} gets £{1}".format(player.name, amount))
@@ -426,7 +430,8 @@ class Game(object):
         for player_who_won_auction in self.state.players:
             # We get a bid from the player and make sure that
             # it's an integer amount...
-            bid = player_who_won_auction.ai.property_offered_for_auction(
+            bid = player_who_won_auction.call_ai(
+                player_who_won_auction.ai.property_offered_for_auction,
                 self.state,
                 player_who_won_auction,
                 square)
@@ -474,7 +479,7 @@ class Game(object):
 
         # We notify all the players...
         for player in self.state.players:
-            player.ai.auction_result(status, square, player_who_won_auction, selling_price)
+            player.call_ai(player.ai.auction_result, status, square, player_who_won_auction, selling_price)
 
         Logger.dedent()
 
@@ -485,7 +490,7 @@ class Game(object):
         Returns Game.Action.PROPERTY_BOUGHT or PROPERTY_NOT_BOUGHT.
         '''
         # We ask the player if they want to buy the property...
-        action = player.ai.landed_on_unowned_property(self.state, player, square)
+        action = player.call_ai(player.ai.landed_on_unowned_property, self.state, player, square)
         if not self.typecheck(player, "landed_on_unowned_property", action, int):
             return Game.Action.PROPERTY_NOT_BOUGHT
 
@@ -530,7 +535,7 @@ class Game(object):
         # We ask the player if he wants to build any houses.
         # build_instructions is a list of tuples like:
         # (street_name, number_of_houses)
-        build_instructions = current_player.ai.build_houses(self.state, current_player)
+        build_instructions = current_player.call_ai(current_player.ai.build_houses, self.state, current_player)
         if not build_instructions:
             return
 
@@ -629,7 +634,10 @@ class Game(object):
         We give the current player the option to mortgage properties.
         '''
         # We ask the player if they want to mortgage anything...
-        properties_to_mortgage = current_player.ai.mortgage_properties(self.state, current_player)
+        properties_to_mortgage = current_player.call_ai(
+            current_player.ai.mortgage_properties,
+            self.state,
+            current_player)
         if not properties_to_mortgage:
             return
 
@@ -670,7 +678,10 @@ class Game(object):
         We offer the player the chance to sell houses.
         '''
         # We ask the player which properties they want to sell...
-        sale_instructions = current_player.ai.sell_houses(self.state, current_player)
+        sale_instructions = current_player.call_ai(
+            current_player.ai.sell_houses,
+            self.state,
+            current_player)
         if not sale_instructions:
             return
 
@@ -735,7 +746,10 @@ class Game(object):
             return
 
         # We ask the player if they want to buy their way out or play a card...
-        action = current_player.ai.get_out_of_jail(self.state, current_player)
+        action = current_player.call_ai(
+            current_player.ai.get_out_of_jail,
+            self.state,
+            current_player)
         if action == PlayerAIBase.Action.BUY_WAY_OUT_OF_JAIL:
             # The player is buying their way out...
             self.take_money_from_player(current_player, 50)
@@ -763,7 +777,10 @@ class Game(object):
         '''
 
         # We ask the player if they want to unmortgage anything...
-        squares = current_player.ai.unmortgage_properties(self.state, current_player)
+        squares = current_player.call_ai(
+            current_player.ai.unmortgage_properties,
+            self.state,
+            current_player)
         if not squares:
             return
 
@@ -808,14 +825,17 @@ class Game(object):
         '''
 
         # We see if the player wants to propose a deal...
-        proposal = current_player.ai.propose_deal(self.state, current_player)
+        proposal = current_player.call_ai(
+            current_player.ai.propose_deal,
+            self.state,
+            current_player)
         if not proposal:
             return
 
         # We find the player the deal is being proposed to (checking that the
         # player is valid first)...
         if proposal.propose_to_player is None:
-            current_player.ai.deal_result(PlayerAIBase.DealInfo.INVALID_DEAL_PROPOSED)
+            current_player.call_ai(current_player.ai.deal_result, PlayerAIBase.DealInfo.INVALID_DEAL_PROPOSED)
             return
         proposed_to_player = proposal.propose_to_player
 
@@ -825,11 +845,11 @@ class Game(object):
         # We check that the players own the properties specified...
         board = self.state.board
         if current_player.owns_properties(proposal.properties_offered) is False:
-            current_player.ai.deal_result(PlayerAIBase.DealInfo.INVALID_DEAL_PROPOSED)
+            current_player.call_ai(current_player.ai.deal_result, PlayerAIBase.DealInfo.INVALID_DEAL_PROPOSED)
             Logger.dedent()
             return
         if proposed_to_player.owns_properties(proposal.properties_wanted) is False:
-            current_player.ai.deal_result(PlayerAIBase.DealInfo.INVALID_DEAL_PROPOSED)
+            current_player.call_ai(current_player.ai.deal_result, PlayerAIBase.DealInfo.INVALID_DEAL_PROPOSED)
             Logger.dedent()
             return
 
@@ -839,12 +859,16 @@ class Game(object):
         proposal.maximum_cash_offered = 0
         proposal.minimum_cash_wanted = 0
 
-        response = proposed_to_player.ai.deal_proposed(self.state, proposed_to_player, proposal)
+        response = proposed_to_player.call_ai(
+            proposed_to_player.ai.deal_proposed,
+            self.state,
+            proposed_to_player,
+            proposal)
 
         if response.action == DealResponse.Action.REJECT:
             # The proposee rejected the deal...
-            current_player.ai.deal_result(PlayerAIBase.DealInfo.DEAL_REJECTED)
-            proposed_to_player.ai.deal_result(PlayerAIBase.DealInfo.DEAL_REJECTED)
+            current_player.call_ai(current_player.ai.deal_result, PlayerAIBase.DealInfo.DEAL_REJECTED)
+            proposed_to_player.call_ai(proposed_to_player.ai.deal_result, PlayerAIBase.DealInfo.DEAL_REJECTED)
             Logger.log("{0} rejected the deal".format(proposed_to_player.name))
             Logger.dedent()
             return
@@ -855,8 +879,8 @@ class Game(object):
         if minimum_cash_wanted > 0:
             # The proposer wants money. Did the proposee offer enough?
             if response.maximum_cash_offered < minimum_cash_wanted:
-                current_player.ai.deal_result(PlayerAIBase.DealInfo.ASKED_FOR_TOO_MUCH_MONEY)
-                proposed_to_player.ai.deal_result(PlayerAIBase.DealInfo.OFFERED_TOO_LITTLE_MONEY)
+                current_player.call_ai(current_player.ai.deal_result, PlayerAIBase.DealInfo.ASKED_FOR_TOO_MUCH_MONEY)
+                proposed_to_player.call_ai(proposed_to_player.ai.deal_result, PlayerAIBase.DealInfo.OFFERED_TOO_LITTLE_MONEY)
                 Logger.log("Deal rejected: {0} asked for more than {1} was willing to pay".format(
                     current_player.name, proposed_to_player.name))
                 Logger.dedent()
@@ -866,8 +890,8 @@ class Game(object):
         elif maximum_cash_offered > 0:
             # The proposer offered money. Was this enough for the proposee?
             if maximum_cash_offered < response.minimum_cash_wanted:
-                current_player.ai.deal_result(PlayerAIBase.DealInfo.OFFERED_TOO_LITTLE_MONEY)
-                proposed_to_player.ai.deal_result(PlayerAIBase.DealInfo.ASKED_FOR_TOO_MUCH_MONEY)
+                current_player.call_ai(current_player.ai.deal_result, PlayerAIBase.DealInfo.OFFERED_TOO_LITTLE_MONEY)
+                proposed_to_player.call_ai(proposed_to_player.ai.deal_result, PlayerAIBase.DealInfo.ASKED_FOR_TOO_MUCH_MONEY)
                 Logger.log("Deal rejected: {0} offered less than {1} was willing to accept".format(
                     current_player.name, proposed_to_player.name))
                 Logger.dedent()
@@ -895,8 +919,8 @@ class Game(object):
             result = Game.Action.TRANSFER_SUCCEEDED
 
         if result == Game.Action.TRANSFER_FAILED:
-            current_player.ai.deal_result(PlayerAIBase.DealInfo.PLAYER_DID_NOT_HAVE_ENOUGH_MONEY)
-            proposed_to_player.ai.deal_result(PlayerAIBase.DealInfo.PLAYER_DID_NOT_HAVE_ENOUGH_MONEY)
+            current_player.call_ai(current_player.ai.deal_result, PlayerAIBase.DealInfo.PLAYER_DID_NOT_HAVE_ENOUGH_MONEY)
+            proposed_to_player.call_ai(proposed_to_player.ai.deal_result, PlayerAIBase.DealInfo.PLAYER_DID_NOT_HAVE_ENOUGH_MONEY)
             Logger.log("Deal accepted, but player did not have enough money")
             Logger.dedent()
             return
@@ -910,8 +934,8 @@ class Game(object):
             self.transfer_property(proposed_to_player, current_player, property.name)
 
         # We tell the players that the deal succeeded...
-        current_player.ai.deal_result(PlayerAIBase.DealInfo.SUCCEEDED)
-        proposed_to_player.ai.deal_result(PlayerAIBase.DealInfo.SUCCEEDED)
+        current_player.call_ai(current_player.ai.deal_result, PlayerAIBase.DealInfo.SUCCEEDED)
+        proposed_to_player.call_ai(proposed_to_player.ai.deal_result, PlayerAIBase.DealInfo.SUCCEEDED)
 
         Logger.dedent()
 
@@ -958,7 +982,7 @@ class Game(object):
 
         # We notify all players that this player went bankrupt...
         for player in self.state.players:
-            player.ai.player_went_bankrupt(current_player)
+            player.call_ai(player.ai.player_went_bankrupt, current_player)
 
         # We return any Get Out Of Jail Free cards to their decks...
         for card in current_player.state.get_out_of_jail_free_cards:
@@ -1010,6 +1034,6 @@ class Game(object):
 
         # The return type was not of the right type...
         message = "Invalid return type from {0}. Expected {1}, got {2}".format(function, expected_type, return_value)
-        player.ai.ai_error(message)
+        player.call_ai(player.ai.ai_error, message)
         return False
 

@@ -42,6 +42,9 @@ class PlayerState(object):
         # The items in the collection are PropertySet objects.
         self.owned_unmortgaged_sets = set()
 
+        # AIs are given a limited amount of processing time per game...
+        self.ai_processing_seconds_remaining = 60.0
+
     def get_number_of_houses_and_hotels(self, board):
         '''
         Returns the number of houses and hotels owned by this player.
