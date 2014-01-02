@@ -436,6 +436,19 @@ class PlayerAIBase(object):
         '''
         pass
 
+    def player_ran_out_of_time(self, player):
+        '''
+        Called when a player is removed from the game because
+        they ran out of processing time.
+
+        All non-bankrupt players receive this notification.
+
+        player is a Player object.
+
+        No response is required.
+        '''
+        pass
+
     def game_over(self, winner, maximum_rounds_played):
         '''
         Called when the game is over.

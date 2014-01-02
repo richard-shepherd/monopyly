@@ -2,7 +2,7 @@ from monopyly import *
 
 # True to play a tournament, False to play a single game
 # with selected players...
-play_tournament = False
+play_tournament = True
 
 # We find the collection of AIs from the AIs folder...
 ais = load_ais()
@@ -19,6 +19,7 @@ if play_tournament:
     tournament = Tournament(player_ais=ais, max_players_per_game=4, number_of_rounds=100)
     results = tournament.play()
     print(results)
+
 else:
     # We play a single game with selected players.
     #

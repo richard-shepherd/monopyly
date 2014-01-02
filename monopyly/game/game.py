@@ -183,6 +183,10 @@ class Game(object):
         # We check if any players went bankrupt during this turn...
         self._check_for_bankrupt_players()
 
+        # We check if the player ran out of time this turn...
+        if current_player.state.ai_processing_seconds_remaining <= 0.0:
+            self._player_ran_out_of_time(current_player)
+
         Logger.dedent()
 
     def roll_and_move(self, current_player, number_of_doubles_rolled):
@@ -974,23 +978,43 @@ class Game(object):
         '''
         Logger.log("{0} went bankrupt".format(current_player.name))
 
-        # We return properties to the bank...
-        board = self.state.board
-        for property in current_player.state.properties:
-            property.owner = None
-            property.number_of_houses = 0
-
         # We notify all players that this player went bankrupt...
         for player in self.state.players:
             player.call_ai(player.ai.player_went_bankrupt, current_player)
 
+        # We remove the player from the game...
+        self._remove_player(current_player)
+
+    def _player_ran_out_of_time(self, current_player):
+        '''
+        Called when a player has run out of time.
+        '''
+        Logger.log("{0} ran out of time".format(current_player.name))
+
+        # We notify all players that this player went bankrupt...
+        for player in self.state.players:
+            player.call_ai(player.ai.player_ran_out_of_time, current_player)
+
+        # We remove the player from the game...
+        self._remove_player(current_player)
+
+    def _remove_player(self, player):
+        '''
+        Removes the player from the game and returns all properties to the bank.
+        '''
+        # We return properties to the bank...
+        board = self.state.board
+        for property in player.state.properties:
+            property.owner = None
+            property.number_of_houses = 0
+
         # We return any Get Out Of Jail Free cards to their decks...
-        for card in current_player.state.get_out_of_jail_free_cards:
+        for card in player.state.get_out_of_jail_free_cards:
             card.put_back_in_deck()
 
         # We move the player to the bankrupt list...
-        self.state.players.remove(current_player)
-        self.state.bankrupt_players.append(current_player)
+        self.state.players.remove(player)
+        self.state.bankrupt_players.append(player)
 
     def _find_winner(self):
         '''
