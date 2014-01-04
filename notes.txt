@@ -1,8 +1,6 @@
 TODOs
 -----
-*- Create wiki pages
-   - report bugs
-   - deals
+
 
 # TODO: What happen if a deal transfers a property with houses on it,
         but not the whole set?
@@ -11,19 +9,51 @@ TODOs
 - Add logging for mortgaging etc
 
 
-- test that events are raised to the AIs, e.g. start of turn etc
-
-- All calls to the AI should be surrounded with try...catch
-
-- What do we do if the AI passes back an unexpected type of object?
-  - We need to avoid the game blowing up.
-  - Look at: https://pypi.python.org/pypi/typecheck
-  - OR: maybe this is just caught with the try-catch thing.
-
 - graphs of cash and 'net worth'
 
 
+Data sent to the GUI
+--------------------
 
+- Should we send the logs?
+  - Why not?
+
+- Main thing is the board, though and the game state
+  - Who owns each square
+  - How many houses on each square
+  - Net worth of each player
+
+- What will the GUI show?
+  - The board
+  - We can assign colours to the players and show the colour
+    on each square owned by that player
+  - Houses
+  - Where each player is
+  - Whether the player is in jail
+
+- How often should we send updates?
+  - At the end of each turn
+
+- How do we send player info?
+  - Identified by player name would be best.
+  - But will this repeat the player name too much
+    - Not that that is a huge problem.
+  - All data can be keyed by player?
+
+- Maybe assign each player a number at the start of the game
+  - send a message at the start with player_number -> name dictionary
+  - GUI can assign colors
+
+- Each turn
+  - We send the Board
+    - [(square_number, owner_number, mortgaged, number_of_houses)]
+  - We send player info
+    - [(player_number, net-worth)]
+
+- We need a start-of-game signal to tell the graphs to reset.
+
+- ZMQ has the annoying feature of missing startup messages.
+  - So we need to make sure that
 
 
 
