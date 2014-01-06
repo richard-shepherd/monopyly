@@ -38,12 +38,36 @@
 <h3>
     6th January 2014
 </h3>
+<h4>
+    proposed_by_player
+</h4>
 <p>
     When a deal is proposed to you, you now receive the Player object
     for the player who proposed it, in the proposed_by_player field of the
     DealProposal object.
 </p>
 
+<h4>
+    deal_completed
+</h4>
+<p>
+    There is a new method on the PlayerAIBase API, received by all players
+    when a deal has been completed successfully.
+    <pre><code>def deal_completed(self, deal_result):</code></pre>
+    'deal_result' is a DealResult object (monopyly/game/deal_result.py) which holds the
+    details of the deal:
+    <ul>
+        <li>
+            The proposer and proposee (Player objects).
+        </li>
+        <li>
+            The list of properties transferred to each player.
+        </li>
+        <li>
+            The amount of cash that changed hands.
+        </li>
+    </ul>
+</p>
 
 <h3>
     2nd January 2014
