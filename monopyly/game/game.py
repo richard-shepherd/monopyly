@@ -827,7 +827,6 @@ class Game(object):
         '''
         Lets the player propose a deal.
         '''
-
         # We see if the player wants to propose a deal...
         proposal = current_player.call_ai(
             current_player.ai.propose_deal,
@@ -857,11 +856,13 @@ class Game(object):
             Logger.dedent()
             return
 
-        # We pass the proposal to the proposee, after redacting the cash offer info...
+        # We pass the proposal to the proposee, after redacting the cash offer info
+        # and setting the player who proposed the deal...
         maximum_cash_offered = proposal.maximum_cash_offered
         minimum_cash_wanted = proposal.minimum_cash_wanted
         proposal.maximum_cash_offered = 0
         proposal.minimum_cash_wanted = 0
+        proposal.proposed_by_player = current_player
 
         response = proposed_to_player.call_ai(
             proposed_to_player.ai.deal_proposed,

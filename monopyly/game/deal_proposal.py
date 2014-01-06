@@ -31,6 +31,7 @@ class DealProposal(object):
         self.properties_wanted = properties_wanted
         self.maximum_cash_offered = maximum_cash_offered
         self.minimum_cash_wanted = minimum_cash_wanted
+        self.proposed_by_player = None
 
     def __str__(self):
         '''
