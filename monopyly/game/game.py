@@ -4,6 +4,7 @@ from .game_state import GameState
 from .player_ai_base import PlayerAIBase
 from .board import Board
 from .deal_response import DealResponse
+from .deal_result import DealResult
 from ..squares import Square, Property, Street
 from ..utility import typecheck, Logger
 
@@ -941,6 +942,16 @@ class Game(object):
         # We tell the players that the deal succeeded...
         current_player.call_ai(current_player.ai.deal_result, PlayerAIBase.DealInfo.SUCCEEDED)
         proposed_to_player.call_ai(proposed_to_player.ai.deal_result, PlayerAIBase.DealInfo.SUCCEEDED)
+
+        # We let all players know the details of the deal that just took place...
+        deal_result = DealResult()
+        deal_result.proposer = current_player
+        deal_result.proposee = proposed_to_player
+        deal_result.properties_transferred_to_proposer = proposal.properties_wanted
+        deal_result.properties_transferred_to_proposee = proposal.properties_offered
+        deal_result.cash_transferred_from_proposer_to_proposee = cash_transfer_from_proposer_to_proposee
+        for player in self.state.players:
+            player.call_ai(player.ai.deal_completed, deal_result)
 
         Logger.dedent()
 

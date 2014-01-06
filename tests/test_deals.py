@@ -11,6 +11,7 @@ class DealProposer(PlayerAIBase):
         self.deal_proposals = [deal_proposal, None, None]
         self.index = 0
         self.deal_info = -1
+        self.result = None
 
     def propose_deal(self, game_state, player_state):
         if self.index >= len(self.deal_proposals):
@@ -23,6 +24,9 @@ class DealProposer(PlayerAIBase):
     def deal_result(self, deal_info):
         self.deal_info = deal_info
 
+    def deal_completed(self, deal_result):
+        self.result = deal_result
+
 
 class DealResponder(PlayerAIBase):
     '''
@@ -31,12 +35,16 @@ class DealResponder(PlayerAIBase):
     def __init__(self, deal_response):
         self.deal_response = deal_response
         self.deal_info = -1
+        self.result = None
 
     def deal_proposed(self, game_state, player, deal_proposal):
         return self.deal_response
 
     def deal_result(self, deal_info):
         self.deal_info = deal_info
+
+    def deal_completed(self, deal_result):
+        self.result = deal_result
 
 
 def test_buy_mayfair():
@@ -73,6 +81,16 @@ def test_buy_mayfair():
     # We check that the players were notified correctly...
     assert player0.ai.deal_info == PlayerAIBase.DealInfo.SUCCEEDED
     assert player1.ai.deal_info == PlayerAIBase.DealInfo.SUCCEEDED
+
+    assert player0.ai.result.proposer is player0
+    assert player0.ai.result.proposee is player1
+    assert mayfair in player0.ai.result.properties_transferred_to_proposer
+    assert player0.ai.result.cash_transferred_from_proposer_to_proposee == 750
+
+    assert player1.ai.result.proposer is player0
+    assert player1.ai.result.proposee is player1
+    assert mayfair in player1.ai.result.properties_transferred_to_proposer
+    assert player1.ai.result.cash_transferred_from_proposer_to_proposee == 750
 
 
 def test_sell_mayfair():

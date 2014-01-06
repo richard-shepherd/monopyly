@@ -415,10 +415,26 @@ class PlayerAIBase(object):
 
     def deal_result(self, deal_info):
         '''
-        Called when a proposed deal has finished.
+        Called when a proposed deal has finished. The players involved in
+        the deal receive this notification.
 
         deal_info is a PlayerAIBase.DealInfo 'enum' giving indicating
         whether the deal succeeded, and if not why not.
+
+        No response is required.
+        '''
+        pass
+
+    def deal_completed(self, deal_result):
+        '''
+        Called when a deal has successfully completed to let all
+        players know the details of the deal which took place.
+
+        deal_result is a DealResult object.
+
+        Note that the cash_transferred_from_proposer_to_proposee in
+        the deal_result can be negative if cash was transferred from
+        the proposee to the proposer.
 
         No response is required.
         '''
