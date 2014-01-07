@@ -1019,6 +1019,7 @@ class Game(object):
         for property in player.state.properties:
             property.owner = None
             property.number_of_houses = 0
+            property.is_mortgaged = False
 
         # We return any Get Out Of Jail Free cards to their decks...
         for card in player.state.get_out_of_jail_free_cards:

@@ -35,6 +35,10 @@ def test_player_goes_bankrupt():
     marlborough_street.number_of_houses = 2
     vine_street.number_of_houses = 2
 
+    # Player 1 also owns Strand, which is mortgaged...
+    strand = game.give_property_to_player(player1, Square.Name.STRAND)
+    strand.is_mortgaged = True
+
     # Player 1 does not have enough money to pay the rent (which is £1700)
     player1.state.cash = 500
 
@@ -54,6 +58,8 @@ def test_player_goes_bankrupt():
     assert bow_street.owner is None
     assert marlborough_street.owner is None
     assert vine_street.owner is None
+    assert strand.owner is None
+    assert strand.is_mortgaged is False
 
     # We play another round. Player 1 should be out and should not move
     game.dice = MockDice([(4, 6), (4, 6), (6, 4)])
