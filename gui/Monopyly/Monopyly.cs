@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace gui
+namespace Monopyly
 {
     public partial class Monopyly : Form
     {

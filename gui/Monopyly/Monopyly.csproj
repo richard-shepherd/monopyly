@@ -44,6 +44,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Board.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Board.Designer.cs">
+      <DependentUpon>Board.cs</DependentUpon>
+    </Compile>
     <Compile Include="Monopyly.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -52,6 +58,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Board.resx">
+      <DependentUpon>Board.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Monopyly.resx">
       <DependentUpon>Monopyly.cs</DependentUpon>
     </EmbeddedResource>
@@ -97,6 +106,7 @@
     <Content Include="graphics\triangle.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\dummy.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
