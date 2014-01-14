@@ -6,7 +6,7 @@ from .board import Board
 from .deal_response import DealResponse
 from .deal_result import DealResult
 from ..squares import Square, Property, Street
-from ..utility import typecheck, Logger
+from ..utility import Logger
 
 
 class Game(object):
@@ -440,8 +440,6 @@ class Game(object):
                 self.state,
                 player_who_won_auction,
                 square)
-            if not self.typecheck(player_who_won_auction, "property_offered_for_auction", bid, int):
-                continue
 
             # A bid of zero (or below) is not a bid...
             if bid > 0:
@@ -496,9 +494,6 @@ class Game(object):
         '''
         # We ask the player if they want to buy the property...
         action = player.call_ai(player.ai.landed_on_unowned_property, self.state, player, square)
-        if not self.typecheck(player, "landed_on_unowned_property", action, int):
-            return Game.Action.PROPERTY_NOT_BOUGHT
-
         if action == PlayerAIBase.Action.DO_NOT_BUY:
             return Game.Action.PROPERTY_NOT_BOUGHT
 
@@ -1059,18 +1054,4 @@ class Game(object):
             player.ai.game_over(self.winner, maximum_rounds_played)
         for player in self.state.bankrupt_players:
             player.ai.game_over(self.winner, maximum_rounds_played)
-
-    def typecheck(self, player, function, return_value, expected_type):
-        '''
-        Checks that an AI return value is of the expected type.
-        See utils.validate_type for the acceptable values for type_or_prototype.
-        '''
-        if typecheck(return_value, expected_type):
-            # The return type was of the right type...
-            return True
-
-        # The return type was not of the right type...
-        message = "Invalid return type from {0}. Expected {1}, got {2}".format(function, expected_type, return_value)
-        player.call_ai(player.ai.ai_error, message)
-        return False
 

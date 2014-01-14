@@ -50,6 +50,8 @@
     <Compile Include="Board.Designer.cs">
       <DependentUpon>Board.cs</DependentUpon>
     </Compile>
+    <Compile Include="Square_Bottom.cs" />
+    <Compile Include="Square.cs" />
     <Compile Include="Monopyly.cs">
       <SubType>Form</SubType>
     </Compile>
