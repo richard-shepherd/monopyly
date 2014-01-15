@@ -79,6 +79,11 @@ namespace mpy
             m_squares[1].ShowMortgaged(graphics);
             m_squares[9].ShowMortgaged(graphics);
 
+            m_squares[7].ShowPlayer(graphics, 0);
+            m_squares[7].ShowPlayer(graphics, 1);
+            m_squares[7].ShowPlayer(graphics, 2);
+            m_squares[7].ShowPlayer(graphics, 3);
+
             m_squares[1].ShowOwner(graphics, 0);
             m_squares[3].ShowOwner(graphics, 0);
             m_squares[6].ShowOwner(graphics, 2);
@@ -91,10 +96,6 @@ namespace mpy
             m_squares[8].ShowHouses(graphics, 2);
             m_squares[9].ShowHouses(graphics, 1);
 
-            m_squares[0].ShowPlayer(graphics, 0);
-            m_squares[2].ShowPlayer(graphics, 1);
-            m_squares[3].ShowPlayer(graphics, 2);
-            m_squares[4].ShowPlayer(graphics, 3);
             // *** TEST ***
         }
 

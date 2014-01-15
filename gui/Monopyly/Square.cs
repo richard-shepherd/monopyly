@@ -76,6 +76,27 @@ namespace mpy
             NumberOfPlayersOnSquare = 0;
         }
 
+        /// <summary>
+        /// An offset used for the player position if there is
+        /// more than one players on the square.
+        /// </summary>
+        public Point PlayerOffset 
+        {
+            get
+            {
+                switch(NumberOfPlayersOnSquare)
+                {
+                    case 2:
+                        return new Point(10, 10);
+                    case 3:
+                        return new Point(-10, -10);
+                    case 4:
+                        return new Point(-10, 10);
+                }
+                return new Point(0, 0);
+            }
+        }
+
         #endregion
 
         #region Abstract methods

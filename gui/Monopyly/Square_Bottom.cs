@@ -64,8 +64,9 @@ namespace mpy
         /// </summary>
         public override void ShowPlayer(Graphics graphics, int playerNumber)
         {
+            NumberOfPlayersOnSquare++;
             Bitmap player = Players[playerNumber];
-            graphics.DrawImageUnscaled(player, Left + 5, Top + 25);
+            graphics.DrawImageUnscaled(player, Left + 5 + PlayerOffset.X, Top + 25 + PlayerOffset.Y);
         }
 
 
