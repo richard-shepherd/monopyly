@@ -1,4 +1,4 @@
-﻿namespace Monopyly
+﻿namespace mpy
 {
     partial class Monopyly
     {
@@ -35,7 +35,7 @@
             // 
             this.board1.Location = new System.Drawing.Point(12, 12);
             this.board1.Name = "board1";
-            this.board1.Size = new System.Drawing.Size(500, 500);
+            this.board1.Size = new System.Drawing.Size(540, 540);
             this.board1.TabIndex = 0;
             // 
             // Monopyly
@@ -43,7 +43,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size(542, 524);
+            this.ClientSize = new System.Drawing.Size(567, 565);
             this.Controls.Add(this.board1);
             this.Name = "Monopyly";
             this.Text = "Monopyly";

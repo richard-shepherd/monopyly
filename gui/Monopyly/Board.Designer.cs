@@ -1,4 +1,4 @@
-﻿namespace Monopyly
+﻿namespace mpy
 {
     partial class Board
     {
@@ -36,7 +36,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.DoubleBuffered = true;
             this.Name = "Board";
-            this.Size = new System.Drawing.Size(500, 500);
+            this.Size = new System.Drawing.Size(540, 540);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Board_Paint);
             this.ResumeLayout(false);
 

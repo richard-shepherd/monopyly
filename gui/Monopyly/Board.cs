@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Monopyly
+namespace mpy
 {
     public partial class Board : UserControl
     {
@@ -21,11 +21,7 @@ namespace Monopyly
             InitializeComponent();
 
             // We load the bitmaps...
-            m_board = loadBitmap("graphics/board.png");
-            m_playerShapes.Add(loadBitmap("graphics/circle.png"));
-            m_playerShapes.Add(loadBitmap("graphics/square.png"));
-            m_playerShapes.Add(loadBitmap("graphics/triangle.png"));
-            m_playerShapes.Add(loadBitmap("graphics/star.png"));
+            m_board = Utils.loadBitmap("graphics/board.png");
 
             // We set up the squares...
             setupSquares();
@@ -42,38 +38,21 @@ namespace Monopyly
         {
             // Go...
             Square_Bottom go = new Square_Bottom();
-            go.Top = 434;
-            go.Bottom = 500;
-            go.Left = 434;
-            go.Right = 500;
+            go.Top = BOARD_OFFSET + 434;
+            go.Bottom = BOARD_OFFSET + 500;
+            go.Left = BOARD_OFFSET + 434;
+            go.Right = BOARD_OFFSET + 500;
             m_squares.Add(go);
 
             // The other bottom squares...
             for(int i=0; i<9; ++i)
             {
                 Square_Bottom square = new Square_Bottom();
-                square.Top = 434;
-                square.Bottom = 500;
-                square.Left = (int)(394 - i * 40.8);
-                square.Right = (int)(433 - i * 40.8);
+                square.Top = BOARD_OFFSET + 434;
+                square.Bottom = BOARD_OFFSET + 500;
+                square.Left = BOARD_OFFSET + (int)(394 - i * 40.8);
+                square.Right = BOARD_OFFSET + (int)(433 - i * 40.8);
                 m_squares.Add(square);
-            }
-        }
-
-        /// <summary>
-        /// Loads a bitmap. 
-        /// </summary>
-        private Bitmap loadBitmap(string filename)
-        {
-            // We first load it from the working folder...
-            try
-            {
-                return new Bitmap(filename);
-            }
-            catch(Exception)
-            {
-                // We couldn't load it...
-                return null;
             }
         }
 
@@ -93,17 +72,29 @@ namespace Monopyly
             }
 
             // We show the board...
-            graphics.DrawImageUnscaled(m_board, 0, 0);
+            graphics.DrawImageUnscaled(m_board, BOARD_OFFSET, BOARD_OFFSET);
 
 
             // *** TEST ***
             m_squares[1].ShowMortgaged(graphics);
             m_squares[9].ShowMortgaged(graphics);
-            m_squares[1].ShowOwner(graphics, m_playerShapes[0]);
-            m_squares[3].ShowOwner(graphics, m_playerShapes[0]);
-            m_squares[6].ShowOwner(graphics, m_playerShapes[2]);
-            m_squares[8].ShowOwner(graphics, m_playerShapes[1]);
-            m_squares[9].ShowOwner(graphics, m_playerShapes[3]);
+
+            m_squares[1].ShowOwner(graphics, 0);
+            m_squares[3].ShowOwner(graphics, 0);
+            m_squares[6].ShowOwner(graphics, 2);
+            m_squares[8].ShowOwner(graphics, 1);
+            m_squares[9].ShowOwner(graphics, 3);
+
+            m_squares[1].ShowHouses(graphics, 4);
+            m_squares[3].ShowHouses(graphics, 5);
+            m_squares[6].ShowHouses(graphics, 3);
+            m_squares[8].ShowHouses(graphics, 2);
+            m_squares[9].ShowHouses(graphics, 1);
+
+            m_squares[0].ShowPlayer(graphics, 0);
+            m_squares[2].ShowPlayer(graphics, 1);
+            m_squares[3].ShowPlayer(graphics, 2);
+            m_squares[4].ShowPlayer(graphics, 3);
             // *** TEST ***
         }
 
@@ -111,14 +102,14 @@ namespace Monopyly
 
         #region Private data
 
+        // Constants...
+        private const int BOARD_OFFSET = 20;
+
         // Bitmaps for the board, players etc...
         private Bitmap m_board = null;
 
         // The squares...
         private List<Square> m_squares = new List<Square>();
-
-        // Shapes reprsenting each player...
-        private List<Bitmap> m_playerShapes = new List<Bitmap>();
 
         #endregion
     }

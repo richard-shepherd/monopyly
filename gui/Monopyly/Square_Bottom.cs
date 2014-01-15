@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 
-namespace Monopyly
+namespace mpy
 {
     /// <summary>
     /// Draws the bottom squares of the board, from Go
@@ -35,10 +35,39 @@ namespace Monopyly
         /// <summary>
         /// Shows the owner of the square.
         /// </summary>
-        public override void ShowOwner(Graphics graphics, Bitmap playerShape)
+        public override void ShowOwner(Graphics graphics, int playerNumber)
         {
-            graphics.DrawImageUnscaled(playerShape, Left + 6, Top - 20);
+            Bitmap playerShape = OwnerShapes[playerNumber];
+            graphics.DrawImageUnscaled(playerShape, Left + 6, Bottom - 10);
         }
+
+        /// <summary>
+        /// Shows houses or hotels.
+        /// </summary>
+        public override void ShowHouses(Graphics graphics, int numberOfHouses)
+        {
+            if(numberOfHouses == 5)
+            {
+                graphics.DrawImageUnscaled(HotelHorizontal, Left + 6, Top);
+            }
+            else if(numberOfHouses >= 1 && numberOfHouses <= 4)
+            {
+                for (int i = 0; i < numberOfHouses; ++i)
+                {
+                    graphics.DrawImageUnscaled(HouseHorizontal, Left + i * 10 - 1, Top);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Shows the player token on the square.
+        /// </summary>
+        public override void ShowPlayer(Graphics graphics, int playerNumber)
+        {
+            Bitmap player = Players[playerNumber];
+            graphics.DrawImageUnscaled(player, Left + 5, Top + 25);
+        }
+
 
         #endregion
 
