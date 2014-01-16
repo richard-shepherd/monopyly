@@ -74,15 +74,21 @@ namespace mpy
             // We show the board...
             graphics.DrawImageUnscaled(m_board, BOARD_OFFSET, BOARD_OFFSET);
 
+            // We clear info from the squares before drawing them...
+            foreach (Square square in m_squares)
+            {
+                square.Clear();
+            }
+
 
             // *** TEST ***
             m_squares[1].ShowMortgaged(graphics);
             m_squares[9].ShowMortgaged(graphics);
 
-            m_squares[7].ShowPlayer(graphics, 0);
-            m_squares[7].ShowPlayer(graphics, 1);
-            m_squares[7].ShowPlayer(graphics, 2);
-            m_squares[7].ShowPlayer(graphics, 3);
+            m_squares[7].ShowPlayer(graphics, 0, false);
+            m_squares[7].ShowPlayer(graphics, 1, false);
+            m_squares[7].ShowPlayer(graphics, 2, false);
+            m_squares[7].ShowPlayer(graphics, 3, false);
 
             m_squares[1].ShowOwner(graphics, 0);
             m_squares[3].ShowOwner(graphics, 0);

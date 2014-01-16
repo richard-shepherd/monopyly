@@ -62,7 +62,7 @@ namespace mpy
         /// <summary>
         /// Shows the player token on the square.
         /// </summary>
-        public override void ShowPlayer(Graphics graphics, int playerNumber)
+        public override void ShowPlayer(Graphics graphics, int playerNumber, bool inJail)
         {
             NumberOfPlayersOnSquare++;
             Bitmap player = Players[playerNumber];

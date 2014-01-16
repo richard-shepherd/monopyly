@@ -119,7 +119,7 @@ namespace mpy
         /// <summary>
         /// Shows the player token on the square.
         /// </summary>
-        public abstract void ShowPlayer(Graphics graphics, int playerNumber);
+        public abstract void ShowPlayer(Graphics graphics, int playerNumber, bool inJail);
 
         #endregion
 
