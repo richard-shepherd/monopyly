@@ -92,8 +92,9 @@ namespace mpy
                         return new Point(-10, -10);
                     case 4:
                         return new Point(-10, 10);
+                    default:
+                        return new Point(0, 0);
                 }
-                return new Point(0, 0);
             }
         }
 

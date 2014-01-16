@@ -28,15 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.board1 = new Board();
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Monopyly));
+            this.ctrlTimer = new System.Windows.Forms.Timer(this.components);
+            this.ctrlBoard = new mpy.Board();
             this.SuspendLayout();
             // 
-            // board1
+            // ctrlTimer
             // 
-            this.board1.Location = new System.Drawing.Point(12, 12);
-            this.board1.Name = "board1";
-            this.board1.Size = new System.Drawing.Size(540, 540);
-            this.board1.TabIndex = 0;
+            this.ctrlTimer.Enabled = true;
+            this.ctrlTimer.Interval = 50;
+            this.ctrlTimer.Tick += new System.EventHandler(this.ctrlTimer_Tick);
+            // 
+            // ctrlBoard
+            // 
+            this.ctrlBoard.Location = new System.Drawing.Point(12, 12);
+            this.ctrlBoard.Name = "ctrlBoard";
+            this.ctrlBoard.Size = new System.Drawing.Size(540, 540);
+            this.ctrlBoard.TabIndex = 0;
             // 
             // Monopyly
             // 
@@ -44,7 +53,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(567, 565);
-            this.Controls.Add(this.board1);
+            this.Controls.Add(this.ctrlBoard);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Monopyly";
             this.Text = "Monopyly";
             this.ResumeLayout(false);
@@ -53,7 +63,8 @@
 
         #endregion
 
-        private Board board1;
+        private Board ctrlBoard;
+        private System.Windows.Forms.Timer ctrlTimer;
 
     }
 }

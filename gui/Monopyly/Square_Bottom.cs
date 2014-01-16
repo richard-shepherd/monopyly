@@ -48,7 +48,7 @@ namespace mpy
         {
             if(numberOfHouses == 5)
             {
-                graphics.DrawImageUnscaled(HotelHorizontal, Left + 6, Top);
+                graphics.DrawImageUnscaled(HotelHorizontal, Left + 6, Top - 1);
             }
             else if(numberOfHouses >= 1 && numberOfHouses <= 4)
             {
