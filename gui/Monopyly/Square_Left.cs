@@ -8,7 +8,7 @@ namespace mpy
 {
     /// <summary>
     /// Draws players and houses on the left squares of the board, 
-    /// from Pall Amll to Vine Street.
+    /// from Pall Mall to Vine Street.
     /// </summary>
     class Square_Left : Square
     {

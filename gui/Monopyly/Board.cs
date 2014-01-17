@@ -131,6 +131,24 @@ namespace mpy
                 m_squares.Add(square);
             }
 
+            // Go To Jail...
+            var goToJail = new Square_Right();
+            goToJail.Top = BOARD_OFFSET;
+            goToJail.Bottom = goToJail.Top + 67;
+            goToJail.Right = BOARD_OFFSET + 500;
+            goToJail.Left = goToJail.Right - 67;
+            m_squares.Add(goToJail);
+
+            // The other right squares...
+            for (int i = 0; i < 9; ++i)
+            {
+                var square = new Square_Right();
+                square.Top = BOARD_OFFSET + (int)(67 + i * 40.8);
+                square.Bottom = square.Top + 41;
+                square.Right = BOARD_OFFSET + 500;
+                square.Left = square.Right - 67;
+                m_squares.Add(square);
+            }
         }
 
         /// <summary>
@@ -173,20 +191,20 @@ namespace mpy
             g.DrawImageUnscaled(m_board, BOARD_OFFSET, BOARD_OFFSET);
 
             // *** TEST ***
-            m_squares[21].ShowMortgaged(g);
-            m_squares[29].ShowMortgaged(g);
+            m_squares[31].ShowMortgaged(g);
+            m_squares[39].ShowMortgaged(g);
 
-            m_squares[21].ShowOwner(g, 0);
-            m_squares[23].ShowOwner(g, 0);
-            m_squares[26].ShowOwner(g, 2);
-            m_squares[28].ShowOwner(g, 1);
-            m_squares[29].ShowOwner(g, 3);
+            m_squares[31].ShowOwner(g, 0);
+            m_squares[33].ShowOwner(g, 0);
+            m_squares[36].ShowOwner(g, 2);
+            m_squares[38].ShowOwner(g, 1);
+            m_squares[39].ShowOwner(g, 3);
 
-            m_squares[21].ShowHouses(g, 4);
-            m_squares[23].ShowHouses(g, 5);
-            m_squares[26].ShowHouses(g, 3);
-            m_squares[28].ShowHouses(g, 2);
-            m_squares[29].ShowHouses(g, 1);
+            m_squares[31].ShowHouses(g, 4);
+            m_squares[34].ShowHouses(g, 5);
+            m_squares[36].ShowHouses(g, 3);
+            m_squares[38].ShowHouses(g, 2);
+            m_squares[39].ShowHouses(g, 1);
             // *** TEST ***
         }
 
@@ -196,10 +214,10 @@ namespace mpy
         private void showPlayers(Graphics g)
         {
             // *** TEST ***
-            m_squares[18].ShowPlayer(g, 0, false);
-            m_squares[17].ShowPlayer(g, 1, false);
-            m_squares[17].ShowPlayer(g, 2, false);
-            m_squares[17].ShowPlayer(g, 3, false);
+            m_squares[38].ShowPlayer(g, 0, false);
+            m_squares[37].ShowPlayer(g, 1, false);
+            m_squares[37].ShowPlayer(g, 2, false);
+            m_squares[37].ShowPlayer(g, 3, false);
             // *** TEST ***
         }
 
@@ -234,6 +252,10 @@ namespace mpy
                 return;
             }
             double lineLength = NET_WORTH_WIDTH / (double)maxCount;
+            if(lineLength > 5)
+            {
+                lineLength = 5;
+            }
 
             // We show a line for each player...
             foreach(var player in m_players)

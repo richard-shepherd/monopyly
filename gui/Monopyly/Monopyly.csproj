@@ -50,6 +50,7 @@
     <Compile Include="Board.Designer.cs">
       <DependentUpon>Board.cs</DependentUpon>
     </Compile>
+    <Compile Include="Square_Right.cs" />
     <Compile Include="Square_Top.cs" />
     <Compile Include="Square_Left.cs" />
     <Compile Include="Square_Bottom.cs" />
