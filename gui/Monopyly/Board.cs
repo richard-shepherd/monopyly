@@ -80,7 +80,7 @@ namespace mpy
         private void setupSquares()
         {
             // Go...
-            Square_Bottom go = new Square_Bottom();
+            var go = new Square_Bottom();
             go.Top = BOARD_OFFSET + 434;
             go.Bottom = BOARD_OFFSET + 500;
             go.Left = BOARD_OFFSET + 434;
@@ -90,11 +90,11 @@ namespace mpy
             // The other bottom squares...
             for(int i=0; i<9; ++i)
             {
-                Square_Bottom square = new Square_Bottom();
-                square.Top = BOARD_OFFSET + 434;
+                var square = new Square_Bottom();
                 square.Bottom = BOARD_OFFSET + 500;
+                square.Top = square.Top - 67;
                 square.Left = BOARD_OFFSET + (int)(394 - i * 40.8);
-                square.Right = BOARD_OFFSET + (int)(433 - i * 40.8);
+                square.Right = square.Left + 41;
                 m_squares.Add(square);
             }
 
@@ -104,13 +104,33 @@ namespace mpy
             // The left squares...
             for (int i = 0; i < 9; ++i)
             {
-                Square_Left square = new Square_Left();
+                var square = new Square_Left();
                 square.Top = BOARD_OFFSET + (int)(392 - i * 40.8);
                 square.Bottom = square.Top + 41;
                 square.Left = BOARD_OFFSET;
                 square.Right = square.Left + 67;
                 m_squares.Add(square);
             }
+
+            // Free Parking...
+            var freeParking = new Square_Bottom();
+            freeParking.Top = BOARD_OFFSET;
+            freeParking.Bottom = freeParking.Top + 67;
+            freeParking.Left = BOARD_OFFSET;
+            freeParking.Right = freeParking.Left + 67;
+            m_squares.Add(freeParking);
+
+            // The other top squares...
+            for (int i = 0; i < 9; ++i)
+            {
+                var square = new Square_Top();
+                square.Top = BOARD_OFFSET;
+                square.Bottom = square.Top + 67;
+                square.Left = BOARD_OFFSET + (int)(67 + i * 40.8);
+                square.Right = square.Left + 41;
+                m_squares.Add(square);
+            }
+
         }
 
         /// <summary>
@@ -153,20 +173,20 @@ namespace mpy
             g.DrawImageUnscaled(m_board, BOARD_OFFSET, BOARD_OFFSET);
 
             // *** TEST ***
-            m_squares[11].ShowMortgaged(g);
-            m_squares[19].ShowMortgaged(g);
+            m_squares[21].ShowMortgaged(g);
+            m_squares[29].ShowMortgaged(g);
 
-            m_squares[11].ShowOwner(g, 0);
-            m_squares[13].ShowOwner(g, 0);
-            m_squares[16].ShowOwner(g, 2);
-            m_squares[18].ShowOwner(g, 1);
-            m_squares[19].ShowOwner(g, 3);
+            m_squares[21].ShowOwner(g, 0);
+            m_squares[23].ShowOwner(g, 0);
+            m_squares[26].ShowOwner(g, 2);
+            m_squares[28].ShowOwner(g, 1);
+            m_squares[29].ShowOwner(g, 3);
 
-            m_squares[11].ShowHouses(g, 4);
-            m_squares[13].ShowHouses(g, 5);
-            m_squares[16].ShowHouses(g, 3);
-            m_squares[18].ShowHouses(g, 2);
-            m_squares[19].ShowHouses(g, 1);
+            m_squares[21].ShowHouses(g, 4);
+            m_squares[23].ShowHouses(g, 5);
+            m_squares[26].ShowHouses(g, 3);
+            m_squares[28].ShowHouses(g, 2);
+            m_squares[29].ShowHouses(g, 1);
             // *** TEST ***
         }
 
