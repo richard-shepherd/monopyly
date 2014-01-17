@@ -97,6 +97,20 @@ namespace mpy
                 square.Right = BOARD_OFFSET + (int)(433 - i * 40.8);
                 m_squares.Add(square);
             }
+
+            // Jail....
+            m_squares.Add(new Square_Jail());
+
+            // The left squares...
+            for (int i = 0; i < 9; ++i)
+            {
+                Square_Left square = new Square_Left();
+                square.Top = BOARD_OFFSET + (int)(392 - i * 40.8);
+                square.Bottom = square.Top + 41;
+                square.Left = BOARD_OFFSET;
+                square.Right = square.Left + 67;
+                m_squares.Add(square);
+            }
         }
 
         /// <summary>
@@ -139,20 +153,20 @@ namespace mpy
             g.DrawImageUnscaled(m_board, BOARD_OFFSET, BOARD_OFFSET);
 
             // *** TEST ***
-            m_squares[1].ShowMortgaged(g);
-            m_squares[9].ShowMortgaged(g);
+            m_squares[11].ShowMortgaged(g);
+            m_squares[19].ShowMortgaged(g);
 
-            m_squares[1].ShowOwner(g, 0);
-            m_squares[3].ShowOwner(g, 0);
-            m_squares[6].ShowOwner(g, 2);
-            m_squares[8].ShowOwner(g, 1);
-            m_squares[9].ShowOwner(g, 3);
+            m_squares[11].ShowOwner(g, 0);
+            m_squares[13].ShowOwner(g, 0);
+            m_squares[16].ShowOwner(g, 2);
+            m_squares[18].ShowOwner(g, 1);
+            m_squares[19].ShowOwner(g, 3);
 
-            m_squares[1].ShowHouses(g, new Random().Next(0, 6));
-            m_squares[3].ShowHouses(g, 5);
-            m_squares[6].ShowHouses(g, 3);
-            m_squares[8].ShowHouses(g, 2);
-            m_squares[9].ShowHouses(g, 1);
+            m_squares[11].ShowHouses(g, 4);
+            m_squares[13].ShowHouses(g, 5);
+            m_squares[16].ShowHouses(g, 3);
+            m_squares[18].ShowHouses(g, 2);
+            m_squares[19].ShowHouses(g, 1);
             // *** TEST ***
         }
 
@@ -162,10 +176,10 @@ namespace mpy
         private void showPlayers(Graphics g)
         {
             // *** TEST ***
-            m_squares[8].ShowPlayer(g, 0, false);
-            m_squares[7].ShowPlayer(g, 1, false);
-            m_squares[7].ShowPlayer(g, 2, false);
-            m_squares[7].ShowPlayer(g, 3, false);
+            m_squares[18].ShowPlayer(g, 0, false);
+            m_squares[17].ShowPlayer(g, 1, false);
+            m_squares[17].ShowPlayer(g, 2, false);
+            m_squares[17].ShowPlayer(g, 3, false);
             // *** TEST ***
         }
 

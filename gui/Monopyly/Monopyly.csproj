@@ -50,6 +50,7 @@
     <Compile Include="Board.Designer.cs">
       <DependentUpon>Board.cs</DependentUpon>
     </Compile>
+    <Compile Include="Square_Left.cs" />
     <Compile Include="Square_Bottom.cs" />
     <Compile Include="Square.cs" />
     <Compile Include="Monopyly.cs">
@@ -60,6 +61,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Square_Jail.cs" />
     <Compile Include="Utils.cs" />
     <EmbeddedResource Include="Board.resx">
       <DependentUpon>Board.cs</DependentUpon>

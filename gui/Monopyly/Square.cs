@@ -105,22 +105,22 @@ namespace mpy
         /// <summary>
         /// Shows the square as mortgaged.
         /// </summary>
-        public abstract void ShowMortgaged(Graphics graphics);
+        public abstract void ShowMortgaged(Graphics g);
 
         /// <summary>
         /// Shows the owner of the square.
         /// </summary>
-        public abstract void ShowOwner(Graphics graphics, int playerNumber);
+        public abstract void ShowOwner(Graphics g, int playerNumber);
 
         /// <summary>
         /// Shows houses or hotels.
         /// </summary>
-        public abstract void ShowHouses(Graphics graphics, int numberOfHouses);
+        public abstract void ShowHouses(Graphics g, int numberOfHouses);
 
         /// <summary>
         /// Shows the player token on the square.
         /// </summary>
-        public abstract void ShowPlayer(Graphics graphics, int playerNumber, bool inJail);
+        public abstract void ShowPlayer(Graphics g, int playerNumber, bool inJail);
 
         #endregion
 
@@ -161,6 +161,11 @@ namespace mpy
         /// The number of players on the square.
         /// </summary>
         protected int NumberOfPlayersOnSquare { get; set; }
+
+        /// <summary>
+        /// The width of the mortgage line.
+        /// </summary>
+        protected const int MORTGAGE_LINE_WIDTH = 6;
 
         #endregion
 

@@ -7,10 +7,10 @@ using System.Text;
 namespace mpy
 {
     /// <summary>
-    /// Draws players and houses on the bottom squares of the board, 
-    /// from Go to Pentonville Road.
+    /// Draws players and houses on the left squares of the board, 
+    /// from Pall Amll to Vine Street.
     /// </summary>
-    class Square_Bottom : Square
+    class Square_Left : Square
     {
         #region Public methods
         
@@ -19,14 +19,14 @@ namespace mpy
         /// </summary>
         public override void ShowMortgaged(Graphics g)
         {
-            // We draw a red line from the top-left to the bottom-right 
+            // We draw a red line from the top-right to the bottom-left
             // of the square...
             var points = new Point[]
             {
-                new Point(Left, Top),
-                new Point(Left+MORTGAGE_LINE_WIDTH, Top),
-                new Point(Right, Bottom),
-                new Point(Right-MORTGAGE_LINE_WIDTH, Bottom)
+                new Point(Right, Top),
+                new Point(Right, Top+MORTGAGE_LINE_WIDTH),
+                new Point(Left, Bottom),
+                new Point(Left, Bottom-MORTGAGE_LINE_WIDTH)
             };
             g.FillPolygon(Brushes.Red, points);
         }
@@ -37,7 +37,7 @@ namespace mpy
         public override void ShowOwner(Graphics g, int playerNumber)
         {
             Bitmap playerShape = OwnerShapes[playerNumber];
-            g.DrawImageUnscaled(playerShape, Left + 6, Bottom - 10);
+            g.DrawImageUnscaled(playerShape, Left - 20, Bottom - 36);
         }
 
         /// <summary>
@@ -47,13 +47,13 @@ namespace mpy
         {
             if(numberOfHouses == 5)
             {
-                g.DrawImageUnscaled(HotelHorizontal, Left + 6, Top - 1);
+                g.DrawImageUnscaled(HotelVertical, Left + 52, Top + 6);
             }
             else if(numberOfHouses >= 1 && numberOfHouses <= 4)
             {
                 for (int i = 0; i < numberOfHouses; ++i)
                 {
-                    g.DrawImageUnscaled(HouseHorizontal, Left + i * 10 - 1, Top);
+                    g.DrawImageUnscaled(HouseVertical, Left + 52, Top + i * 10 + 1);
                 }
             }
         }
@@ -65,9 +65,8 @@ namespace mpy
         {
             NumberOfPlayersOnSquare++;
             Bitmap player = Players[playerNumber];
-            g.DrawImageUnscaled(player, Left + 5 + PlayerOffset.X, Top + 25 + PlayerOffset.Y);
+            g.DrawImageUnscaled(player, Left + 10 + PlayerOffset.X, Top + 5 + PlayerOffset.Y);
         }
-
 
         #endregion
 
