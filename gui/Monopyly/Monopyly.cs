@@ -35,7 +35,7 @@ namespace mpy
             InitializeComponent();
 
             // *** TEST ***
-            player_infos.Add(new PlayerInfo("Julian"));
+            player_infos.Add(new PlayerInfo("Julian (a player with a really, really, really long name)"));
             player_infos.Add(new PlayerInfo("George"));
             player_infos.Add(new PlayerInfo("Timmy"));
             player_infos.Add(new PlayerInfo("Anne"));

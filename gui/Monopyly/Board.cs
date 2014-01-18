@@ -35,35 +35,7 @@ namespace mpy
             int playerNumber = 0;
             foreach(string name in names)
             {
-                PlayerInfo playerInfo = new PlayerInfo(name);
-                switch(playerNumber)
-                {
-                    case 0:
-                        playerInfo.Pen = Pens.Yellow;
-                        playerInfo.OwnerShape = Utils.loadBitmap("graphics/circle.png");
-                        playerInfo.PlayerShape = Utils.loadBitmap("graphics/circle+player.png");
-                        break;
-                    case 1:
-                        playerInfo.Pen = Pens.Blue;
-                        playerInfo.OwnerShape = Utils.loadBitmap("graphics/square.png");
-                        playerInfo.PlayerShape = Utils.loadBitmap("graphics/square+player.png");
-                        break;
-                    case 2:
-                        playerInfo.Pen = Pens.Green;
-                        playerInfo.OwnerShape = Utils.loadBitmap("graphics/triangle.png");
-                        playerInfo.PlayerShape = Utils.loadBitmap("graphics/triangle+player.png");
-                        break;
-                    case 3:
-                        playerInfo.Pen = Pens.Crimson;
-                        playerInfo.OwnerShape = Utils.loadBitmap("graphics/star.png");
-                        playerInfo.PlayerShape = Utils.loadBitmap("graphics/star+player.png");
-                        break;
-                    default:
-                        playerInfo.Pen = Pens.Black;
-                        break;
-                }
-                m_players.Add(playerInfo);
-                playerNumber++;
+                addPlayer(name, playerNumber++);
             }
         }
 
@@ -81,6 +53,43 @@ namespace mpy
         #endregion
 
         #region Private methods
+
+        /// <summary>
+        /// Adds a player to the game.
+        /// </summary>
+        private void addPlayer(string name, int playerNumber)
+        {
+            PlayerInfo playerInfo = new PlayerInfo(name);
+            switch (playerNumber)
+            {
+                case 0:
+                    playerInfo.Pen = Pens.Yellow;
+                    playerInfo.OwnerShape = Utils.loadBitmap("graphics/circle.png");
+                    playerInfo.PlayerShape = Utils.loadBitmap("graphics/circle+player.png");
+                    break;
+                case 1:
+                    playerInfo.Pen = Pens.Blue;
+                    playerInfo.OwnerShape = Utils.loadBitmap("graphics/square.png");
+                    playerInfo.PlayerShape = Utils.loadBitmap("graphics/square+player.png");
+                    break;
+                case 2:
+                    playerInfo.Pen = Pens.Green;
+                    playerInfo.OwnerShape = Utils.loadBitmap("graphics/triangle.png");
+                    playerInfo.PlayerShape = Utils.loadBitmap("graphics/triangle+player.png");
+                    break;
+                case 3:
+                    playerInfo.Pen = Pens.Crimson;
+                    playerInfo.OwnerShape = Utils.loadBitmap("graphics/star.png");
+                    playerInfo.PlayerShape = Utils.loadBitmap("graphics/star+player.png");
+                    break;
+                default:
+                    playerInfo.Pen = Pens.Black;
+                    playerInfo.OwnerShape = Utils.loadBitmap("graphics/dummy.png");
+                    playerInfo.PlayerShape = Utils.loadBitmap("graphics/dummy.png");
+                    break;
+            }
+            m_players.Add(playerInfo);
+        }
 
         /// <summary>
         /// Sets up the collection of Squares that make up the board.
@@ -183,12 +192,80 @@ namespace mpy
             // We show the board,mortgaged and houses...
             showBoard(g);
 
+            // We show the player info (names, games won etc)...
+            showPlayerInfo(g);
+
             // We show the players...
             showPlayers(g);
 
             // We show the net-worth graph...
             showNetWorth(g);
+        }
 
+        /// <summary>
+        /// Shows the player names, games won etc.
+        /// </summary>
+        private void showPlayerInfo(Graphics g)
+        {
+            int startX = BOARD_OFFSET + 80;
+            int startY = BOARD_OFFSET + 80;
+            int cellHeight = 30;
+            var font = new Font("Arial", 10);
+            var titleFont = new Font("Arial", 10, FontStyle.Bold);
+            var brush = Brushes.Black;
+            var headerBackground = Brushes.LightGray;
+            var rowBackground = Brushes.LightGreen;
+            int cellWidth_Icon = 40;
+            int cellWidth_GamesWon = 40;
+            int cellWidth_MsPerTurn = 60;
+            int cellWidth_Name = 100;
+            int textOffsetX = 4;
+            int textOffsetY = 4;
+            var cellWidths = new List<int>() { cellWidth_Icon, cellWidth_GamesWon, cellWidth_MsPerTurn, cellWidth_Name };
+
+            // We show the titles
+            showTableRow(g, startX, startY, cellWidths, cellHeight, headerBackground);
+            g.DrawString("Icon", titleFont, brush, startX + textOffsetX, startY + textOffsetY);
+
+
+            // For each player we show:
+            // a. The player graphic
+            // b. Games won
+            // c. Average ms per turn
+            // d. The player name
+            for(int i=0; i<m_players.Count; ++i)
+            {
+                var playerInfo = m_players[i];
+
+                int cellY = startY + (i + 1) * cellHeight;
+
+                // a. The player graphic...
+                g.DrawImageUnscaled(playerInfo.PlayerShape, startX, cellY);
+
+                // b. Games won...
+                var gamesWon = playerInfo.GamesWon.ToString();
+                g.DrawString(gamesWon, font, brush, startX + 40, cellY);
+
+                // c. ms/turn...
+                var msPerTurn = playerInfo.MillisecondsPerTurn.ToString("0.00");
+                g.DrawString(msPerTurn, font, brush, startX + 60, cellY);
+
+                // d. The player's name...
+                g.DrawString(playerInfo.Name, font, brush, startX + 90, cellY);
+            }
+        }
+
+        /// <summary>
+        /// Draws boxes for a row of the player-info table.
+        /// </summary>
+        void showTableRow(Graphics g, int x, int y, List<int> widths, int cellHeight, Brush brush)
+        {
+            foreach(int width in widths)
+            {
+                g.FillRectangle(brush, x, y, width, cellHeight);
+                g.DrawRectangle(Pens.Black, x, y, width, cellHeight);
+                x += width;
+            }
         }
 
         /// <summary>
@@ -338,7 +415,10 @@ namespace mpy
             // Constructor...
             public PlayerInfo(string name)
             {
+                Name = name;
                 NetWorthHistory = new List<int>();
+                GamesWon = 0;
+                MillisecondsPerTurn = 0.0;
             }
 
             // The player's name...
@@ -355,6 +435,12 @@ namespace mpy
 
             // The image used to show the player's position on the board...
             public Bitmap PlayerShape { get; set; }
+
+            // The number of games won by the player...
+            public int GamesWon { get; set; }
+
+            // The average number of milliseconds taken per turn...
+            public double MillisecondsPerTurn { get; set; }
         }
 
         // The collection of players...
