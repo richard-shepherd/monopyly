@@ -18,20 +18,6 @@ namespace mpy
         /// </summary>
         static Square()
         {
-            // We load the player shapes...
-            OwnerShapes = new List<Bitmap>();
-            OwnerShapes.Add(Utils.loadBitmap("graphics/circle.png"));
-            OwnerShapes.Add(Utils.loadBitmap("graphics/square.png"));
-            OwnerShapes.Add(Utils.loadBitmap("graphics/triangle.png"));
-            OwnerShapes.Add(Utils.loadBitmap("graphics/star.png"));
-
-            // We load the players...
-            Players = new List<Bitmap>();
-            Players.Add(Utils.loadBitmap("graphics/circle+player.png"));
-            Players.Add(Utils.loadBitmap("graphics/square+player.png"));
-            Players.Add(Utils.loadBitmap("graphics/triangle+player.png"));
-            Players.Add(Utils.loadBitmap("graphics/star+player.png"));
-
             // We load the houses and hotels...
             HouseHorizontal = Utils.loadBitmap("graphics/house_horizontal.png");
             HouseVertical = Utils.loadBitmap("graphics/house_vertical.png");
@@ -110,7 +96,7 @@ namespace mpy
         /// <summary>
         /// Shows the owner of the square.
         /// </summary>
-        public abstract void ShowOwner(Graphics g, int playerNumber);
+        public abstract void ShowOwner(Graphics g, Bitmap ownerShape);
 
         /// <summary>
         /// Shows houses or hotels.
@@ -120,22 +106,11 @@ namespace mpy
         /// <summary>
         /// Shows the player token on the square.
         /// </summary>
-        public abstract void ShowPlayer(Graphics g, int playerNumber, bool inJail);
+        public abstract void ShowPlayer(Graphics g, Bitmap playerShape, bool inJail);
 
         #endregion
 
         #region Protected methods and properties
-
-        /// <summary>
-        /// Shapes used when showing ownership.
-        /// </summary>
-        protected static List<Bitmap> OwnerShapes { get; set; }
-
-        /// <summary>
-        /// A shape for each player, used when showing which square 
-        /// the player is on.
-        /// </summary>
-        protected static List<Bitmap> Players { get; set; }
 
         /// <summary>
         /// House for use on the top and bottom sides of the board.

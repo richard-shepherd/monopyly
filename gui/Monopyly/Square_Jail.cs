@@ -24,7 +24,7 @@ namespace mpy
         /// <summary>
         /// Shows the owner of the square.
         /// </summary>
-        public override void ShowOwner(Graphics graphics, int playerNumber)
+        public override void ShowOwner(Graphics graphics, Bitmap ownerShape)
         {
             // Jail cannot be owned.
         }
@@ -40,7 +40,7 @@ namespace mpy
         /// <summary>
         /// Shows the player token on the square.
         /// </summary>
-        public override void ShowPlayer(Graphics graphics, int playerNumber, bool inJail)
+        public override void ShowPlayer(Graphics graphics, Bitmap playerShape, bool inJail)
         {
             //NumberOfPlayersOnSquare++;
             //Bitmap player = Players[playerNumber];

@@ -34,10 +34,9 @@ namespace mpy
         /// <summary>
         /// Shows the owner of the square.
         /// </summary>
-        public override void ShowOwner(Graphics g, int playerNumber)
+        public override void ShowOwner(Graphics g, Bitmap ownerShape)
         {
-            Bitmap playerShape = OwnerShapes[playerNumber];
-            g.DrawImageUnscaled(playerShape, Left + 6, Top - 20);
+            g.DrawImageUnscaled(ownerShape, Left + 6, Top - 20);
         }
 
         /// <summary>
@@ -61,11 +60,10 @@ namespace mpy
         /// <summary>
         /// Shows the player token on the square.
         /// </summary>
-        public override void ShowPlayer(Graphics g, int playerNumber, bool inJail)
+        public override void ShowPlayer(Graphics g, Bitmap playerShape, bool inJail)
         {
             NumberOfPlayersOnSquare++;
-            Bitmap player = Players[playerNumber];
-            g.DrawImageUnscaled(player, Left + 5 - PlayerOffset.X, Top + 15 - PlayerOffset.Y);
+            g.DrawImageUnscaled(playerShape, Left + 5 - PlayerOffset.X, Top + 15 - PlayerOffset.Y);
         }
 
         #endregion

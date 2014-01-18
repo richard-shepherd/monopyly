@@ -40,15 +40,23 @@ namespace mpy
                 {
                     case 0:
                         playerInfo.Pen = Pens.Yellow;
+                        playerInfo.OwnerShape = Utils.loadBitmap("graphics/circle.png");
+                        playerInfo.PlayerShape = Utils.loadBitmap("graphics/circle+player.png");
                         break;
                     case 1:
                         playerInfo.Pen = Pens.Blue;
+                        playerInfo.OwnerShape = Utils.loadBitmap("graphics/square.png");
+                        playerInfo.PlayerShape = Utils.loadBitmap("graphics/square+player.png");
                         break;
                     case 2:
                         playerInfo.Pen = Pens.Green;
+                        playerInfo.OwnerShape = Utils.loadBitmap("graphics/triangle.png");
+                        playerInfo.PlayerShape = Utils.loadBitmap("graphics/triangle+player.png");
                         break;
                     case 3:
                         playerInfo.Pen = Pens.Crimson;
+                        playerInfo.OwnerShape = Utils.loadBitmap("graphics/star.png");
+                        playerInfo.PlayerShape = Utils.loadBitmap("graphics/star+player.png");
                         break;
                     default:
                         playerInfo.Pen = Pens.Black;
@@ -194,11 +202,11 @@ namespace mpy
             m_squares[31].ShowMortgaged(g);
             m_squares[39].ShowMortgaged(g);
 
-            m_squares[31].ShowOwner(g, 0);
-            m_squares[33].ShowOwner(g, 0);
-            m_squares[36].ShowOwner(g, 2);
-            m_squares[38].ShowOwner(g, 1);
-            m_squares[39].ShowOwner(g, 3);
+            m_squares[31].ShowOwner(g, m_players[0].OwnerShape);
+            m_squares[33].ShowOwner(g, m_players[0].OwnerShape);
+            m_squares[36].ShowOwner(g, m_players[2].OwnerShape);
+            m_squares[38].ShowOwner(g, m_players[1].OwnerShape);
+            m_squares[39].ShowOwner(g, m_players[3].OwnerShape);
 
             m_squares[31].ShowHouses(g, 4);
             m_squares[34].ShowHouses(g, 5);
@@ -214,10 +222,10 @@ namespace mpy
         private void showPlayers(Graphics g)
         {
             // *** TEST ***
-            m_squares[38].ShowPlayer(g, 0, false);
-            m_squares[37].ShowPlayer(g, 1, false);
-            m_squares[37].ShowPlayer(g, 2, false);
-            m_squares[37].ShowPlayer(g, 3, false);
+            m_squares[38].ShowPlayer(g, m_players[0].PlayerShape, false);
+            m_squares[37].ShowPlayer(g, m_players[1].PlayerShape, false);
+            m_squares[37].ShowPlayer(g, m_players[2].PlayerShape, false);
+            m_squares[37].ShowPlayer(g, m_players[3].PlayerShape, false);
             // *** TEST ***
         }
 
@@ -341,6 +349,12 @@ namespace mpy
 
             // The pen for drawing net-worth...
             public Pen Pen { get; set; }
+
+            // The image used to mark properties owned by this player...
+            public Bitmap OwnerShape { get; set; }
+
+            // The image used to show the player's position on the board...
+            public Bitmap PlayerShape { get; set; }
         }
 
         // The collection of players...
