@@ -28,10 +28,14 @@ namespace mpy
         }
 
         /// <summary>
-        /// Adds players.
+        /// Sets the players for a game.
         /// </summary>
-        public void AddPlayers(IEnumerable<string> names)
+        public void SetPlayers(IEnumerable<string> names)
         {
+            // We clear the existing collection of players...
+            m_players = new List<PlayerInfo>();
+
+            // And add the new ones...
             int playerNumber = 0;
             foreach(string name in names)
             {
@@ -48,6 +52,28 @@ namespace mpy
         public void UpdateNetWorth(int playerNumber, int netWorth)
         {
             m_players[playerNumber].NetWorthHistory.Add(netWorth);
+        }
+
+        /// <summary>
+        /// Updates the number of games won by a player.
+        /// </summary><remarks>
+        /// The player number is the index of the player in the collection
+        /// of players passed to AddPlayers().
+        /// </remarks>
+        public void UpdateGamesWon(int playerNumber, int gamesWon)
+        {
+            m_players[playerNumber].GamesWon = gamesWon;
+        }
+
+        /// <summary>
+        /// Updates the ms/turn for a player.
+        /// </summary><remarks>
+        /// The player number is the index of the player in the collection
+        /// of players passed to AddPlayers().
+        /// </remarks>
+        public void UpdateMsPerTurn(int playerNumber, double millisecondsPerTurn)
+        {
+            m_players[playerNumber].MillisecondsPerTurn = millisecondsPerTurn;
         }
 
         #endregion
@@ -207,25 +233,31 @@ namespace mpy
         /// </summary>
         private void showPlayerInfo(Graphics g)
         {
-            int startX = BOARD_OFFSET + 80;
             int startY = BOARD_OFFSET + 80;
-            int cellHeight = 30;
+            int cellHeight = 32;
             var font = new Font("Arial", 10);
             var titleFont = new Font("Arial", 10, FontStyle.Bold);
             var brush = Brushes.Black;
             var headerBackground = Brushes.LightGray;
-            var rowBackground = Brushes.LightGreen;
+            var rowBackground = Brushes.Honeydew;
             int cellWidth_Icon = 40;
-            int cellWidth_GamesWon = 40;
-            int cellWidth_MsPerTurn = 60;
-            int cellWidth_Name = 100;
+            int cellWidth_GamesWon = 70;
+            int cellWidth_MsPerTurn = 70;
+            int cellWidth_Name = 160;
+            int startX_Icon = BOARD_OFFSET + 80;
+            int startX_GamesWon = startX_Icon + cellWidth_Icon;
+            int startX_MsPerTurn = startX_GamesWon + cellWidth_GamesWon;
+            int startX_Name = startX_MsPerTurn + cellWidth_MsPerTurn;
             int textOffsetX = 4;
-            int textOffsetY = 4;
+            int textOffsetY = 6;
             var cellWidths = new List<int>() { cellWidth_Icon, cellWidth_GamesWon, cellWidth_MsPerTurn, cellWidth_Name };
 
             // We show the titles
-            showTableRow(g, startX, startY, cellWidths, cellHeight, headerBackground);
-            g.DrawString("Icon", titleFont, brush, startX + textOffsetX, startY + textOffsetY);
+            showTableRow(g, startX_Icon, startY, cellWidths, cellHeight, headerBackground);
+            g.DrawString("Icon", titleFont, brush, startX_Icon + textOffsetX, startY + textOffsetY);
+            g.DrawString("Games", titleFont, brush, startX_GamesWon + textOffsetX, startY + textOffsetY);
+            g.DrawString("ms/turn", titleFont, brush, startX_MsPerTurn + textOffsetX, startY + textOffsetY);
+            g.DrawString("Name", titleFont, brush, startX_Name + textOffsetX, startY + textOffsetY);
 
 
             // For each player we show:
@@ -237,21 +269,24 @@ namespace mpy
             {
                 var playerInfo = m_players[i];
 
+                // We show the table row...
                 int cellY = startY + (i + 1) * cellHeight;
+                showTableRow(g, startX_Icon, cellY, cellWidths, cellHeight, rowBackground);
 
                 // a. The player graphic...
-                g.DrawImageUnscaled(playerInfo.PlayerShape, startX, cellY);
+                g.DrawImageUnscaled(playerInfo.PlayerShape, startX_Icon+1, cellY+1);
 
                 // b. Games won...
                 var gamesWon = playerInfo.GamesWon.ToString();
-                g.DrawString(gamesWon, font, brush, startX + 40, cellY);
+                g.DrawString(gamesWon, font, brush, startX_GamesWon + textOffsetX, cellY + textOffsetY);
 
                 // c. ms/turn...
                 var msPerTurn = playerInfo.MillisecondsPerTurn.ToString("0.00");
-                g.DrawString(msPerTurn, font, brush, startX + 60, cellY);
+                g.DrawString(msPerTurn, font, brush, startX_MsPerTurn + textOffsetX, cellY + textOffsetY);
 
                 // d. The player's name...
-                g.DrawString(playerInfo.Name, font, brush, startX + 90, cellY);
+                var nameRectangle = new RectangleF(startX_Name + textOffsetX, cellY + textOffsetY, cellWidth_Name - 5, 18);
+                g.DrawString(playerInfo.Name, font, brush, nameRectangle);
             }
         }
 
@@ -324,12 +359,11 @@ namespace mpy
                 int y = top + i * NET_WORTH_HEIGHT / 8;
                 g.DrawLine(Pens.LightGray, left+1, y, right, y);
             }
-            g.DrawString("Net worth", new Font("Arial", 12), Brushes.Black, left, top-10);
+            g.DrawString("Net worth", new Font("Arial", 10, FontStyle.Bold), Brushes.Black, left, top-10);
 
             // We scale the values according to the maximum net worth...
             int maxNetWorth = findMaxNetWorth();
             int maxCount = findMaxNetWorthCount();
-            g.DrawString(maxCount.ToString(), new Font("Arial", 12), Brushes.Black, left, top+20);
 
             // If there are fewer than two entries, we cannot graph them...
             if(maxCount < 2)
@@ -398,10 +432,10 @@ namespace mpy
 
         // Constants...
         private const int BOARD_OFFSET = 20;
-        private const int NET_WORTH_X = 100;
-        private const int NET_WORTH_Y = 300;
-        private const int NET_WORTH_WIDTH = 300;
-        private const int NET_WORTH_HEIGHT = 100;
+        private const int NET_WORTH_X = 80;
+        private const int NET_WORTH_Y = 270;
+        private const int NET_WORTH_WIDTH = 338;
+        private const int NET_WORTH_HEIGHT = 150;
 
         // Bitmaps for the board, players etc...
         private Bitmap m_board = null;
