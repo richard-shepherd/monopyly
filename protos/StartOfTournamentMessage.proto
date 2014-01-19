@@ -1,7 +1,7 @@
 package Messaging;
 
 // A message sent at the start of a tournament...
-message StartOfTournament
+message StartOfTournamentMessage
 {
     // The list of player names, in the order of their player-number...
     repeated string player_names = 1;

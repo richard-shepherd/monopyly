@@ -33,7 +33,7 @@ c. Start of game
 
 d. Player-info (sent at end of round)
    Code: 3
-   Payload: [(player-number, net-worth, ms-per-turn)]
+   Payload: [(player-number, net-worth, games-won, ms-per-turn)]
 
 e. Board update (sent at end of round)
    Code: 4

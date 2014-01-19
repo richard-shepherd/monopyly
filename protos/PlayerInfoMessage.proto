@@ -1,0 +1,18 @@
+package Messaging;
+
+
+// Holds info about each player, e.g. their net-worth, games-won etc...
+message PlayerInfoMessage
+{
+    // Holds info about one player...
+    message PlayerInfo
+    {
+        optional int32 player_number = 1;
+        optional int32 net_worth = 2;
+        optional int32 games_won = 3;
+        optional double ms_per_turn = 4;
+    }
+
+    // The information about all the players...
+    repeated PlayerInfo player_infos = 1;
+}

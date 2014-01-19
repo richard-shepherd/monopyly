@@ -1,0 +1,18 @@
+package Messaging;
+
+
+// Holds info about each square on the board, who owns it, houses on it etc...
+message BoardUpdateMessage
+{
+    // Holds info about one square...
+    message SquareInfo
+    {
+        optional int32 square_number = 1;
+        optional int32 owner_player_number = 2;
+        optional bool is_mortgaged = 3;
+        optional int32 number_of_houses = 4;
+    }
+
+    // The collection of squares on the board...
+    repeated SquareInfo square_infos = 1;
+}
