@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="clrzmq">
+      <HintPath>..\packages\clrzmq.3.0.0-rc1\lib\net40\clrzmq.dll</HintPath>
+    </Reference>
     <Reference Include="protobuf-net">
       <HintPath>externals\protobuf-net.dll</HintPath>
     </Reference>
@@ -53,6 +56,13 @@
     <Compile Include="Board.Designer.cs">
       <DependentUpon>Board.cs</DependentUpon>
     </Compile>
+    <Compile Include="ConnectingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConnectingForm.Designer.cs">
+      <DependentUpon>ConnectingForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MessagingClient.cs" />
     <Compile Include="Square_Right.cs" />
     <Compile Include="Square_Top.cs" />
     <Compile Include="Square_Left.cs" />
@@ -71,6 +81,9 @@
     <EmbeddedResource Include="Board.resx">
       <DependentUpon>Board.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ConnectingForm.resx">
+      <DependentUpon>ConnectingForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Monopyly.resx">
       <DependentUpon>Monopyly.cs</DependentUpon>
     </EmbeddedResource>
@@ -84,6 +97,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

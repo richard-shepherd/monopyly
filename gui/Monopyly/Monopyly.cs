@@ -50,6 +50,23 @@ namespace mpy
         #region Private functions
 
         /// <summary>
+        /// Called when the form is loaded.
+        /// </summary>
+        private void Monopyly_Load(object sender, EventArgs e)
+        {
+            // We start the messaging-client...
+            m_messagingClient = new MessagingClient();
+        }
+
+        /// <summary>
+        /// Called just before the form closes.
+        /// </summary>
+        private void Monopyly_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            m_messagingClient.Dispose();
+        }
+
+        /// <summary>
         /// Called when the timer ticks.
         /// </summary>
         private void ctrlTimer_Tick(object sender, EventArgs e)
@@ -88,5 +105,13 @@ namespace mpy
         }
 
         #endregion
+
+        #region Private data
+
+        // The messaging client...
+        private MessagingClient m_messagingClient = null;
+
+        #endregion
+
     }
 }

@@ -57,6 +57,8 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Monopyly";
             this.Text = "Monopyly";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Monopyly_FormClosing);
+            this.Load += new System.EventHandler(this.Monopyly_Load);
             this.ResumeLayout(false);
 
         }
