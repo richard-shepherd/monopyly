@@ -5,11 +5,50 @@ TODOs
 # TODO: What happen if a deal transfers a property with houses on it,
         but not the whole set?
 
+# TODO: calculate the ms/turn over a *tournament*
 
-- Add logging for mortgaging etc
+
+Message format
+--------------
+Messages are proto-bufs, with an initial byte which indicates
+what type of message it is.
+
+The receiver can look at the first byte, and use this to decide
+which decoder to use.
 
 
-- graphs of cash and 'net worth'
+Messages for the GUI
+--------------------
+a. "Hello" to make the connection.
+   Code: 0
+   Payload: none
+
+b. Start of tournament
+   Code: 1
+   Payload: [player-name] (in order of player-number, 0-3))
+
+c. Start of game
+   Code: 2
+   Payload: none
+
+d. Player-info (sent at end of round)
+   Code: 3
+   Payload: [(player-number, net-worth, ms-per-turn)]
+
+e. Board update (sent at end of round)
+   Code: 4
+   Payload: [(square_number, owner_number, mortgaged, number_of_houses)]
+
+
+Message classes
+---------------
+a. Proto-bufs for messages b, d, e
+
+b. MessagingServer at the Python end.
+   - Instance passed to the Tournament object
+   - If it is not null, we send messages.
+
+c. MessagingClient at the C# end.
 
 
 Data sent to the GUI
