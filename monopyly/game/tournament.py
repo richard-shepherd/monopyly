@@ -34,6 +34,10 @@ class Tournament(object):
         else:
             self.players_per_game = number_of_player_ais
 
+        # If the messaging_server is set up, we send updates to
+        # the C# GUI...
+        self.messaging_server = None
+
     def play(self):
         '''
         Plays the tournament and returns the results as a dictionary of
