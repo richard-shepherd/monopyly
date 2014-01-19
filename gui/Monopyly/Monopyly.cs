@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Messaging;
 
 namespace mpy
 {
@@ -35,14 +36,6 @@ namespace mpy
         public Monopyly()
         {
             InitializeComponent();
-
-            // *** TEST ***
-            player_infos.Add(new PlayerInfo("Julian (a player with a really, really, really long name)"));
-            player_infos.Add(new PlayerInfo("George"));
-            player_infos.Add(new PlayerInfo("Timmy"));
-            player_infos.Add(new PlayerInfo("Anne"));
-            ctrlBoard.SetPlayers(from p in player_infos select p.name);
-            // *** TEST ***
         }
 
         #endregion
@@ -56,6 +49,19 @@ namespace mpy
         {
             // We start the messaging-client...
             m_messagingClient = new MessagingClient();
+            m_messagingClient.StartOfTournamentEvent += onStartOfTournamentMessage;
+        }
+
+        /// <summary>
+        /// Called when the tournament starts.
+        /// </summary>
+        private void onStartOfTournamentMessage(object sender, MessagingClient.StartOfTournamentArgs e)
+        {
+            foreach(var playerInfo in e.StartOfTournament.player_infos)
+            {
+                player_infos.Add(new PlayerInfo(playerInfo.player_name));
+            }
+            ctrlBoard.SetPlayers(from p in player_infos select p.name);
         }
 
         /// <summary>
@@ -72,30 +78,33 @@ namespace mpy
         private void ctrlTimer_Tick(object sender, EventArgs e)
         {
             // *** TEST ***
-            if (rnd.NextDouble() < 0.01)
+            if(player_infos.Count == 4)
             {
-                // Game was won...
-                ctrlBoard.SetPlayers(from p in player_infos select p.name);
-                int player = rnd.Next(0, 4);
-                player_infos[player].games_won++;
+                if (rnd.NextDouble() < 0.01)
+                {
+                    // Game was won...
+                    ctrlBoard.SetPlayers(from p in player_infos select p.name);
+                    int player = rnd.Next(0, 4);
+                    player_infos[player].games_won++;
+                    for (int i = 0; i < player_infos.Count; ++i)
+                    {
+                        player_infos[i].net_worth = 1500;
+                    }
+                }
                 for (int i = 0; i < player_infos.Count; ++i)
                 {
-                    player_infos[i].net_worth = 1500;
-                }
-            }
-            for (int i = 0; i < player_infos.Count; ++i)
-            {
-                player_infos[i].net_worth += rnd.Next(-100, 100);
-                if(player_infos[i].net_worth < 0)
-                {
-                    player_infos[i].net_worth = 0;
-                }
-                ctrlBoard.UpdateNetWorth(i, player_infos[i].net_worth);
+                    player_infos[i].net_worth += rnd.Next(-100, 100);
+                    if (player_infos[i].net_worth < 0)
+                    {
+                        player_infos[i].net_worth = 0;
+                    }
+                    ctrlBoard.UpdateNetWorth(i, player_infos[i].net_worth);
 
-                player_infos[i].ms_per_turn += (rnd.NextDouble() - 0.5) / 10.0;
-                ctrlBoard.UpdateMsPerTurn(i, player_infos[i].ms_per_turn);
+                    player_infos[i].ms_per_turn += (rnd.NextDouble() - 0.5) / 10.0;
+                    ctrlBoard.UpdateMsPerTurn(i, player_infos[i].ms_per_turn);
 
-                ctrlBoard.UpdateGamesWon(i, player_infos[i].games_won);
+                    ctrlBoard.UpdateGamesWon(i, player_infos[i].games_won);
+                }
             }
             // *** TEST ***
 

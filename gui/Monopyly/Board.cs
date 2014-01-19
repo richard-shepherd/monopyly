@@ -309,23 +309,6 @@ namespace mpy
         private void showBoard(Graphics g)
         {
             g.DrawImageUnscaled(m_board, BOARD_OFFSET, BOARD_OFFSET);
-
-            // *** TEST ***
-            m_squares[31].ShowMortgaged(g);
-            m_squares[39].ShowMortgaged(g);
-
-            m_squares[31].ShowOwner(g, m_players[0].OwnerShape);
-            m_squares[33].ShowOwner(g, m_players[0].OwnerShape);
-            m_squares[36].ShowOwner(g, m_players[2].OwnerShape);
-            m_squares[38].ShowOwner(g, m_players[1].OwnerShape);
-            m_squares[39].ShowOwner(g, m_players[3].OwnerShape);
-
-            m_squares[31].ShowHouses(g, 4);
-            m_squares[34].ShowHouses(g, 5);
-            m_squares[36].ShowHouses(g, 3);
-            m_squares[38].ShowHouses(g, 2);
-            m_squares[39].ShowHouses(g, 1);
-            // *** TEST ***
         }
 
         /// <summary>
@@ -333,12 +316,6 @@ namespace mpy
         /// </summary>
         private void showPlayers(Graphics g)
         {
-            // *** TEST ***
-            m_squares[38].ShowPlayer(g, m_players[0].PlayerShape, false);
-            m_squares[37].ShowPlayer(g, m_players[1].PlayerShape, false);
-            m_squares[37].ShowPlayer(g, m_players[2].PlayerShape, false);
-            m_squares[37].ShowPlayer(g, m_players[3].PlayerShape, false);
-            // *** TEST ***
         }
 
         /// <summary>

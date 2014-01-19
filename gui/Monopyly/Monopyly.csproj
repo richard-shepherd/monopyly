@@ -56,6 +56,7 @@
     <Compile Include="Board.Designer.cs">
       <DependentUpon>Board.cs</DependentUpon>
     </Compile>
+    <Compile Include="BoardUpdateMessage.cs" />
     <Compile Include="ConnectingForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -63,6 +64,7 @@
       <DependentUpon>ConnectingForm.cs</DependentUpon>
     </Compile>
     <Compile Include="MessagingClient.cs" />
+    <Compile Include="PlayerInfoMessage.cs" />
     <Compile Include="Square_Right.cs" />
     <Compile Include="Square_Top.cs" />
     <Compile Include="Square_Left.cs" />
@@ -77,6 +79,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Square_Jail.cs" />
+    <Compile Include="StartOfTournamentMessage.cs" />
     <Compile Include="Utils.cs" />
     <EmbeddedResource Include="Board.resx">
       <DependentUpon>Board.cs</DependentUpon>

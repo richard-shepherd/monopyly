@@ -20,7 +20,7 @@ class MessagingServer(object):
 
         # We create the transport we will publish on...
         self._publish_socket = self._context.socket(zmq.PUB)
-        self._publish_socket.setsockopy(zmq.HWM, 100000)  # Number of messages to buffer if there is a slow consumer
+        self._publish_socket.setsockopt(zmq.HWM, 100000)  # Number of messages to buffer if there is a slow consumer
         self._publish_socket.bind("tcp://*:12345")
 
         # We wait for the GUI to connect...
