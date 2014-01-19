@@ -9,13 +9,14 @@ class Player(object):
     derived from PlayerAIBase).
     '''
 
-    def __init__(self, ai, board):
+    def __init__(self, ai, player_number, board):
         '''
         The 'constructor'.
         '''
         self.state = PlayerState()
         self.ai = ai
         self.board = board
+        self.player_number = player_number
 
     def owns_properties(self, properties):
         '''

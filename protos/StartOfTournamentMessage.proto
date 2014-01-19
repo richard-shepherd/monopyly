@@ -3,6 +3,12 @@ package Messaging;
 // A message sent at the start of a tournament...
 message StartOfTournamentMessage
 {
-    // The list of player names, in the order of their player-number...
-    repeated string player_names = 1;
+    message PlayerInfo
+    {
+        optional int32 player_number = 1;
+        optional string player_name = 2;
+    }
+
+    // The list of player infos...
+    repeated PlayerInfo player_infos = 1;
 }

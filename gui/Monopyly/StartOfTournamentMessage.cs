@@ -15,12 +15,38 @@ namespace Messaging
   {
     public StartOfTournamentMessage() {}
     
-    private readonly global::System.Collections.Generic.List<string> _player_names = new global::System.Collections.Generic.List<string>();
-    [global::ProtoBuf.ProtoMember(1, Name=@"player_names", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public global::System.Collections.Generic.List<string> player_names
+    private readonly global::System.Collections.Generic.List<Messaging.StartOfTournamentMessage.PlayerInfo> _player_infos = new global::System.Collections.Generic.List<Messaging.StartOfTournamentMessage.PlayerInfo>();
+    [global::ProtoBuf.ProtoMember(1, Name=@"player_infos", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<Messaging.StartOfTournamentMessage.PlayerInfo> player_infos
     {
-      get { return _player_names; }
+      get { return _player_infos; }
     }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"PlayerInfo")]
+  public partial class PlayerInfo : global::ProtoBuf.IExtensible
+  {
+    public PlayerInfo() {}
+    
+    private int _player_number = default(int);
+    [global::ProtoBuf.ProtoMember(1, IsRequired = false, Name=@"player_number", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(int))]
+    public int player_number
+    {
+      get { return _player_number; }
+      set { _player_number = value; }
+    }
+    private string _player_name = "";
+    [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"player_name", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string player_name
+    {
+      get { return _player_name; }
+      set { _player_name = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
   
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)

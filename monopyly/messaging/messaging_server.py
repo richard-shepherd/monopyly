@@ -1,6 +1,7 @@
-from ..utility import Logger
 import zmq
 import time
+from ..utility import Logger
+from .StartOfTournamentMessage_pb2 import StartOfTournamentMessage
 
 
 class MessagingServer(object):
@@ -19,10 +20,28 @@ class MessagingServer(object):
 
         # We create the transport we will publish on...
         self._publish_socket = self._context.socket(zmq.PUB)
+        self._publish_socket.setsockopy(zmq.HWM, 100000)  # Number of messages to buffer if there is a slow consumer
         self._publish_socket.bind("tcp://*:12345")
 
         # We wait for the GUI to connect...
         self._connect_to_gui()
+
+    def send_start_of_tournament_message(self, players):
+        '''
+        Sends the start-of-tournament message.
+
+        'players' is a list of (player-name, player-number)
+        '''
+        # We create an fill in the message...
+        message = StartOfTournamentMessage()
+        for player in players:
+            player_info = message.player_infos.add()
+            player_info.player_name = player[0]
+            player_info.player_number = player[1]
+
+        # We send it, tagging it with code 1...
+        buffer = message.SerializeToString()
+        self._publish_socket.send(bytes([1]) + buffer)
 
     def _connect_to_gui(self):
         # We use the ZeroMQ pattern of broadcasting a "Hello" message, and

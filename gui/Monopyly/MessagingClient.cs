@@ -44,6 +44,38 @@ namespace mpy
             connectingForm.Dispose();
         }
 
+        /// <summary>
+        /// Processes all messages in the inbound queue.
+        /// </summary>
+        public void processMessages()
+        {
+            TimeSpan timeout = new TimeSpan(0);
+            while(true)
+            {
+                // We see if there is a message...
+                int bytesReceived = m_receiveSocket.Receive(m_buffer, timeout);
+                if(bytesReceived == -1)
+                {
+                    // There was no message in the queue...
+                    break;
+                }
+
+                // We got a message, so we decode it...
+                switch (m_buffer[0])
+                {
+                    case 1:
+                        // The start-of-tournament message...
+                        decodeStartOfTournamentMessage();
+                        break;
+
+                    default:
+                        // An unknown message (or maybe the "Hello" message after 
+                        // we connect. We ignore this...
+                        break;
+                }
+            }
+        }
+
         #endregion
 
         #region IDisposable Members
@@ -58,6 +90,8 @@ namespace mpy
         }
 
         #endregion
+
+
 
         #region Private data
 

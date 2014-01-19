@@ -24,18 +24,22 @@ class Tournament(object):
         '''
         The 'constructor'
         '''
-        self.player_ais = player_ais
+        # We assign each player a number, starting at zero...
+        self.player_ais = []
+        number_of_player_ais = len(player_ais)
+        for i in range(number_of_player_ais):
+            self.player_ais.append((player_ais[i], i))
+
         self.number_of_rounds = number_of_rounds
 
         # We check that there are enough players...
-        number_of_player_ais = len(self.player_ais)
         if number_of_player_ais >= max_players_per_game:
             self.players_per_game = max_players_per_game
         else:
             self.players_per_game = number_of_player_ais
 
         # If the messaging_server is set up, we send updates to
-        # the C# GUI...
+        # the C# GUI when game events occur...
         self.messaging_server = None
 
     def play(self):
@@ -43,8 +47,14 @@ class Tournament(object):
         Plays the tournament and returns the results as a dictionary of
         AI names to the number of games each won.
         '''
+        # We send the start-of-tournament message...
+        if self.messaging_server is not None:
+            # We send a list of (player-name, player-number)...
+            players = [(p[0].get_name(), p[1]) for p in self.player_ais]
+            self.messaging_server.send_start_of_tournament_message(players)
+
         # We hold the results in a dictionary of player name -> games won...
-        results = {ai.get_name(): 0 for ai in self.player_ais}
+        results = {ai[0].get_name(): 0 for ai in self.player_ais}
 
         # We play the specified number of rounds...
         for round in range(self.number_of_rounds):
@@ -62,8 +72,7 @@ class Tournament(object):
         # We loop through all permutations of the players...
         game_number = 0
         for permutation in itertools.permutations(self.player_ais, self.players_per_game):
-            # Each permutation is a collection of player AIs.
-            # We play a game with these AIs...
+            # Each permutation is a collection of player AIs. We play a game with these AIs...
             game = Game()
             for player in permutation:
                 game.add_player(player)
@@ -79,7 +88,7 @@ class Tournament(object):
 
             # We log the results...
             game_number += 1
-            player_names = [ai.get_name() for ai in permutation]
+            player_names = [ai[0].get_name() for ai in permutation]
             message = "Game {0}: {1}. Winner was: {2}".format(game_number, player_names, winner_name)
             Logger.log(message, Logger.INFO_PLUS)
 

@@ -16,7 +16,7 @@ if play_tournament:
     Logger.add_handler(ConsoleLogHandler(Logger.INFO_PLUS))
 
     # We set up and play a tournament...
-    tournament = Tournament(player_ais=ais, max_players_per_game=4, number_of_rounds=100)
+    tournament = Tournament(player_ais=ais, max_players_per_game=4, number_of_rounds=10)
 
     # Sends updates to the C# GUI...
     tournament.messaging_server = MessagingServer()

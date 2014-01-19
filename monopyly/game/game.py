@@ -67,14 +67,16 @@ class Game(object):
         # True if we are in the make-deals phase...
         self._in_make_deals = False
 
-    def add_player(self, ai):
+    def add_player(self, ai_info):
         '''
         Adds a player AI.
+
+        The ai_info is a tuple of (ai, player-number)
 
         Returns the Player object created.
         '''
         # We wrap the AI up into a Player object...
-        player = Player(ai, self.state.board)
+        player = Player(ai_info[0], ai_info[1], self.state.board)
         self.state.players.append(player)
         return player
 
