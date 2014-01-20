@@ -20,13 +20,18 @@ namespace mpy
         #region Events
 
         /// <summary>
-        /// Args and an event for start-of-tournament messages.
+        /// The start-of-tournament event.
         /// </summary>
         public class StartOfTournamentArgs : EventArgs
         {
             public StartOfTournamentMessage StartOfTournament { get; set; }
         }
         public event EventHandler<StartOfTournamentArgs> StartOfTournamentEvent;
+
+        /// <summary>
+        /// The start-of-game event.
+        /// </summary>
+        public event EventHandler<EventArgs> StartOfGameEvent;
 
         #endregion
 
@@ -113,6 +118,11 @@ namespace mpy
                         decodeStartOfTournamentMessage(bytesReceived);
                         break;
 
+                    case 2:
+                        // The start-of-game message...
+                        Utils.raiseEvent(StartOfGameEvent, this, null);
+                        break;
+
                     default:
                         // An unknown message (or maybe the "Hello" message after 
                         // we connect. We ignore this...
@@ -130,10 +140,10 @@ namespace mpy
             MemoryStream memoryStream = new MemoryStream(m_buffer);
             memoryStream.SetLength(bytesReceived);
             memoryStream.Position = 1;
-            var message = Serializer.Deserialize<StartOfTournamentMessage>(memoryStream);
+            var data = Serializer.Deserialize<StartOfTournamentMessage>(memoryStream);
 
             // And raise an event...
-            var args = new StartOfTournamentArgs { StartOfTournament = message };
+            var args = new StartOfTournamentArgs { StartOfTournament = data };
             Utils.raiseEvent(StartOfTournamentEvent, this, args);
         }
 

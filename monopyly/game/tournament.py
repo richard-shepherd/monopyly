@@ -65,6 +65,20 @@ class Tournament(object):
 
         return results
 
+    def turn_played(self, game):
+        '''
+        Called at the end of each turn in a game.
+
+        We notify the GUI of the current game state.
+        '''
+        # We send the player-info message...
+        if self.messaging_server is not None:
+            self.messaging_server.send_player_info_message(self, game)
+
+        # We send the board-update-message...
+        if self.messaging_server is not None:
+            self.messaging_server.send_board_update_message(game)
+
     def _play_round(self, results):
         '''
         We play one round and store the results.
@@ -74,8 +88,15 @@ class Tournament(object):
         for permutation in itertools.permutations(self.player_ais, self.players_per_game):
             # Each permutation is a collection of player AIs. We play a game with these AIs...
             game = Game()
+            game.tournament = self
             for player in permutation:
                 game.add_player(player)
+
+            # We notify the GUI that the game has started...
+            if self.messaging_server is not None:
+                self.messaging_server.send_start_of_game_message()
+
+            # We play the game...
             game.play_game()
 
             # We add the winner to the results...

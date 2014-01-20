@@ -67,6 +67,11 @@ class Game(object):
         # True if we are in the make-deals phase...
         self._in_make_deals = False
 
+        # A Tournament object, if the game is part of a tournament.
+        # This lets us notify the tournament about game events, which
+        # can then be relayed to the GUI...
+        self.tournament = None
+
     def add_player(self, ai_info):
         '''
         Adds a player AI.
@@ -135,6 +140,10 @@ class Game(object):
 
             # The player takes a turn...
             self.play_one_turn(player)
+
+            # We notify the GUI (via the Tournament object)...
+            if self.tournament is not None:
+                self.tournament.turn_played(self)
 
             # If there is only one player left, the game is over...
             if len(self.state.players) == 1:

@@ -43,6 +43,26 @@ class MessagingServer(object):
         buffer = message.SerializeToString()
         self._publish_socket.send(bytes([1]) + buffer)
 
+    def send_start_of_game_message(self):
+        '''
+        Sends a message to the GUI saying that a game is about to start.
+        '''
+        # The start-of-game message is just a single byte 2...
+        self._publish_socket.send(bytes([2]))
+
+    def send_player_info_message(self, tournament, game):
+        '''
+        Sends the PlayerInfoMessage, including games-won, net-worth etc.
+        '''
+        pass
+
+    def send_board_update_message(self, game):
+        '''
+        Sends the BoardUpdateMessage, saying the status of each square on
+        the board: who owns it, whether it is mortgaged, houses on it etc.
+        '''
+        pass
+
     def _connect_to_gui(self):
         # We use the ZeroMQ pattern of broadcasting a "Hello" message, and
         # waiting for the client to respond. We then know that we are connected.
