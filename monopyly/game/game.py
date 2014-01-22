@@ -80,8 +80,17 @@ class Game(object):
 
         Returns the Player object created.
         '''
+        # ai_info might be a tuple (ai, player-number) or it
+        # might just be an AI...
+        try:
+            ai = ai_info[0]
+            player_number = ai_info[1]
+        except:
+            ai = ai_info
+            player_number = 0
+
         # We wrap the AI up into a Player object...
-        player = Player(ai_info[0], ai_info[1], self.state.board)
+        player = Player(ai, player_number, self.state.board)
         self.state.players.append(player)
         return player
 
@@ -279,7 +288,7 @@ class Game(object):
         # We notify all players that the player has landed
         # on this square...
         for player in self.state.players:
-            player.call_ai(player.ai.player_landed_on_square, self.state, square, player)
+            player.call_ai(player.ai.player_landed_on_square, self.state, square, current_player)
 
         # We perform the square's landed-on action...
         square.landed_on(self, current_player)
