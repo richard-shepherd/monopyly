@@ -49,14 +49,24 @@ namespace mpy
         {
             // We start the messaging-client...
             m_messagingClient = new MessagingClient();
-            m_messagingClient.StartOfTournamentEvent += onStartOfTournamentMessage;
+            m_messagingClient.StartOfTournamentEvent += onStartOfTournament;
+            m_messagingClient.BoardUpdateEvent += onBoardUpdate;
+        }
+
+        /// <summary>
+        /// Called when we get a board update.
+        /// </summary>
+        private void onBoardUpdate(object sender, MessagingClient.BoardUpdateArgs e)
+        {
+            ctrlBoard.BoardUpdate = e.BoardUpdate;
         }
 
         /// <summary>
         /// Called when the tournament starts.
         /// </summary>
-        private void onStartOfTournamentMessage(object sender, MessagingClient.StartOfTournamentArgs e)
+        private void onStartOfTournament(object sender, MessagingClient.StartOfTournamentArgs e)
         {
+            player_infos.Clear();
             foreach(var playerInfo in e.StartOfTournament.player_infos)
             {
                 player_infos.Add(new PlayerInfo(playerInfo.player_name));
@@ -77,38 +87,6 @@ namespace mpy
         /// </summary>
         private void ctrlTimer_Tick(object sender, EventArgs e)
         {
-            // *** TEST ***
-            if(player_infos.Count == 4)
-            {
-                if (rnd.NextDouble() < 0.01)
-                {
-                    // Game was won...
-                    ctrlBoard.SetPlayers(from p in player_infos select p.name);
-                    int player = rnd.Next(0, 4);
-                    player_infos[player].games_won++;
-                    for (int i = 0; i < player_infos.Count; ++i)
-                    {
-                        player_infos[i].net_worth = 1500;
-                    }
-                }
-                for (int i = 0; i < player_infos.Count; ++i)
-                {
-                    player_infos[i].net_worth += rnd.Next(-100, 100);
-                    if (player_infos[i].net_worth < 0)
-                    {
-                        player_infos[i].net_worth = 0;
-                    }
-                    ctrlBoard.UpdateNetWorth(i, player_infos[i].net_worth);
-
-                    player_infos[i].ms_per_turn += (rnd.NextDouble() - 0.5) / 10.0;
-                    ctrlBoard.UpdateMsPerTurn(i, player_infos[i].ms_per_turn);
-
-                    ctrlBoard.UpdateGamesWon(i, player_infos[i].games_won);
-                }
-            }
-            // *** TEST ***
-
-
             // We update the board with the latest game information...
             ctrlBoard.Invalidate();
         }

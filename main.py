@@ -14,6 +14,7 @@ if play_tournament:
     # Logging at INFO_PLUS level shows game results, but does not
     # show verbose  information...
     Logger.add_handler(ConsoleLogHandler(Logger.INFO_PLUS))
+    #Logger.add_handler(ConsoleLogHandler(Logger.INFO))
 
     # We set up and play a tournament...
     tournament = Tournament(player_ais=ais, max_players_per_game=4, number_of_rounds=10)

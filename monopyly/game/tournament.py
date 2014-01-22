@@ -1,4 +1,5 @@
 import itertools
+import time
 from .game import Game
 from ..utility import Logger
 
@@ -65,9 +66,9 @@ class Tournament(object):
 
         return results
 
-    def turn_played(self, game):
+    def round_played(self, game):
         '''
-        Called at the end of each turn in a game.
+        Called at the end of each round in a game.
 
         We notify the GUI of the current game state.
         '''

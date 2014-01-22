@@ -2,6 +2,9 @@ import zmq
 import time
 from ..utility import Logger
 from .StartOfTournamentMessage_pb2 import StartOfTournamentMessage
+from .BoardUpdateMessage_pb2 import BoardUpdateMessage
+from ..game import Board
+from ..squares import Property, Street
 
 
 class MessagingServer(object):
@@ -25,6 +28,11 @@ class MessagingServer(object):
 
         # We wait for the GUI to connect...
         self._connect_to_gui()
+
+        # The board-data object we send...
+        self.board_update_message = BoardUpdateMessage()
+        for i in range(Board.NUMBER_OF_SQUARES):
+            self.board_update_message.square_infos.add()
 
     def send_start_of_tournament_message(self, players):
         '''
@@ -61,7 +69,26 @@ class MessagingServer(object):
         Sends the BoardUpdateMessage, saying the status of each square on
         the board: who owns it, whether it is mortgaged, houses on it etc.
         '''
-        pass
+        # We update the squares in the board-info-message...
+        board = game.state.board
+        for i in range(Board.NUMBER_OF_SQUARES):
+            square = board.squares[i]
+            square_info = self.board_update_message.square_infos[i]
+
+            square_info.square_number = i
+            square_info.owner_player_number = -1
+
+            if isinstance(square, Property):
+                if square.owner is not None:
+                    square_info.owner_player_number = square.owner.player_number
+                square_info.is_mortgaged = square.is_mortgaged
+
+            if isinstance(square, Street):
+                square_info.number_of_houses = square.number_of_houses
+
+        # We send the message...
+        buffer = self.board_update_message.SerializeToString()
+        self._publish_socket.send(bytes([4]) + buffer)
 
     def _connect_to_gui(self):
         # We use the ZeroMQ pattern of broadcasting a "Hello" message, and

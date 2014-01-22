@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Messaging;
 
 namespace mpy
 {
@@ -25,6 +26,9 @@ namespace mpy
 
             // We set up the squares...
             setupSquares();
+
+            // The most recent board update...
+            BoardUpdate = null;
         }
 
         /// <summary>
@@ -75,6 +79,11 @@ namespace mpy
         {
             m_players[playerNumber].MillisecondsPerTurn = millisecondsPerTurn;
         }
+
+        /// <summary>
+        /// Property holding the most recent board update.
+        /// </summary>
+        public BoardUpdateMessage BoardUpdate { get;  set; }
 
         #endregion
 
@@ -309,6 +318,32 @@ namespace mpy
         private void showBoard(Graphics g)
         {
             g.DrawImageUnscaled(m_board, BOARD_OFFSET, BOARD_OFFSET);
+
+            // We show info about each square on the board...
+            if(BoardUpdate == null)
+            {
+                return;
+            }
+            foreach(var squareInfo in BoardUpdate.square_infos)
+            {
+                var square = m_squares[squareInfo.square_number];
+
+                // The owner...
+                if(squareInfo.owner_player_number != -1)
+                {
+                    var ownerShape = m_players[squareInfo.owner_player_number].OwnerShape;
+                    square.ShowOwner(g, ownerShape);
+                }
+
+                // Mortgaged...
+                if(squareInfo.is_mortgaged)
+                {
+                    square.ShowMortgaged(g);
+                }
+
+                // The number of houses...
+                square.ShowHouses(g, squareInfo.number_of_houses);
+            }
         }
 
         /// <summary>

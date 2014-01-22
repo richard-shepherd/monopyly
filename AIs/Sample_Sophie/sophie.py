@@ -33,7 +33,7 @@ class SophieAI(PlayerAIBase):
         '''
         # Is the property one of the ones we want to buy?
         if property.name not in self.properties_we_like:
-            return
+            return PlayerAIBase.Action.DO_NOT_BUY
 
         # We want to buy the property, but do we have enough money?
         if player.state.cash > property.price:

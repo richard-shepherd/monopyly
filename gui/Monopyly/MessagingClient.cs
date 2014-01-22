@@ -33,6 +33,15 @@ namespace mpy
         /// </summary>
         public event EventHandler<EventArgs> StartOfGameEvent;
 
+        /// <summary>
+        /// The board-update event.
+        /// </summary>
+        public class BoardUpdateArgs : EventArgs
+        {
+            public BoardUpdateMessage BoardUpdate { get; set; }
+        }
+        public event EventHandler<BoardUpdateArgs> BoardUpdateEvent;
+
         #endregion
 
         #region Public methods
@@ -49,21 +58,21 @@ namespace mpy
             m_receiveSocket.SubscribeAll();
 
             // We show a "Connecting" dialog...
-            var connectingForm = new ConnectingForm();
-            connectingForm.Show();
-            Application.DoEvents();
+            //var connectingForm = new ConnectingForm();
+            //connectingForm.Show();
+            //Application.DoEvents();
 
             // We wait until we get a "Hello" message from the server...
-            m_receiveSocket.Receive(m_buffer);
+            //m_receiveSocket.Receive(m_buffer);
 
             // We send an ack, to tell the server we're connected...
-            var ackSocket = m_context.CreateSocket(SocketType.REQ);
-            ackSocket.Connect("tcp://localhost:12346");
-            ackSocket.Send("Ack", Encoding.UTF8);
-            ackSocket.Dispose();
+            //var ackSocket = m_context.CreateSocket(SocketType.REQ);
+            //ackSocket.Connect("tcp://localhost:12346");
+            //ackSocket.Send("Ack", Encoding.UTF8);
+            //ackSocket.Dispose();
 
             // We hide the "Connecting" dialog...
-            connectingForm.Dispose();
+            //connectingForm.Dispose();
 
             // We start processing messages on a worker thread...
             m_workerThread = new Thread(processMessages);
@@ -113,6 +122,11 @@ namespace mpy
                 // We got a message, so we decode it...
                 switch (m_buffer[0])
                 {
+                    case 0:
+                        // The 'Hello' message from the server...
+                        handleHelloMessage();
+                        break;
+
                     case 1:
                         // The start-of-tournament message...
                         decodeStartOfTournamentMessage(bytesReceived);
@@ -123,12 +137,25 @@ namespace mpy
                         Utils.raiseEvent(StartOfGameEvent, this, null);
                         break;
 
+                    case 4:
+                        // The board-update message...
+                        decodeBoardUpdateMessage(bytesReceived);
+                        break;
+
                     default:
                         // An unknown message (or maybe the "Hello" message after 
                         // we connect. We ignore this...
                         break;
                 }
             }
+        }
+
+        private void handleHelloMessage()
+        {
+            var ackSocket = m_context.CreateSocket(SocketType.REQ);
+            ackSocket.Connect("tcp://localhost:12346");
+            ackSocket.Send("Ack", Encoding.UTF8);
+            ackSocket.Dispose();
         }
 
         /// <summary>
@@ -145,6 +172,22 @@ namespace mpy
             // And raise an event...
             var args = new StartOfTournamentArgs { StartOfTournament = data };
             Utils.raiseEvent(StartOfTournamentEvent, this, args);
+        }
+
+        /// <summary>
+        /// Decodes a board-update message.
+        /// </summary>
+        private void decodeBoardUpdateMessage(int bytesReceived)
+        {
+            // We decode the message...
+            MemoryStream memoryStream = new MemoryStream(m_buffer);
+            memoryStream.SetLength(bytesReceived);
+            memoryStream.Position = 1;
+            var data = Serializer.Deserialize<BoardUpdateMessage>(memoryStream);
+
+            // And raise an event...
+            var args = new BoardUpdateArgs { BoardUpdate = data };
+            Utils.raiseEvent(BoardUpdateEvent, this, args);
         }
 
         #endregion
