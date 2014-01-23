@@ -42,6 +42,15 @@ namespace mpy
         }
         public event EventHandler<BoardUpdateArgs> BoardUpdateEvent;
 
+        /// <summary>
+        /// The player-info event.
+        /// </summary>
+        public class PlayerInfoArgs : EventArgs
+        {
+            public PlayerInfoMessage PlayerInfo { get; set; }
+        }
+        public event EventHandler<PlayerInfoArgs> PlayerInfoEvent;
+
         #endregion
 
         #region Public methods
@@ -137,6 +146,11 @@ namespace mpy
                         Utils.raiseEvent(StartOfGameEvent, this, null);
                         break;
 
+                    case 3:
+                        // The player-info message...
+                        decodePlayerInfoMessage(bytesReceived);
+                        break;
+
                     case 4:
                         // The board-update message...
                         decodeBoardUpdateMessage(bytesReceived);
@@ -188,6 +202,22 @@ namespace mpy
             // And raise an event...
             var args = new BoardUpdateArgs { BoardUpdate = data };
             Utils.raiseEvent(BoardUpdateEvent, this, args);
+        }
+
+        /// <summary>
+        /// Decodes a player-info message.
+        /// </summary>
+        private void decodePlayerInfoMessage(int bytesReceived)
+        {
+            // We decode the message...
+            MemoryStream memoryStream = new MemoryStream(m_buffer);
+            memoryStream.SetLength(bytesReceived);
+            memoryStream.Position = 1;
+            var data = Serializer.Deserialize<PlayerInfoMessage>(memoryStream);
+
+            // And raise an event...
+            var args = new PlayerInfoArgs { PlayerInfo = data };
+            Utils.raiseEvent(PlayerInfoEvent, this, args);
         }
 
         #endregion

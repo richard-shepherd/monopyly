@@ -50,15 +50,9 @@ namespace mpy
             // We start the messaging-client...
             m_messagingClient = new MessagingClient();
             m_messagingClient.StartOfTournamentEvent += onStartOfTournament;
+            m_messagingClient.StartOfGameEvent += onStartOfGame;
             m_messagingClient.BoardUpdateEvent += onBoardUpdate;
-        }
-
-        /// <summary>
-        /// Called when we get a board update.
-        /// </summary>
-        private void onBoardUpdate(object sender, MessagingClient.BoardUpdateArgs e)
-        {
-            ctrlBoard.BoardUpdate = e.BoardUpdate;
+            m_messagingClient.PlayerInfoEvent += onPlayerInfo;
         }
 
         /// <summary>
@@ -67,11 +61,39 @@ namespace mpy
         private void onStartOfTournament(object sender, MessagingClient.StartOfTournamentArgs e)
         {
             player_infos.Clear();
-            foreach(var playerInfo in e.StartOfTournament.player_infos)
+            foreach (var playerInfo in e.StartOfTournament.player_infos)
             {
                 player_infos.Add(new PlayerInfo(playerInfo.player_name));
             }
             ctrlBoard.SetPlayers(from p in player_infos select p.name);
+        }
+
+        /// <summary>
+        /// Called at the start of a new game.
+        /// </summary>
+        private void onStartOfGame(object sender, EventArgs e)
+        {
+            ctrlBoard.StartOfGame();
+        }
+
+        /// <summary>
+        /// Called when we receive a player-info update.
+        /// </summary>
+        private void onPlayerInfo(object sender, MessagingClient.PlayerInfoArgs e)
+        {
+            foreach(var playerInfo in e.PlayerInfo.player_infos)
+            {
+                ctrlBoard.UpdateNetWorth(playerInfo.player_number, playerInfo.net_worth);
+                ctrlBoard.UpdateGamesWon(playerInfo.player_number, playerInfo.games_won);
+            }
+        }
+
+        /// <summary>
+        /// Called when we get a board update.
+        /// </summary>
+        private void onBoardUpdate(object sender, MessagingClient.BoardUpdateArgs e)
+        {
+            ctrlBoard.BoardUpdate = e.BoardUpdate;
         }
 
         /// <summary>

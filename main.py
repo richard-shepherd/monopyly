@@ -14,13 +14,12 @@ if play_tournament:
     # Logging at INFO_PLUS level shows game results, but does not
     # show verbose  information...
     Logger.add_handler(ConsoleLogHandler(Logger.INFO_PLUS))
-    #Logger.add_handler(ConsoleLogHandler(Logger.INFO))
 
     # We set up and play a tournament...
     tournament = Tournament(player_ais=ais, max_players_per_game=4, number_of_rounds=10)
 
     # Sends updates to the C# GUI...
-    #tournament.messaging_server = MessagingServer()
+    #tournament.messaging_server = MessagingServer(update_every_n_turns=1, sleep_between_turns_seconds=0.00)
 
     # We play the tournament...
     results = tournament.play()

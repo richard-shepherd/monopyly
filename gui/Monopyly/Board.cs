@@ -48,6 +48,17 @@ namespace mpy
         }
 
         /// <summary>
+        /// Called at the start of the game.
+        /// </summary>
+        public void StartOfGame()
+        {
+            foreach(var player in m_players)
+            {
+                player.NetWorthHistory = new List<int>();
+            }
+        }
+
+        /// <summary>
         /// Updates the netw-worth for a player. 
         /// </summary><remarks>
         /// The player number is the index of the player in the collection

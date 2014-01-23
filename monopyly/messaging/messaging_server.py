@@ -1,8 +1,10 @@
 import zmq
 import time
+import itertools
 from ..utility import Logger
 from .StartOfTournamentMessage_pb2 import StartOfTournamentMessage
 from .BoardUpdateMessage_pb2 import BoardUpdateMessage
+from .PlayerInfoMessage_pb2 import PlayerInfoMessage
 from ..game import Board
 from ..squares import Property, Street
 
@@ -10,14 +12,19 @@ from ..squares import Property, Street
 class MessagingServer(object):
     '''
     Uses ZeroMQ to publish messages to the C# GUI.
-
-    The constructor blocks until it has connected to the GUI.
     '''
 
-    def __init__(self):
+    def __init__(self, update_every_n_turns, sleep_between_turns_seconds):
         '''
         The 'constructor'.
         '''
+        self._update_every_n_turns = update_every_n_turns
+        self._sleep_between_turns_seconds = sleep_between_turns_seconds
+
+        # Counts turns for when we are only sending updates
+        # every n turns...
+        self._turns_since_previous_publish = 0
+
         # We create the ZMQ context...
         self._context = zmq.Context(1)
 
@@ -58,13 +65,45 @@ class MessagingServer(object):
         # The start-of-game message is just a single byte 2...
         self._publish_socket.send(bytes([2]))
 
-    def send_player_info_message(self, tournament, game):
+    def send_end_of_turn_messages(self, tournament, game, force_send):
+        '''
+        Called at the end of each turn.
+        We send a player-info update and a board update.
+        '''
+        # We always send the player-info...
+        self._send_player_info_message(tournament, game)
+
+        # We check if we need to send a board-update this turn...
+        self._turns_since_previous_publish += 1
+        if (self._turns_since_previous_publish < self._update_every_n_turns) and (force_send is False):
+            return
+
+        # We do want to send an update...
+        self._send_board_update_message(game)
+        self._turns_since_previous_publish = 0
+
+        # We may be set to sleep between turns...
+        if self._sleep_between_turns_seconds > 0:
+            time.sleep(self._sleep_between_turns_seconds)
+
+    def _send_player_info_message(self, tournament, game):
         '''
         Sends the PlayerInfoMessage, including games-won, net-worth etc.
         '''
-        pass
+        # We send data about active and bankrupt players...
+        player_info_message = PlayerInfoMessage()
+        for player in itertools.chain(game.state.players, game.state.bankrupt_players):
+            player_info = player_info_message.player_infos.add()
+            player_info.player_number = player.player_number
+            player_info.net_worth = player.net_worth
+            player_info.games_won = tournament.results[player.name]
+            # TODO: Add ms/turn
 
-    def send_board_update_message(self, game):
+        # We send the message...
+        buffer = player_info_message.SerializeToString()
+        self._publish_socket.send(bytes([3]) + buffer)
+
+    def _send_board_update_message(self, game):
         '''
         Sends the BoardUpdateMessage, saying the status of each square on
         the board: who owns it, whether it is mortgaged, houses on it etc.

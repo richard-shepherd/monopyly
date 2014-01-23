@@ -150,13 +150,13 @@ class Game(object):
             # The player takes a turn...
             self.play_one_turn(player)
 
+            # We notify the GUI (via the Tournament object)...
+            if self.tournament is not None:
+                self.tournament.turn_played(self)
+
             # If there is only one player left, the game is over...
             if len(self.state.players) == 1:
                 break
-
-        # We notify the GUI (via the Tournament object)...
-        if self.tournament is not None:
-            self.tournament.round_played(self)
 
     def play_one_turn(self, current_player):
         '''
@@ -1041,6 +1041,7 @@ class Game(object):
             card.put_back_in_deck()
 
         # We move the player to the bankrupt list...
+        player.state.cash = 0
         self.state.players.remove(player)
         self.state.bankrupt_players.append(player)
 

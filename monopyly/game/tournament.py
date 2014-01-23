@@ -43,6 +43,9 @@ class Tournament(object):
         # the C# GUI when game events occur...
         self.messaging_server = None
 
+        # We hold the results in a dictionary of player name -> games won...
+        self.results = {ai[0].get_name(): 0 for ai in self.player_ais}
+
     def play(self):
         '''
         Plays the tournament and returns the results as a dictionary of
@@ -54,33 +57,26 @@ class Tournament(object):
             players = [(p[0].get_name(), p[1]) for p in self.player_ais]
             self.messaging_server.send_start_of_tournament_message(players)
 
-        # We hold the results in a dictionary of player name -> games won...
-        results = {ai[0].get_name(): 0 for ai in self.player_ais}
-
         # We play the specified number of rounds...
         for round in range(self.number_of_rounds):
             Logger.log("Playing round {0}".format(round+1), Logger.INFO_PLUS)
             Logger.indent()
-            self._play_round(results)
+            self._play_round()
             Logger.dedent()
 
-        return results
+        return self.results
 
-    def round_played(self, game):
+    def turn_played(self, game):
         '''
-        Called at the end of each round in a game.
+        Called at the end of each turn in a game.
 
         We notify the GUI of the current game state.
         '''
         # We send the player-info message...
         if self.messaging_server is not None:
-            self.messaging_server.send_player_info_message(self, game)
+            self.messaging_server.send_end_of_turn_messages(tournament=self, game=game, force_send=False)
 
-        # We send the board-update-message...
-        if self.messaging_server is not None:
-            self.messaging_server.send_board_update_message(game)
-
-    def _play_round(self, results):
+    def _play_round(self):
         '''
         We play one round and store the results.
         '''
@@ -106,11 +102,15 @@ class Tournament(object):
                 winner_name = "Game drawn"
             else:
                 winner_name = winner.name
-                results[winner_name] += 1
+                self.results[winner_name] += 1
 
             # We log the results...
             game_number += 1
             player_names = [ai[0].get_name() for ai in permutation]
             message = "Game {0}: {1}. Winner was: {2}".format(game_number, player_names, winner_name)
             Logger.log(message, Logger.INFO_PLUS)
+
+            # We update the GUI...
+            if self.messaging_server is not None:
+                self.messaging_server.send_end_of_turn_messages(tournament=self, game=game, force_send=True)
 
