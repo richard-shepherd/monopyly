@@ -97,6 +97,7 @@ class MessagingServer(object):
             player_info.player_number = player.player_number
             player_info.net_worth = player.net_worth
             player_info.games_won = tournament.results[player.name]
+            player_info.square = player.state.square
             # TODO: Add ms/turn
 
         # We send the message...

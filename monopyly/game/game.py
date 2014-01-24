@@ -830,6 +830,9 @@ class Game(object):
             for square in squares:
                 square.is_mortgaged = False
 
+        # We update the info about which sets are mortgaged and unmortgaged...
+        self._update_sets()
+
     def _make_deals(self, current_player):
         '''
         The player can make up to three deals.
@@ -1035,13 +1038,18 @@ class Game(object):
             property.owner = None
             property.number_of_houses = 0
             property.is_mortgaged = False
+        player.state.properties.clear()
+
+        # We update who owns which sets...
+        self._update_sets()
 
         # We return any Get Out Of Jail Free cards to their decks...
         for card in player.state.get_out_of_jail_free_cards:
             card.put_back_in_deck()
 
         # We move the player to the bankrupt list...
-        player.state.cash = 0
+        player.state.cash = -1
+        player.state.square = -1
         self.state.players.remove(player)
         self.state.bankrupt_players.append(player)
 

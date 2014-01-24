@@ -85,6 +85,7 @@ namespace mpy
             {
                 ctrlBoard.UpdateNetWorth(playerInfo.player_number, playerInfo.net_worth);
                 ctrlBoard.UpdateGamesWon(playerInfo.player_number, playerInfo.games_won);
+                ctrlBoard.UpdateSquare(playerInfo.player_number, playerInfo.square);
             }
         }
 

@@ -59,6 +59,14 @@ namespace Messaging
       get { return _ms_per_turn; }
       set { _ms_per_turn = value; }
     }
+    private int _square = default(int);
+    [global::ProtoBuf.ProtoMember(5, IsRequired = false, Name=@"square", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(int))]
+    public int square
+    {
+      get { return _square; }
+      set { _square = value; }
+    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }

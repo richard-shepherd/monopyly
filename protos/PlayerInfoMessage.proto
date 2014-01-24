@@ -11,6 +11,7 @@ message PlayerInfoMessage
         optional int32 net_worth = 2;
         optional int32 games_won = 3;
         optional double ms_per_turn = 4;
+        optional int32 square = 5;
     }
 
     // The information about all the players...

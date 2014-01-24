@@ -65,7 +65,7 @@ def test_player_goes_bankrupt():
     game.dice = MockDice([(4, 6), (4, 6), (6, 4)])
     game.play_one_round()
     assert player0.state.square == 20
-    assert player1.state.square == 39
+    assert player1.state.square == -1
     assert player2.state.square == 20
 
 
@@ -123,7 +123,7 @@ def test_player_goes_bankrupt_in_other_players_turn():
     player1.state.cash = 5
 
     # player0 rolls 7 and lands on Chance.
-    # player1 should then be out of hte game, and player2 then rolls 10.
+    # player1 should then be out of the game, and player2 then rolls 10.
     game.dice = MockDice([(2, 5), (4, 6)])
     game.play_one_round()
 

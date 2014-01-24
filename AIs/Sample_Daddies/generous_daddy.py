@@ -1,4 +1,5 @@
 from monopyly import *
+import random
 
 
 class GenerousDaddyAI(PlayerAIBase):
@@ -72,8 +73,8 @@ class GenerousDaddyAI(PlayerAIBase):
 
     def property_offered_for_auction(self, game_state, player, property):
         '''
-        We offer the face value in auctions.
+        We offer the face face plus or minus a random amount.
         '''
-        return property.price
+        return property.price + random.randint(-50, 50)
 
 

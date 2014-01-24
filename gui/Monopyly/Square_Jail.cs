@@ -42,9 +42,8 @@ namespace mpy
         /// </summary>
         public override void ShowPlayer(Graphics graphics, Bitmap playerShape, bool inJail)
         {
-            //NumberOfPlayersOnSquare++;
-            //Bitmap player = Players[playerNumber];
-            //graphics.DrawImageUnscaled(player, Left + 5 + PlayerOffset.X, Top + 25 + PlayerOffset.Y);
+            NumberOfPlayersOnSquare++;
+            graphics.DrawImageUnscaled(playerShape, Left + 5 + PlayerOffset.X, Top + 25 + PlayerOffset.Y);
         }
 
         #endregion

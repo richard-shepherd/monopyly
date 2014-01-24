@@ -11,7 +11,7 @@ from google.protobuf import descriptor_pb2
 DESCRIPTOR = descriptor.FileDescriptor(
   name='PlayerInfoMessage.proto',
   package='Messaging',
-  serialized_pb=b'\n\x17PlayerInfoMessage.proto\x12\tMessaging\"\xb2\x01\n\x11PlayerInfoMessage\x12=\n\x0cplayer_infos\x18\x01 \x03(\x0b\x32\'.Messaging.PlayerInfoMessage.PlayerInfo\x1a^\n\nPlayerInfo\x12\x15\n\rplayer_number\x18\x01 \x01(\x05\x12\x11\n\tnet_worth\x18\x02 \x01(\x05\x12\x11\n\tgames_won\x18\x03 \x01(\x05\x12\x13\n\x0bms_per_turn\x18\x04 \x01(\x01')
+  serialized_pb=b'\n\x17PlayerInfoMessage.proto\x12\tMessaging\"\xc2\x01\n\x11PlayerInfoMessage\x12=\n\x0cplayer_infos\x18\x01 \x03(\x0b\x32\'.Messaging.PlayerInfoMessage.PlayerInfo\x1an\n\nPlayerInfo\x12\x15\n\rplayer_number\x18\x01 \x01(\x05\x12\x11\n\tnet_worth\x18\x02 \x01(\x05\x12\x11\n\tgames_won\x18\x03 \x01(\x05\x12\x13\n\x0bms_per_turn\x18\x04 \x01(\x01\x12\x0e\n\x06square\x18\x05 \x01(\x05')
 
 
 
@@ -51,6 +51,13 @@ _PLAYERINFOMESSAGE_PLAYERINFO = descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    descriptor.FieldDescriptor(
+      name='square', full_name='Messaging.PlayerInfoMessage.PlayerInfo.square', index=4,
+      number=5, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -61,7 +68,7 @@ _PLAYERINFOMESSAGE_PLAYERINFO = descriptor.Descriptor(
   is_extendable=False,
   extension_ranges=[],
   serialized_start=123,
-  serialized_end=217,
+  serialized_end=233,
 )
 
 _PLAYERINFOMESSAGE = descriptor.Descriptor(
@@ -88,7 +95,7 @@ _PLAYERINFOMESSAGE = descriptor.Descriptor(
   is_extendable=False,
   extension_ranges=[],
   serialized_start=39,
-  serialized_end=217,
+  serialized_end=233,
 )
 
 _PLAYERINFOMESSAGE_PLAYERINFO.containing_type = _PLAYERINFOMESSAGE;

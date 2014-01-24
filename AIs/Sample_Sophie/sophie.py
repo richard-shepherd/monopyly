@@ -80,3 +80,23 @@ class SophieAI(PlayerAIBase):
             return [(p, 1) for p in owned_set.properties]
 
         return []
+
+    def mortgage_properties(self, game_state, player):
+        '''
+        Sophie mortgages if she is short of cash.
+        '''
+        if player.state.cash < 500:
+            return [p for p in player.state.properties if p.is_mortgaged is False]
+
+    def unmortgage_properties(self, game_state, player):
+        '''
+        Sophie unmortgages if she is flush with cash.
+        '''
+        if player.state.cash > 2000:
+            return [p for p in player.state.properties if p.is_mortgaged is True]
+
+    def players_birthday(self):
+        '''
+        Sophie is polite.
+        '''
+        return "Happy Birthday!"

@@ -1,5 +1,6 @@
 from monopyly import *
 from .generous_daddy import GenerousDaddyAI
+import random
 
 
 class MeanDaddyAI(GenerousDaddyAI):
@@ -22,6 +23,7 @@ class MeanDaddyAI(GenerousDaddyAI):
 
     def property_offered_for_auction(self, game_state, player, property):
         '''
-        We offer half the face value in auctions.
+        We offer the face face plus or minus a random amount.
         '''
-        return int(property.price / 2)
+        return property.price + random.randint(-100, 50)
+

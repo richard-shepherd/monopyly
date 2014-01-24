@@ -92,6 +92,14 @@ namespace mpy
         }
 
         /// <summary>
+        /// Updates the square the player is on.
+        /// </summary>
+        public void UpdateSquare(int playerNumber, int square)
+        {
+            m_players[playerNumber].Square = square;
+        }
+
+        /// <summary>
         /// Property holding the most recent board update.
         /// </summary>
         public BoardUpdateMessage BoardUpdate { get;  set; }
@@ -155,14 +163,19 @@ namespace mpy
             {
                 var square = new Square_Bottom();
                 square.Bottom = BOARD_OFFSET + 500;
-                square.Top = square.Top - 67;
+                square.Top = square.Bottom - 67;
                 square.Left = BOARD_OFFSET + (int)(394 - i * 40.8);
                 square.Right = square.Left + 41;
                 m_squares.Add(square);
             }
 
             // Jail....
-            m_squares.Add(new Square_Jail());
+            var jail = new Square_Jail();
+            jail.Bottom = BOARD_OFFSET + 500;
+            jail.Top = jail.Bottom - 67;
+            jail.Left = BOARD_OFFSET;
+            jail.Right = jail.Left + 67;
+            m_squares.Add(jail);
 
             // The left squares...
             for (int i = 0; i < 9; ++i)
@@ -301,7 +314,8 @@ namespace mpy
                 g.DrawString(gamesWon, font, brush, startX_GamesWon + textOffsetX, cellY + textOffsetY);
 
                 // c. ms/turn...
-                var msPerTurn = playerInfo.MillisecondsPerTurn.ToString("0.00");
+                //var msPerTurn = playerInfo.MillisecondsPerTurn.ToString("0.00");
+                var msPerTurn = playerInfo.Square.ToString();
                 g.DrawString(msPerTurn, font, brush, startX_MsPerTurn + textOffsetX, cellY + textOffsetY);
 
                 // d. The player's name...
@@ -362,6 +376,14 @@ namespace mpy
         /// </summary>
         private void showPlayers(Graphics g)
         {
+            foreach(var playerInfo in m_players)
+            {
+                int square = playerInfo.Square;
+                if(square != -1)
+                {
+                   m_squares[square].ShowPlayer(g, playerInfo.PlayerShape, false);
+                }
+            }
         }
 
         /// <summary>
@@ -476,6 +498,7 @@ namespace mpy
                 NetWorthHistory = new List<int>();
                 GamesWon = 0;
                 MillisecondsPerTurn = 0.0;
+                Square = -1;
             }
 
             // The player's name...
@@ -498,6 +521,9 @@ namespace mpy
 
             // The average number of milliseconds taken per turn...
             public double MillisecondsPerTurn { get; set; }
+
+            // The square the player is currently on...
+            public int Square { get; set; }
         }
 
         // The collection of players...

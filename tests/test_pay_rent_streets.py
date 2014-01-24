@@ -97,10 +97,10 @@ def test_player_does_not_have_enough_money():
     game.dice = MockDice([(1, 3)])
     game.play_one_turn(player)
 
-    # The player should be on Mayfair, and should be bankrupt.
+    # The player should be removed from the board, and should be bankrupt.
     # The owner should have got all the player's money...
-    assert player.state.square == 39
-    assert player.state.cash == -500
+    assert player.state.square == -1
+    assert player.state.cash == -1
     assert owner.state.cash == 3000
 
 
