@@ -74,6 +74,9 @@ class SophieAI(PlayerAIBase):
         '''
         Sophie always tries to build houses if she can.
         '''
+        if player.state.cash < 1000:
+            return []
+
         for owned_set in player.state.owned_unmortgaged_sets:
             if not owned_set.can_build_houses:
                 continue

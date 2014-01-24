@@ -23,6 +23,7 @@ namespace mpy
 
             // We load the bitmaps...
             m_board = Utils.loadBitmap("graphics/board.png");
+            m_table = Utils.loadBitmap("graphics/table.png");
 
             // We set up the squares...
             setupSquares();
@@ -152,28 +153,28 @@ namespace mpy
         {
             // Go...
             var go = new Square_Bottom();
-            go.Top = BOARD_OFFSET + 434;
-            go.Bottom = BOARD_OFFSET + 500;
-            go.Left = BOARD_OFFSET + 434;
-            go.Right = BOARD_OFFSET + 500;
+            go.Top = BOARD_OFFSET_Y + 434;
+            go.Bottom = BOARD_OFFSET_Y + 500;
+            go.Left = BOARD_OFFSET_X + 434;
+            go.Right = BOARD_OFFSET_X + 500;
             m_squares.Add(go);
 
             // The other bottom squares...
             for(int i=0; i<9; ++i)
             {
                 var square = new Square_Bottom();
-                square.Bottom = BOARD_OFFSET + 500;
+                square.Bottom = BOARD_OFFSET_Y + 500;
                 square.Top = square.Bottom - 67;
-                square.Left = BOARD_OFFSET + (int)(394 - i * 40.8);
+                square.Left = BOARD_OFFSET_X + (int)(394 - i * 40.8);
                 square.Right = square.Left + 41;
                 m_squares.Add(square);
             }
 
             // Jail....
             var jail = new Square_Jail();
-            jail.Bottom = BOARD_OFFSET + 500;
+            jail.Bottom = BOARD_OFFSET_Y + 500;
             jail.Top = jail.Bottom - 67;
-            jail.Left = BOARD_OFFSET;
+            jail.Left = BOARD_OFFSET_X;
             jail.Right = jail.Left + 67;
             m_squares.Add(jail);
 
@@ -181,18 +182,18 @@ namespace mpy
             for (int i = 0; i < 9; ++i)
             {
                 var square = new Square_Left();
-                square.Top = BOARD_OFFSET + (int)(392 - i * 40.8);
+                square.Top = BOARD_OFFSET_Y + (int)(392 - i * 40.8);
                 square.Bottom = square.Top + 41;
-                square.Left = BOARD_OFFSET;
+                square.Left = BOARD_OFFSET_X;
                 square.Right = square.Left + 67;
                 m_squares.Add(square);
             }
 
             // Free Parking...
             var freeParking = new Square_Bottom();
-            freeParking.Top = BOARD_OFFSET;
+            freeParking.Top = BOARD_OFFSET_Y;
             freeParking.Bottom = freeParking.Top + 67;
-            freeParking.Left = BOARD_OFFSET;
+            freeParking.Left = BOARD_OFFSET_X;
             freeParking.Right = freeParking.Left + 67;
             m_squares.Add(freeParking);
 
@@ -200,18 +201,18 @@ namespace mpy
             for (int i = 0; i < 9; ++i)
             {
                 var square = new Square_Top();
-                square.Top = BOARD_OFFSET;
+                square.Top = BOARD_OFFSET_Y;
                 square.Bottom = square.Top + 67;
-                square.Left = BOARD_OFFSET + (int)(67 + i * 40.8);
+                square.Left = BOARD_OFFSET_X + (int)(67 + i * 40.8);
                 square.Right = square.Left + 41;
                 m_squares.Add(square);
             }
 
             // Go To Jail...
             var goToJail = new Square_Right();
-            goToJail.Top = BOARD_OFFSET;
+            goToJail.Top = BOARD_OFFSET_Y;
             goToJail.Bottom = goToJail.Top + 67;
-            goToJail.Right = BOARD_OFFSET + 500;
+            goToJail.Right = BOARD_OFFSET_X + 500;
             goToJail.Left = goToJail.Right - 67;
             m_squares.Add(goToJail);
 
@@ -219,9 +220,9 @@ namespace mpy
             for (int i = 0; i < 9; ++i)
             {
                 var square = new Square_Right();
-                square.Top = BOARD_OFFSET + (int)(67 + i * 40.8);
+                square.Top = BOARD_OFFSET_Y + (int)(67 + i * 40.8);
                 square.Bottom = square.Top + 41;
-                square.Right = BOARD_OFFSET + 500;
+                square.Right = BOARD_OFFSET_X + 500;
                 square.Left = square.Right - 67;
                 m_squares.Add(square);
             }
@@ -238,7 +239,7 @@ namespace mpy
             // from the relative path...
             if(m_board == null)
             {
-                g.FillRectangle(Brushes.LightYellow, 0, 0, Width, Height);
+                g.FillRectangle(Brushes.BurlyWood, 0, 0, Width, Height);
                 return;
             }
 
@@ -266,7 +267,7 @@ namespace mpy
         /// </summary>
         private void showPlayerInfo(Graphics g)
         {
-            int startY = BOARD_OFFSET + 80;
+            int startY = BOARD_OFFSET_Y + 80;
             int cellHeight = 32;
             var font = new Font("Arial", 10);
             var titleFont = new Font("Arial", 10, FontStyle.Bold);
@@ -277,7 +278,7 @@ namespace mpy
             int cellWidth_GamesWon = 70;
             int cellWidth_MsPerTurn = 70;
             int cellWidth_Name = 160;
-            int startX_Icon = BOARD_OFFSET + 80;
+            int startX_Icon = BOARD_OFFSET_X + 80;
             int startX_GamesWon = startX_Icon + cellWidth_Icon;
             int startX_MsPerTurn = startX_GamesWon + cellWidth_GamesWon;
             int startX_Name = startX_MsPerTurn + cellWidth_MsPerTurn;
@@ -342,23 +343,35 @@ namespace mpy
         /// </summary>
         private void showBoard(Graphics g)
         {
-            g.DrawImageUnscaled(m_board, BOARD_OFFSET, BOARD_OFFSET);
+            // We show the wooden table...
+            g.DrawImageUnscaled(m_table, 0, 0);
 
-            // We show info about each square on the board...
-            if(BoardUpdate == null)
+            // There may not be anything yet to show...
+            if (BoardUpdate == null)
             {
                 return;
             }
-            foreach(var squareInfo in BoardUpdate.square_infos)
+
+            // We draw the owners first, so that they appear to be under the board...
+            foreach (var squareInfo in BoardUpdate.square_infos)
             {
                 var square = m_squares[squareInfo.square_number];
 
                 // The owner...
-                if(squareInfo.owner_player_number != -1)
+                if (squareInfo.owner_player_number != -1)
                 {
                     var ownerShape = m_players[squareInfo.owner_player_number].OwnerShape;
                     square.ShowOwner(g, ownerShape);
                 }
+            }
+
+            // The board...
+            g.DrawImageUnscaled(m_board, BOARD_OFFSET_X, BOARD_OFFSET_Y);
+
+            // We show info about each square on the board...
+            foreach(var squareInfo in BoardUpdate.square_infos)
+            {
+                var square = m_squares[squareInfo.square_number];
 
                 // Mortgaged...
                 if(squareInfo.is_mortgaged)
@@ -391,9 +404,9 @@ namespace mpy
         /// </summary>
         private void showNetWorth(Graphics g)
         {
-            int left = BOARD_OFFSET + NET_WORTH_X;
+            int left = BOARD_OFFSET_X + NET_WORTH_X;
             int right = left + NET_WORTH_WIDTH;
-            int top = BOARD_OFFSET + NET_WORTH_Y;
+            int top = BOARD_OFFSET_Y + NET_WORTH_Y;
             int bottom = top + NET_WORTH_HEIGHT;
 
             // We show the grid lines...
@@ -476,7 +489,8 @@ namespace mpy
         #region Private data
 
         // Constants...
-        private const int BOARD_OFFSET = 20;
+        private const int BOARD_OFFSET_X = 32;
+        private const int BOARD_OFFSET_Y = 27;
         private const int NET_WORTH_X = 80;
         private const int NET_WORTH_Y = 270;
         private const int NET_WORTH_WIDTH = 338;
@@ -484,6 +498,7 @@ namespace mpy
 
         // Bitmaps for the board, players etc...
         private Bitmap m_board = null;
+        private Bitmap m_table = null;
 
         // The squares...
         private List<Square> m_squares = new List<Square>();

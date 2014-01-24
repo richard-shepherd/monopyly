@@ -37,14 +37,15 @@
             // ctrlTimer
             // 
             this.ctrlTimer.Enabled = true;
-            this.ctrlTimer.Interval = 200;
+            this.ctrlTimer.Interval = 10;
             this.ctrlTimer.Tick += new System.EventHandler(this.ctrlTimer_Tick);
             // 
             // ctrlBoard
             // 
-            this.ctrlBoard.Location = new System.Drawing.Point(12, 12);
+            this.ctrlBoard.BoardUpdate = null;
+            this.ctrlBoard.Location = new System.Drawing.Point(0, 0);
             this.ctrlBoard.Name = "ctrlBoard";
-            this.ctrlBoard.Size = new System.Drawing.Size(540, 540);
+            this.ctrlBoard.Size = new System.Drawing.Size(560, 560);
             this.ctrlBoard.TabIndex = 0;
             // 
             // Monopyly
@@ -52,7 +53,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size(567, 565);
+            this.ClientSize = new System.Drawing.Size(559, 551);
             this.Controls.Add(this.ctrlBoard);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Monopyly";

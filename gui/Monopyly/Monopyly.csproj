@@ -145,6 +145,9 @@
     <Content Include="graphics\star.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="graphics\table.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="graphics\triangle+player.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

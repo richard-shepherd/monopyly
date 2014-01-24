@@ -1,10 +1,6 @@
-import zmq
 import time
 import itertools
 from ..utility import Logger
-from .StartOfTournamentMessage_pb2 import StartOfTournamentMessage
-from .BoardUpdateMessage_pb2 import BoardUpdateMessage
-from .PlayerInfoMessage_pb2 import PlayerInfoMessage
 from ..game import Board
 from ..squares import Property, Street
 
@@ -18,6 +14,9 @@ class MessagingServer(object):
         '''
         The 'constructor'.
         '''
+        import zmq
+        from .BoardUpdateMessage_pb2 import BoardUpdateMessage
+
         self._update_every_n_turns = update_every_n_turns
         self._sleep_between_turns_seconds = sleep_between_turns_seconds
 
@@ -30,7 +29,7 @@ class MessagingServer(object):
 
         # We create the transport we will publish on...
         self._publish_socket = self._context.socket(zmq.PUB)
-        self._publish_socket.setsockopt(zmq.HWM, 100000)  # Number of messages to buffer if there is a slow consumer
+        #self._publish_socket.setsockopt(zmq.HWM, 100000)  # Number of messages to buffer if there is a slow consumer
         self._publish_socket.bind("tcp://*:12345")
 
         # We wait for the GUI to connect...
@@ -47,6 +46,8 @@ class MessagingServer(object):
 
         'players' is a list of (player-name, player-number)
         '''
+        from .StartOfTournamentMessage_pb2 import StartOfTournamentMessage
+
         # We create an fill in the message...
         message = StartOfTournamentMessage()
         for player in players:
@@ -90,6 +91,8 @@ class MessagingServer(object):
         '''
         Sends the PlayerInfoMessage, including games-won, net-worth etc.
         '''
+        from .PlayerInfoMessage_pb2 import PlayerInfoMessage
+
         # We send data about active and bankrupt players...
         player_info_message = PlayerInfoMessage()
         for player in itertools.chain(game.state.players, game.state.bankrupt_players):
@@ -109,6 +112,8 @@ class MessagingServer(object):
         Sends the BoardUpdateMessage, saying the status of each square on
         the board: who owns it, whether it is mortgaged, houses on it etc.
         '''
+        from .BoardUpdateMessage_pb2 import BoardUpdateMessage
+
         # We update the squares in the board-info-message...
         board = game.state.board
         for i in range(Board.NUMBER_OF_SQUARES):
@@ -131,6 +136,8 @@ class MessagingServer(object):
         self._publish_socket.send(bytes([4]) + buffer)
 
     def _connect_to_gui(self):
+        import zmq
+
         # We use the ZeroMQ pattern of broadcasting a "Hello" message, and
         # waiting for the client to respond. We then know that we are connected.
         Logger.log("Waiting for GUI to connect", Logger.INFO_PLUS)
