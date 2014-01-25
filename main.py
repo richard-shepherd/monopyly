@@ -19,7 +19,7 @@ if play_tournament:
     tournament = Tournament(player_ais=ais, max_players_per_game=4, number_of_rounds=20)
 
     # Sends updates to the C# GUI...
-    #tournament.messaging_server = MessagingServer(update_every_n_turns=1, sleep_between_turns_seconds=0.1)
+    #tournament.messaging_server = MessagingServer(update_every_n_turns=1, sleep_between_turns_seconds=0.0)
 
     # We play the tournament...
     results = tournament.play()

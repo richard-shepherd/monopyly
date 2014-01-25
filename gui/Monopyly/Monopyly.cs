@@ -15,19 +15,6 @@ namespace mpy
     /// </summary>
     public partial class Monopyly : Form
     {
-        // *** TEST ***
-        class PlayerInfo
-        {
-            public PlayerInfo(string n) { name = n; }
-            public string name;
-            public int net_worth = 1500;
-            public int games_won = 0;
-            public double ms_per_turn = 2.0;
-        }
-        List<PlayerInfo> player_infos = new List<PlayerInfo>();
-        Random rnd = new Random();
-        // *** TEST ***
-
         #region Public methods
 
         /// <summary>
@@ -60,12 +47,7 @@ namespace mpy
         /// </summary>
         private void onStartOfTournament(object sender, MessagingClient.StartOfTournamentArgs e)
         {
-            player_infos.Clear();
-            foreach (var playerInfo in e.StartOfTournament.player_infos)
-            {
-                player_infos.Add(new PlayerInfo(playerInfo.player_name));
-            }
-            ctrlBoard.SetPlayers(from p in player_infos select p.name);
+            ctrlBoard.SetPlayers(from p in e.StartOfTournament.player_infos select p.player_name);
         }
 
         /// <summary>
