@@ -210,6 +210,7 @@ namespace mpy
         private void Board_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
 
             // In design mode, we may not be able to load the graphics 
             // from the relative path...

@@ -409,3 +409,81 @@ def test_exchange_properties_no_cash():
     assert player0.ai.deal_info == PlayerAIBase.DealInfo.SUCCEEDED
     assert player1.ai.deal_info == PlayerAIBase.DealInfo.SUCCEEDED
 
+
+def test_transfer_property_with_houses_partial_set():
+    '''
+    We try to make a deal for a property with houses, but do not transfer
+    the whole set. This should fail
+    '''
+    game = Game()
+    board = game.state.board
+    player1 = game.add_player(DealResponder(
+        DealResponse(
+            DealResponse.Action.ACCEPT,
+            minimum_cash_wanted=500)))
+
+    # We give Mayfair and Park Lane to player1. Mayfair has a house on it...
+    mayfair = game.give_property_to_player(player1, Square.Name.MAYFAIR)
+    park_lane = game.give_property_to_player(player1, Square.Name.PARK_LANE)
+    mayfair.number_of_houses = 1
+
+    player0 = game.add_player(DealProposer(
+        DealProposal(
+            propose_to_player=player1,
+            properties_wanted=[mayfair],
+            maximum_cash_offered=1000)))
+
+    # Player 0 takes a turn during which the deal is proposed...
+    player0.state.square = 0
+    game.dice = MockDice([(4, 6)])
+    game.play_one_turn(player0)
+
+    # The deal should have been rejected...
+    assert mayfair.owner is player1
+    assert player0.state.cash == 1500
+    assert player1.state.cash == 1500
+
+    # We check that the players were notified correctly...
+    assert player0.ai.deal_info == PlayerAIBase.DealInfo.INVALID_DEAL_PROPOSED
+
+
+def test_transfer_property_with_houses_whole_set():
+    '''
+    Makes a deal for a property with houses. The whole set is part
+    of the deal. This is allowed.
+    '''
+    game = Game()
+    board = game.state.board
+    player1 = game.add_player(DealResponder(
+        DealResponse(
+            DealResponse.Action.ACCEPT,
+            minimum_cash_wanted=500)))
+
+    # We give Mayfair and Park Lane to player1. Mayfair has a house on it...
+    mayfair = game.give_property_to_player(player1, Square.Name.MAYFAIR)
+    park_lane = game.give_property_to_player(player1, Square.Name.PARK_LANE)
+    mayfair.number_of_houses = 1
+
+    player0 = game.add_player(DealProposer(
+        DealProposal(
+            propose_to_player=player1,
+            properties_wanted=[mayfair, park_lane],
+            maximum_cash_offered=1000)))
+
+    # Player 0 takes a turn during which the deal is proposed...
+    player0.state.square = 0
+    game.dice = MockDice([(4, 6)])
+    game.play_one_turn(player0)
+
+    # The deal should have been rejected...
+    assert mayfair.owner is player0
+    assert park_lane.owner is player0
+    assert player0.state.cash == 750
+    assert player1.state.cash == 2250
+
+    # We check that the players were notified correctly...
+    assert player0.ai.deal_info == PlayerAIBase.DealInfo.SUCCEEDED
+    assert player1.ai.deal_info == PlayerAIBase.DealInfo.SUCCEEDED
+
+
+

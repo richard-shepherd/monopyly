@@ -868,13 +868,31 @@ class Game(object):
         Logger.log("{0} proposed deal to {1}: {2}".format(current_player.name, proposed_to_player.name, proposal))
         Logger.indent()
 
-        # We check that the players own the properties specified...
+        # We check that the players own the properties specified. If any of the
+        # properties have houses, then the whole set must be part of the deal...
         board = self.state.board
-        if current_player.owns_properties(proposal.properties_offered) is False:
+
+        # A nested function to validate property ownership...
+        def validate_properties(player, properties):
+            for property in properties:
+                # Does the player own the property?
+                if player.owns_properties([property]) is False:
+                    return False
+
+                # The player owns the property, but if it has houses we need
+                # to check that the whole set is part of the deal...
+                if isinstance(property, Street) and property.number_of_houses > 0:
+                    properties_in_set = property.property_set.properties
+                    all_properties_part_of_deal = set(properties).issuperset(set(properties_in_set))
+                    if all_properties_part_of_deal is False:
+                        return False
+            return True
+
+        if validate_properties(current_player, proposal.properties_offered) is False:
             current_player.call_ai(current_player.ai.deal_result, PlayerAIBase.DealInfo.INVALID_DEAL_PROPOSED)
             Logger.dedent()
             return
-        if proposed_to_player.owns_properties(proposal.properties_wanted) is False:
+        if validate_properties(proposed_to_player, proposal.properties_wanted) is False:
             current_player.call_ai(current_player.ai.deal_result, PlayerAIBase.DealInfo.INVALID_DEAL_PROPOSED)
             Logger.dedent()
             return
