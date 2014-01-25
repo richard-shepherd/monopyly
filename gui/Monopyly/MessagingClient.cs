@@ -62,26 +62,6 @@ namespace mpy
         {
             // We create the ZMQ context, and a socket to listen to messages...
             m_context = ZmqContext.Create();
-            m_receiveSocket = m_context.CreateSocket(SocketType.SUB);
-            m_receiveSocket.Connect("tcp://localhost:12345");
-            m_receiveSocket.SubscribeAll();
-
-            // We show a "Connecting" dialog...
-            //var connectingForm = new ConnectingForm();
-            //connectingForm.Show();
-            //Application.DoEvents();
-
-            // We wait until we get a "Hello" message from the server...
-            //m_receiveSocket.Receive(m_buffer);
-
-            // We send an ack, to tell the server we're connected...
-            //var ackSocket = m_context.CreateSocket(SocketType.REQ);
-            //ackSocket.Connect("tcp://localhost:12346");
-            //ackSocket.Send("Ack", Encoding.UTF8);
-            //ackSocket.Dispose();
-
-            // We hide the "Connecting" dialog...
-            //connectingForm.Dispose();
 
             // We start processing messages on a worker thread...
             m_workerThread = new Thread(processMessages);
@@ -102,7 +82,7 @@ namespace mpy
             m_workerThread.Join();
 
             // We shut down ZeroMQ...
-            m_receiveSocket.Dispose();
+            m_context.Terminate();
             m_context.Dispose();
         }
 
@@ -117,6 +97,12 @@ namespace mpy
         /// </remarks>
         private void processMessages()
         {
+            // We create a socket to receive messages from the 
+            // Python server...
+            m_receiveSocket = m_context.CreateSocket(SocketType.SUB);
+            m_receiveSocket.Connect("tcp://localhost:12345");
+            m_receiveSocket.SubscribeAll();
+
             TimeSpan timeout = new TimeSpan(0, 0, 0, 0, 1);
             while (m_stopThread == false)
             {
@@ -162,6 +148,10 @@ namespace mpy
                         break;
                 }
             }
+
+            // We close the socket before exiting the thread...
+            m_receiveSocket.Linger = new TimeSpan(0);
+            m_receiveSocket.Dispose();
         }
 
         private void handleHelloMessage()
@@ -169,6 +159,7 @@ namespace mpy
             var ackSocket = m_context.CreateSocket(SocketType.REQ);
             ackSocket.Connect("tcp://localhost:12346");
             ackSocket.Send("Ack", Encoding.UTF8);
+            ackSocket.Linger = new TimeSpan(0);
             ackSocket.Dispose();
         }
 
