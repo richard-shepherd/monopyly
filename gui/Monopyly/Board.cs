@@ -60,46 +60,22 @@ namespace mpy
         }
 
         /// <summary>
-        /// Updates the netw-worth for a player. 
-        /// </summary><remarks>
-        /// The player number is the index of the player in the collection
-        /// of players passed to AddPlayers().
-        /// </remarks>
-        public void UpdateNetWorth(int playerNumber, int netWorth)
-        {
-            m_players[playerNumber].NetWorthHistory.Add(netWorth);
-        }
-
-        /// <summary>
-        /// Updates the number of games won by a player.
-        /// </summary><remarks>
-        /// The player number is the index of the player in the collection
-        /// of players passed to AddPlayers().
-        /// </remarks>
-        public void UpdateGamesWon(int playerNumber, int gamesWon)
-        {
-            m_players[playerNumber].GamesWon = gamesWon;
-        }
-
-        /// <summary>
-        /// Updates the ms/turn for a player.
-        /// </summary><remarks>
-        /// The player number is the index of the player in the collection
-        /// of players passed to AddPlayers().
-        /// </remarks>
-        public void UpdateMsPerTurn(int playerNumber, double millisecondsPerTurn)
-        {
-            m_players[playerNumber].MillisecondsPerTurn = millisecondsPerTurn;
-        }
-
-        /// <summary>
-        /// Updates the square the player is on.
+        /// Updates player info: square, net-worth etc.
         /// </summary>
-        public void UpdateSquare(int playerNumber, int square)
+        public void UpdatePlayerInfo(
+            int playerNumber, 
+            int netWorth, 
+            int gamesWon, 
+            int square,
+            double millisecondsPerTurn)
         {
-            m_players[playerNumber].Square = square;
+            var playerInfo = m_players[playerNumber];
+            playerInfo.NetWorthHistory.Add(netWorth);
+            playerInfo.GamesWon = gamesWon;
+            playerInfo.Square = square;
+            playerInfo.MillisecondsPerTurn = millisecondsPerTurn;
         }
-
+        
         /// <summary>
         /// Property holding the most recent board update.
         /// </summary>
@@ -315,8 +291,7 @@ namespace mpy
                 g.DrawString(gamesWon, font, brush, startX_GamesWon + textOffsetX, cellY + textOffsetY);
 
                 // c. ms/turn...
-                //var msPerTurn = playerInfo.MillisecondsPerTurn.ToString("0.00");
-                var msPerTurn = playerInfo.Square.ToString();
+                var msPerTurn = playerInfo.MillisecondsPerTurn.ToString("0.000");
                 g.DrawString(msPerTurn, font, brush, startX_MsPerTurn + textOffsetX, cellY + textOffsetY);
 
                 // d. The player's name...

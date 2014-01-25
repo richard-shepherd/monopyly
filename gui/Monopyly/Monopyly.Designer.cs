@@ -37,7 +37,7 @@
             // ctrlTimer
             // 
             this.ctrlTimer.Enabled = true;
-            this.ctrlTimer.Interval = 10;
+            this.ctrlTimer.Interval = 20;
             this.ctrlTimer.Tick += new System.EventHandler(this.ctrlTimer_Tick);
             // 
             // ctrlBoard

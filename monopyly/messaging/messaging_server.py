@@ -29,7 +29,7 @@ class MessagingServer(object):
 
         # We create the transport we will publish on...
         self._publish_socket = self._context.socket(zmq.PUB)
-        #self._publish_socket.setsockopt(zmq.HWM, 100000)  # Number of messages to buffer if there is a slow consumer
+        self._publish_socket.setsockopt(zmq.HWM, 100000)  # Number of messages to buffer if there is a slow consumer
         self._publish_socket.bind("tcp://*:12345")
 
         # We wait for the GUI to connect...
@@ -99,9 +99,9 @@ class MessagingServer(object):
             player_info = player_info_message.player_infos.add()
             player_info.player_number = player.player_number
             player_info.net_worth = player.net_worth
-            player_info.games_won = tournament.results[player.name]
+            player_info.games_won = tournament.player_infos[player.player_number].games_won
             player_info.square = player.state.square
-            # TODO: Add ms/turn
+            player_info.ms_per_turn = tournament.get_ms_per_turn(player)
 
         # We send the message...
         buffer = player_info_message.SerializeToString()

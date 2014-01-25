@@ -1,4 +1,5 @@
 from monopyly import *
+import random
 
 
 class SophieAI(PlayerAIBase):
@@ -49,6 +50,8 @@ class SophieAI(PlayerAIBase):
         offer them 2x the price for it.
         '''
         deal_proposal = DealProposal()
+
+        random.shuffle(self.properties_we_like)
 
         # We check to see if any of the properties we like is owned
         # by another player...

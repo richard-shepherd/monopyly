@@ -21,15 +21,36 @@ class Tournament(object):
     So a round may consist of a large number of games. For example, if there
     are 15 players playing in groups of 4, there are 32760 games in a round.
     '''
+
+    class _PlayerInfo(object):
+        '''
+        Holds info about one player including games won, player number
+        timing info etc.
+        '''
+        def __init__(self):
+            '''
+            The 'constructor'.
+            '''
+            self.ai = None
+            self.games_won = 0
+            self.turns_played = 0
+            self.processing_seconds = 0.0
+            self.name = ""
+            self.player_number = -1
+
     def __init__(self, player_ais, max_players_per_game, number_of_rounds):
         '''
         The 'constructor'
         '''
-        # We assign each player a number, starting at zero...
-        self.player_ais = []
+        # We hold a list of _PlayerInfo objects - one for each plater...
+        self.player_infos = dict()
         number_of_player_ais = len(player_ais)
-        for i in range(number_of_player_ais):
-            self.player_ais.append((player_ais[i], i))
+        for player_number in range(number_of_player_ais):
+            player_info = Tournament._PlayerInfo()
+            player_info.ai = player_ais[player_number]
+            player_info.name = player_info.ai.get_name()
+            player_info.player_number = player_number
+            self.player_infos[player_number] = player_info
 
         self.number_of_rounds = number_of_rounds
 
@@ -43,9 +64,6 @@ class Tournament(object):
         # the C# GUI when game events occur...
         self.messaging_server = None
 
-        # We hold the results in a dictionary of player name -> games won...
-        self.results = {ai[0].get_name(): 0 for ai in self.player_ais}
-
     def play(self):
         '''
         Plays the tournament and returns the results as a dictionary of
@@ -54,7 +72,7 @@ class Tournament(object):
         # We send the start-of-tournament message...
         if self.messaging_server is not None:
             # We send a list of (player-name, player-number)...
-            players = [(p[0].get_name(), p[1]) for p in self.player_ais]
+            players = [(p.name, p.player_number) for p in self.player_infos.values()]
             self.messaging_server.send_start_of_tournament_message(players)
 
         # We play the specified number of rounds...
@@ -64,7 +82,7 @@ class Tournament(object):
             self._play_round()
             Logger.dedent()
 
-        return self.results
+        return [(p.name, p.games_won) for p in self.player_infos.values()]
 
     def turn_played(self, game):
         '''
@@ -76,18 +94,36 @@ class Tournament(object):
         if self.messaging_server is not None:
             self.messaging_server.send_end_of_turn_messages(tournament=self, game=game, force_send=False)
 
+    def get_ms_per_turn(self, player):
+        '''
+        We calculate the ms/turn taken by the player over the whole
+        tournament so far.
+        '''
+        player_info = self.player_infos[player.player_number]
+
+        total_seconds = player_info.processing_seconds + player.state.ai_processing_seconds_used
+        total_turns = player_info.turns_played + player.state.turns_played
+        if total_turns == 0:
+            milliseconds_per_turn = 0.0
+        else:
+            milliseconds_per_turn = 1000.0 * total_seconds / total_turns
+
+        return milliseconds_per_turn
+
+
     def _play_round(self):
         '''
         We play one round and store the results.
         '''
         # We loop through all permutations of the players...
         game_number = 0
-        for permutation in itertools.permutations(self.player_ais, self.players_per_game):
+        ais = [(p.ai, p.player_number) for p in self.player_infos.values()]
+        for permutation in itertools.permutations(ais, self.players_per_game):
             # Each permutation is a collection of player AIs. We play a game with these AIs...
             game = Game()
             game.tournament = self
-            for player in permutation:
-                game.add_player(player)
+            for ai in permutation:
+                game.add_player(ai)
 
             # We notify the GUI that the game has started...
             if self.messaging_server is not None:
@@ -102,7 +138,18 @@ class Tournament(object):
                 winner_name = "Game drawn"
             else:
                 winner_name = winner.name
-                self.results[winner_name] += 1
+
+            # We update the player infos...
+            for player in itertools.chain(game.state.players, game.state.bankrupt_players):
+                player_info = self.player_infos[player.player_number]
+
+                # Did this player win?
+                if player_info.name == winner_name:
+                    player_info.games_won += 1
+
+                # We update the processing stats...
+                player_info.turns_played += player.state.turns_played
+                player_info.processing_seconds += player.state.ai_processing_seconds_used
 
             # We log the results...
             game_number += 1

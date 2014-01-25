@@ -168,6 +168,10 @@ class Game(object):
         Logger.indent()
         Logger.log("Cash=£{0}, Net Worth=£{1}".format(current_player.state.cash, current_player.net_worth))
 
+        # We keep a count of the number of turns played (for calculating
+        # processing time per turn)...
+        current_player.state.turns_played += 1
+
         # We keep a count of how many turns the player has been in jail for...
         if current_player.state.is_in_jail:
             current_player.state.number_of_turns_in_jail += 1

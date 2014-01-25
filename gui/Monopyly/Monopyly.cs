@@ -83,9 +83,12 @@ namespace mpy
         {
             foreach(var playerInfo in e.PlayerInfo.player_infos)
             {
-                ctrlBoard.UpdateNetWorth(playerInfo.player_number, playerInfo.net_worth);
-                ctrlBoard.UpdateGamesWon(playerInfo.player_number, playerInfo.games_won);
-                ctrlBoard.UpdateSquare(playerInfo.player_number, playerInfo.square);
+                ctrlBoard.UpdatePlayerInfo(
+                    playerInfo.player_number,
+                    playerInfo.net_worth,
+                    playerInfo.games_won,
+                    playerInfo.square,
+                    playerInfo.ms_per_turn);
             }
         }
 

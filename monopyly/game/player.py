@@ -85,10 +85,11 @@ class Player(object):
         start = time.clock()
         result = function(*args)
         end = time.clock()
-        elapsed_seconds = end-start
+        elapsed_seconds = end - start
 
         # We update the time the AI has remaining for the current game...
         self.state.ai_processing_seconds_remaining -= elapsed_seconds
+        self.state.ai_processing_seconds_used += elapsed_seconds
 
         # And return what the function returned...
         return result
