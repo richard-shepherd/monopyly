@@ -164,7 +164,8 @@ class Tournament(object):
             # We log the results...
             game_number += 1
             player_names = [ai[0].get_name() for ai in permutation]
-            message = "Game {0}: {1}. Winner was: {2}".format(game_number, player_names, winner_name)
+            message = "Game {0}:  Winner was: {3} ({1} eminent-domain: {2})".format(
+                game_number, player_names, eminent_domain, winner_name)
             Logger.log(message, Logger.INFO_PLUS)
 
             # We update the GUI...
