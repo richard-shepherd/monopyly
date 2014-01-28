@@ -38,7 +38,7 @@ class Tournament(object):
             self.name = ""
             self.player_number = -1
 
-    def __init__(self, player_ais, max_players_per_game, number_of_rounds):
+    def __init__(self, player_ais, min_players_per_game, max_players_per_game, number_of_rounds):
         '''
         The 'constructor'
         '''
@@ -56,9 +56,14 @@ class Tournament(object):
 
         # We check that there are enough players...
         if number_of_player_ais >= max_players_per_game:
-            self.players_per_game = max_players_per_game
+            self.max_players_per_game = max_players_per_game
         else:
-            self.players_per_game = number_of_player_ais
+            self.max_players_per_game = number_of_player_ais
+
+        if min_players_per_game < self.max_players_per_game:
+            self.min_players_per_game = min_players_per_game
+        else:
+            self.min_players_per_game = self.max_players_per_game
 
         # If the messaging_server is set up, we send updates to
         # the C# GUI when game events occur...
@@ -79,7 +84,12 @@ class Tournament(object):
         for round in range(self.number_of_rounds):
             Logger.log("Playing round {0}".format(round+1), Logger.INFO_PLUS)
             Logger.indent()
-            self._play_round()
+
+            # We play one round with each number of plays in the range specified...
+            for number_of_players in range(self.min_players_per_game, self.max_players_per_game+1):
+                # We play one round with the eminent-domain rule and one without...
+                self._play_round(number_of_players, True)
+                self._play_round(number_of_players, False)
             Logger.dedent()
 
         return [(p.name, p.games_won) for p in self.player_infos.values()]
@@ -110,18 +120,18 @@ class Tournament(object):
 
         return milliseconds_per_turn
 
-
-    def _play_round(self):
+    def _play_round(self, number_of_players, eminent_domain):
         '''
         We play one round and store the results.
         '''
         # We loop through all permutations of the players...
         game_number = 0
         ais = [(p.ai, p.player_number) for p in self.player_infos.values()]
-        for permutation in itertools.permutations(ais, self.players_per_game):
+        for permutation in itertools.permutations(ais, number_of_players):
             # Each permutation is a collection of player AIs. We play a game with these AIs...
             game = Game()
             game.tournament = self
+            game.eminent_domain = eminent_domain
             for ai in permutation:
                 game.add_player(ai)
 

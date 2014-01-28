@@ -72,6 +72,13 @@ class Game(object):
         # can then be relayed to the GUI...
         self.tournament = None
 
+        # Whether the eminent domain rule is being played.
+        # If it is, then all properties are compulsorily purchased
+        # and re-auctioned at a specified turn if no houses have
+        # been built by that time...
+        self.eminent_domain = True
+        self.eminent_domain_round = 200
+
     def add_player(self, ai_info):
         '''
         Adds a player AI.
@@ -137,6 +144,9 @@ class Game(object):
 
         Returns a Game.Action enum.
         '''
+
+        # We check if we need to play the eminent domain rule...
+        self._check_eminent_domain_rule()
 
         # We play a turn for each player in the game.
         # Note that we iterate over a copy of the list of players, as
@@ -450,7 +460,7 @@ class Game(object):
         If the highest bidder cannot actually pay, it goes to the next
         highest (and so on).
         '''
-        Logger.log("{0} offered for auction".format(square.name))
+        Logger.log("{0} offered for auction".format(square.name), Logger.INFO)
         Logger.indent()
 
         # We get bids from each player and store them in a list of
@@ -1106,3 +1116,60 @@ class Game(object):
         for player in self.state.bankrupt_players:
             player.ai.game_over(self.winner, maximum_rounds_played)
 
+    def _check_eminent_domain_rule(self):
+        '''
+        Checks if we should play the eminent domain rule, and plays it
+        if we should.
+
+        At a certain turn (say turn 200), if no player has built houses,
+        then we compulsorily purchase all properties and re-auction them.
+        '''
+
+        # We check if the rule is set up...
+        if self.eminent_domain is False:
+            return
+
+        # Is it the right turn to play the rule?
+        if self.number_of_rounds_played != self.eminent_domain_round:
+            return
+
+        # The rule is enabled and it's the right round. Are all properties
+        # without houses?
+        properties_have_houses = False
+        for square in self.state.board.squares:
+            if isinstance(square, Street) and (square.number_of_houses != 0):
+                properties_have_houses = True
+                break
+
+        # If any properties have houses, we don't apply the rule...
+        if properties_have_houses is True:
+            return
+
+        # We want to play the rule!
+
+        # First we buy back all the properties...
+        for square in self.state.board.squares:
+
+            # Is this square a property?
+            if not isinstance(square, Property):
+                continue
+
+            # We've got a property, so we find the player and the price...
+            owner = square.owner
+            price = square.price if square.is_mortgaged is False else int(square.price/2)
+
+            # We give the player the money and take the property...
+            self.give_money_to_player(owner, price)
+            square.owner = None
+            square.is_mortgaged = False
+            owner.state.properties.remove(square)
+
+        # We update which sets each player owns...
+        self._update_sets()
+
+        # Now we auction all properties...
+        for square in self.state.board.squares:
+
+            # Is this square a property?
+            if isinstance(square, Property):
+                self._offer_property_for_auction(square)
