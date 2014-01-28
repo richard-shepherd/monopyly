@@ -98,7 +98,7 @@ class MessagingServer(object):
         for player in itertools.chain(game.state.players, game.state.bankrupt_players):
             player_info = player_info_message.player_infos.add()
             player_info.player_number = player.player_number
-            player_info.net_worth = player.net_worth
+            player_info.net_worth = int(player.net_worth)
             player_info.games_won = tournament.player_infos[player.player_number].games_won
             player_info.square = player.state.square
             player_info.ms_per_turn = tournament.get_ms_per_turn(player)
