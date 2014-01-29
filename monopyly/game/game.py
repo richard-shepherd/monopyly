@@ -1156,6 +1156,8 @@ class Game(object):
 
             # We've got a property, so we find the player and the price...
             owner = square.owner
+            if owner is None:
+                continue
             price = square.price if square.is_mortgaged is False else int(square.price/2)
 
             # We give the player the money and take the property...
