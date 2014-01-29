@@ -40,9 +40,9 @@
 </h3>
 <p>
     The competition is only open to employees of BNP Paribas.
-    The closing date for entries is Tuesday 28th January 2014.
+    The closing date for entries is Tuesday 4th February 2014.
     Entries must be mailed as a zip file to richard.s.shepherd@gmail.com by this date.
-    The final will be played on Friday 31st January.
+    The final will be played on Friday 7th February.
 </p>
 
 <p>
@@ -52,7 +52,8 @@
     more than one AI, but no more than one AI from each entrant will be picked for the final.
 </p>
 <p>
-    The final will be a one-round tournament of the top four AIs. That is to say that twenty-four
+    The final will be a tournament of the top four AIs. Depending on the speed of the AIs,
+    a number of rounds will be played. That is to say that at least twenty-four
     games will be played to play all the permutations of AIs playing in first, second, third and
     fourth places.
 </p>
@@ -105,6 +106,13 @@
     Monopyly has a limit of 500 rounds per game. If this limit is reached, the player
     with the highest 'net worth' is the winner. Net worth = cash + sale value of houses + mortage
     value of properties.
+</p>
+<p>
+    Monopyly has an 'eminent domain' rule. This attempts to avoid 'boring' games where no
+    player has a set or builds properties. If no properties have been built by round 200, all
+    properties are compulsorily repurchased by the bank at face value. They are then immediately
+    re-auctioned. The eminent_domain() method is called on your AI after compulsory purchase
+    has happened, but before the re-auctioning occurs.
 </p>
 
 <h3>
