@@ -568,13 +568,19 @@ class Game(object):
 
         # We ask the player if he wants to build any houses.
         # build_instructions is a list of tuples like:
-        # (street_name, number_of_houses)
+        # (street, number_of_houses)
         build_instructions = current_player.call_ai(current_player.ai.build_houses, self.state, current_player)
         if not build_instructions:
             return
 
         Logger.log("{0} wants to build houses: {1}".format(current_player.name, build_instructions))
         Logger.indent()
+
+        # We do some validation that the number of houses requested is OK...
+        for (street, number_of_houses) in build_instructions:
+            if (number_of_houses < 0) or (street.number_of_houses + number_of_houses > 5):
+                Logger.dedent()
+                return
 
         # There are a number of ways that building can fail. Some are
         # hard to see without doing the transaction first. So we first do
@@ -1133,11 +1139,16 @@ class Game(object):
         if self.number_of_rounds_played != self.eminent_domain_round:
             return
 
+        # We need the collections of Streets and Properties...
+        board = self.state.board
+        properties = [square for square in board.squares if isinstance(square, Property)]
+        streets = [property for property in properties if isinstance(property, Street)]
+
         # The rule is enabled and it's the right round. Are all properties
         # without houses?
         properties_have_houses = False
-        for square in self.state.board.squares:
-            if isinstance(square, Street) and (square.number_of_houses != 0):
+        for street in streets:
+            if street.number_of_houses != 0:
                 properties_have_houses = True
                 break
 
@@ -1148,30 +1159,27 @@ class Game(object):
         # We want to play the rule!
 
         # First we buy back all the properties...
-        for square in self.state.board.squares:
-
-            # Is this square a property?
-            if not isinstance(square, Property):
-                continue
+        for property in properties:
 
             # We've got a property, so we find the player and the price...
-            owner = square.owner
+            owner = property.owner
             if owner is None:
                 continue
-            price = square.price if square.is_mortgaged is False else int(square.price/2)
+            price = property.price if property.is_mortgaged is False else int(property.price/2)
 
             # We give the player the money and take the property...
             self.give_money_to_player(owner, price)
-            square.owner = None
-            square.is_mortgaged = False
-            owner.state.properties.remove(square)
+            property.owner = None
+            property.is_mortgaged = False
+            owner.state.properties.remove(property)
 
         # We update which sets each player owns...
         self._update_sets()
 
-        # Now we auction all properties...
-        for square in self.state.board.squares:
+        # We notify the players that properties are about to be re-auctioned...
+        for player in self.state.players:
+            player.call_ai(player.ai.eminent_domain, self.state, player)
 
-            # Is this square a property?
-            if isinstance(square, Property):
-                self._offer_property_for_auction(square)
+        # Now we auction all properties...
+        for property in properties:
+            self._offer_property_for_auction(property)

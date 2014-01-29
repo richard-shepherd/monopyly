@@ -488,3 +488,18 @@ class PlayerAIBase(object):
         No response is required.
         '''
         pass
+
+    def eminent_domain(self, game_state, player):
+        '''
+        Called when the eminent-domain rule is being played.
+
+        This rule is invoked in 'boring' games at round 200 if no
+        player has built any houses. All properties are compulsorily
+        repurchased by the bank and then immediately auctioned.
+
+        This method is called after the repurchase, but before
+        the auction.
+
+        No response is necessary.
+        '''
+        pass

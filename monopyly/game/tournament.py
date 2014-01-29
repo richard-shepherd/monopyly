@@ -38,7 +38,18 @@ class Tournament(object):
             self.name = ""
             self.player_number = -1
 
-    def __init__(self, player_ais, min_players_per_game, max_players_per_game, number_of_rounds):
+    # An 'enum' for whether we should play permutations or combinations
+    # of AIs when playing a tournament...
+    PERMUTATIONS = 1
+    COMBINATIONS = 2
+
+    def __init__(
+            self,
+            player_ais,
+            min_players_per_game,
+            max_players_per_game,
+            number_of_rounds,
+            permutations_or_combinations):
         '''
         The 'constructor'
         '''
@@ -68,6 +79,10 @@ class Tournament(object):
         # If the messaging_server is set up, we send updates to
         # the C# GUI when game events occur...
         self.messaging_server = None
+
+        # Whether we are playing permutations or combinations
+        # of players...
+        self.permutations_or_combinations = permutations_or_combinations
 
     def play(self):
         '''
@@ -124,15 +139,20 @@ class Tournament(object):
         '''
         We play one round and store the results.
         '''
-        # We loop through all permutations of the players...
+        # We loop through all permutations or combinations of the players...
         game_number = 0
         ais = [(p.ai, p.player_number) for p in self.player_infos.values()]
-        for permutation in itertools.permutations(ais, number_of_players):
+        if self.permutations_or_combinations == Tournament.PERMUTATIONS:
+            ais_per_game =itertools.permutations(ais, number_of_players)
+        else:
+            ais_per_game =itertools.combinations(ais, number_of_players)
+
+        for ais_for_this_game in ais_per_game:
             # Each permutation is a collection of player AIs. We play a game with these AIs...
             game = Game()
             game.tournament = self
             game.eminent_domain = eminent_domain
-            for ai in permutation:
+            for ai in ais_for_this_game:
                 game.add_player(ai)
 
             # We notify the GUI that the game has started...
@@ -163,7 +183,7 @@ class Tournament(object):
 
             # We log the results...
             game_number += 1
-            player_names = [ai[0].get_name() for ai in permutation]
+            player_names = [ai[0].get_name() for ai in ais_for_this_game]
             message = "Game {0}:  Winner was: {3} ({1} eminent-domain: {2})".format(
                 game_number, player_names, eminent_domain, winner_name)
             Logger.log(message, Logger.INFO_PLUS)
