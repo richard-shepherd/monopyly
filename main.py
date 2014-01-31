@@ -21,7 +21,8 @@ if play_tournament:
         player_ais=ais,
         min_players_per_game=2,
         max_players_per_game=4,
-        number_of_rounds=10,
+        number_of_rounds=1,
+        maximum_games=100,
         permutations_or_combinations=Tournament.PERMUTATIONS)
 
     # Sends updates to the C# GUI...
@@ -29,6 +30,7 @@ if play_tournament:
 
     # We play the tournament...
     results = tournament.play()
+    results.sort(key=lambda r: r[1], reverse=True)
     print(results)
 
 else:

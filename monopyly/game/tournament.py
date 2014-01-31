@@ -1,5 +1,5 @@
 import itertools
-import time
+import random
 from .game import Game
 from ..utility import Logger
 
@@ -49,6 +49,7 @@ class Tournament(object):
             min_players_per_game,
             max_players_per_game,
             number_of_rounds,
+            maximum_games,
             permutations_or_combinations):
         '''
         The 'constructor'
@@ -83,6 +84,11 @@ class Tournament(object):
         # Whether we are playing permutations or combinations
         # of players...
         self.permutations_or_combinations = permutations_or_combinations
+
+        # The maximum number of games to play per round...
+        player_number_variations = max_players_per_game - min_players_per_game + 1
+        variations = number_of_rounds * 2 * player_number_variations
+        self.max_games_per_round = int(maximum_games / variations)
 
     def play(self):
         '''
@@ -146,6 +152,11 @@ class Tournament(object):
             ais_per_game =itertools.permutations(ais, number_of_players)
         else:
             ais_per_game =itertools.combinations(ais, number_of_players)
+
+        # We may want to choose a random subset of these games...
+        ais_per_game = list(ais_per_game)
+        if self.max_games_per_round < len(ais_per_game):
+            ais_per_game = random.sample(ais_per_game, self.max_games_per_round)
 
         for ais_for_this_game in ais_per_game:
             # Each permutation is a collection of player AIs. We play a game with these AIs...
