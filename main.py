@@ -12,8 +12,9 @@ if play_tournament:
     # AIs against each other.
 
     # Logging at INFO_PLUS level shows game results, but does not
-    # show verbose  information...
+    # show verbose information...
     Logger.add_handler(ConsoleLogHandler(Logger.INFO_PLUS))
+    #Logger.add_handler(FileLogHandler("tournament.log", Logger.INFO))
     Logger.log("Number of AIs: {0}".format(len(ais)), Logger.INFO_PLUS)
 
     # We set up and play a tournament...
@@ -22,16 +23,15 @@ if play_tournament:
         min_players_per_game=2,
         max_players_per_game=4,
         number_of_rounds=1,
-        maximum_games=100,
+        maximum_games=200,
         permutations_or_combinations=Tournament.PERMUTATIONS)
 
     # Sends updates to the C# GUI...
     #tournament.messaging_server = MessagingServer(update_every_n_turns=10, sleep_between_turns_seconds=0.0)
 
     # We play the tournament...
-    results = tournament.play()
-    results.sort(key=lambda r: r[1], reverse=True)
-    print(results)
+    tournament.play()
+    tournament.log_results()
 
 else:
     # We play a single game with selected players.

@@ -90,11 +90,16 @@ class Tournament(object):
         variations = number_of_rounds * 2 * player_number_variations
         self.max_games_per_round = int(maximum_games / variations)
 
+        # The number of games played...
+        self.game_count = 0
+
     def play(self):
         '''
         Plays the tournament and returns the results as a dictionary of
         AI names to the number of games each won.
         '''
+        self.game_count = 0
+
         # We send the start-of-tournament message...
         if self.messaging_server is not None:
             # We send a list of (player-name, player-number)...
@@ -113,7 +118,13 @@ class Tournament(object):
                 self._play_round(number_of_players, False)
             Logger.dedent()
 
-        return [(p.name, p.games_won) for p in self.player_infos.values()]
+    def log_results(self):
+        '''
+        Logs the results, ie games won per player, sorted from high to low.
+        '''
+        results = [(p.name, p.games_won) for p in self.player_infos.values()]
+        results.sort(key=lambda r: r[1], reverse=True)
+        Logger.log("Results: {0}".format(results), Logger.INFO_PLUS)
 
     def turn_played(self, game):
         '''
@@ -146,7 +157,6 @@ class Tournament(object):
         We play one round and store the results.
         '''
         # We loop through all permutations or combinations of the players...
-        game_number = 0
         ais = [(p.ai, p.player_number) for p in self.player_infos.values()]
         if self.permutations_or_combinations == Tournament.PERMUTATIONS:
             ais_per_game =itertools.permutations(ais, number_of_players)
@@ -193,11 +203,15 @@ class Tournament(object):
                 player_info.processing_seconds += player.state.ai_processing_seconds_used
 
             # We log the results...
-            game_number += 1
+            self.game_count += 1
             player_names = [ai[0].get_name() for ai in ais_for_this_game]
             message = "Game {0}:  Winner was: {3} ({1} eminent-domain: {2})".format(
-                game_number, player_names, eminent_domain, winner_name)
+                self.game_count, player_names, eminent_domain, winner_name)
             Logger.log(message, Logger.INFO_PLUS)
+
+            # We show interim results every 10 games...
+            if self.game_count % 10 == 0:
+                self.log_results()
 
             # We update the GUI...
             if self.messaging_server is not None:
