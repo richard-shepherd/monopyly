@@ -1,2 +1,0 @@
-from .sophie import SophieAI
-

@@ -1,0 +1,2 @@
+from .GreenDevil import GreenDevilAI
+
