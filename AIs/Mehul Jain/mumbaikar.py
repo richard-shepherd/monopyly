@@ -98,9 +98,9 @@ class MumbaikarAI(PlayerAIBase):
         itr_count = 0
         mort_prop = []
 
-        while((self.cash_needed - player.state.cash) >= (cash_generated + temp_mort)):
+        while((self.cash_needed - player.state.cash) > (cash_generated + temp_mort)):
             for p in self.roi_list:
-                if( (self.cash_needed - player.state.cash) >= (cash_generated + temp_mort) ):
+                if( (self.cash_needed - player.state.cash) > (cash_generated + temp_mort) ):
                     if isinstance(p.street_name, Street) and (p.street_name.number_of_houses - itr_count > 0):
                         if p.street_name.number_of_houses == self._get_max_houses(p.street_name.property_set):
                             ret.append((p.street_name, 1))
