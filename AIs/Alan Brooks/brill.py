@@ -344,8 +344,9 @@ class BrillAI(PlayerAIBase):
             return DealResponse(DealResponse.Action.REJECT)
         if len(deal_proposal.properties_wanted) > 1:
             return DealResponse(DealResponse.Action.REJECT)
-        if deal_proposal.properties_wanted[0].name in self.PROPERTIES_WE_LIKE:
-            return DealResponse(DealResponse.Action.REJECT)
+        if (len(deal_proposal.properties_wanted) == 1) and \
+                (deal_proposal.properties_wanted[0].name in self.PROPERTIES_WE_LIKE):
+            return DealResponse(DealResponse.Action.ACCEPT)
 
         return DealResponse(DealResponse.Action.REJECT)
 
