@@ -339,15 +339,6 @@ class BrillAI(PlayerAIBase):
         '''
         Called when a deal is proposed by another player.
         '''
-        # We only accept deals for single properties wanted from us...
-        if len(deal_proposal.properties_offered) > 0:
-            return DealResponse(DealResponse.Action.REJECT)
-        if len(deal_proposal.properties_wanted) > 1:
-            return DealResponse(DealResponse.Action.REJECT)
-        if (len(deal_proposal.properties_wanted) == 1) and \
-                (deal_proposal.properties_wanted[0].name in self.PROPERTIES_WE_LIKE):
-            return DealResponse(DealResponse.Action.ACCEPT)
-
         return DealResponse(DealResponse.Action.REJECT)
 
     def deal_result(self, deal_info):
