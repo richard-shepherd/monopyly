@@ -424,6 +424,12 @@ class Game(object):
         '''
         Transfers the named property from from_player to to_player.
         '''
+        # We can't transfer a property from a player to the same
+        # player. At the least, there's no point. A worst, the code below
+        # would actually remove it from them...
+        if from_player is to_player:
+            return
+
         Logger.log("{0} transfered from {1} to {2}".format(
             square_name, from_player.name, to_player.name))
 
@@ -881,6 +887,11 @@ class Game(object):
             return
         proposed_to_player = proposal.propose_to_player
 
+        # Sometimes AIs try to propose a deal to themselves...
+        if current_player is proposed_to_player:
+            current_player.call_ai(current_player.ai.deal_result, PlayerAIBase.DealInfo.INVALID_DEAL_PROPOSED)
+            return
+
         Logger.log("{0} proposed deal to {1}: {2}".format(current_player.name, proposed_to_player.name, proposal))
         Logger.indent()
 
@@ -927,7 +938,7 @@ class Game(object):
             proposed_to_player,
             proposal)
 
-        if response.action == DealResponse.Action.REJECT:
+        if (response is None) or (response.action == DealResponse.Action.REJECT):
             # The proposee rejected the deal...
             current_player.call_ai(current_player.ai.deal_result, PlayerAIBase.DealInfo.DEAL_REJECTED)
             proposed_to_player.call_ai(proposed_to_player.ai.deal_result, PlayerAIBase.DealInfo.DEAL_REJECTED)

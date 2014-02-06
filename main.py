@@ -14,16 +14,16 @@ if play_tournament:
     # Logging at INFO_PLUS level shows game results, but does not
     # show verbose information...
     Logger.add_handler(ConsoleLogHandler(Logger.INFO_PLUS))
-    #Logger.add_handler(FileLogHandler("tournament.log", Logger.INFO))
+    Logger.add_handler(FileLogHandler("tournament.log", Logger.INFO))
     Logger.log("Number of AIs: {0}".format(len(ais)), Logger.INFO_PLUS)
 
     # We set up and play a tournament...
     tournament = Tournament(
         player_ais=ais,
-        min_players_per_game=2,
-        max_players_per_game=4,
-        number_of_rounds=1,
-        maximum_games=200,
+        min_players_per_game=3,
+        max_players_per_game=3,
+        number_of_rounds=100,
+        maximum_games=20000,
         permutations_or_combinations=Tournament.PERMUTATIONS)
 
     # Sends updates to the C# GUI...

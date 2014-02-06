@@ -45,7 +45,8 @@ class Player(object):
 
         for property in self.state.properties:
             # We add the mortgage value of properties...
-            total += property.mortgage_value
+            if not property.is_mortgaged:
+                total += property.mortgage_value
 
             # We add the resale value of houses...
             if type(property) == Street:
