@@ -112,6 +112,8 @@ class MumbaikarAI(PlayerAIBase):
                 else:
                     break
             itr_count += 1
+            if itr_count > 100:
+                break
 
         #for prop in player.state.properties:
         #    if isinstance(prop, Street):
