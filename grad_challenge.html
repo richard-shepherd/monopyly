@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Image unscramble challenge</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Download</h1>
+        <p class="header">Download the image and unscramble it</p>
+
+        <ul>
+          <li class="download"><a class="buttons" href="images/scrambled.zip">Download ZIP</a></li>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/richard-shepherd">richard-shepherd</a></p>
+      </header>
+
+<section>
+
+<img src="images/header.png">
+<h2>
+    Image Unscramble Challenge
+</h2>
+
+<p>
+    Your task is to download the scrambled image attached to this page and unscramble it. The unscrambled image
+    will tell you what to do next.
+</p>
+
+<p>
+    Here is how the scrambling is done for an example image:
+    <img src="images/instructions.png">
+</p>
+
+<p>
+    This is repeated for a number of passes, up until we have processed an n*n grid.
+    To make things a little harder, we will not tell you what n is!
+</p>
+
+<p>
+    The sizes and positions of the rotated boxes are calculated using integer maths.
+    For example, if the image size is 1050 x 1050 and we are using a 4 x 4 grid,
+    the box size will be 262 x 262. This will leave two pixels unrotated at the right-hand
+    edge of the image.
+</p>
+
+</section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+
+  </body>
+</html>
