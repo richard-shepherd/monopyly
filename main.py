@@ -1,11 +1,18 @@
 from monopyly import *
 
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument("-d", "--ai_dir",
+                    default="AIs")
+
+args = parser.parse_args()
+
 # True to play a tournament, False to play a single game
 # with selected players...
 play_tournament = True
 
 # We find the collection of AIs from the AIs folder...
-ais = load_ais()
+ais = load_ais(args.ai_dir)
 
 if play_tournament:
     # We play a tournament. This plays all the permutations of
